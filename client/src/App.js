@@ -1,10 +1,13 @@
-import { BrowserRouter as Router, Route } from 'react-router-dom'
-import PageRender from './PageRender';
-import Login from './pages/login';
+import { BrowserRouter as Router, Route } from "react-router-dom";
+import PageRender from "./PageRender";
+import Login from "./pages/login";
+import Notify from "./components/Notify/notify";
 
 function App() {
   return (
     <Router>
+      <Notify />
+
       <input type="checkbox" id="theme" />
       <div className="App">
         <div className="main">
