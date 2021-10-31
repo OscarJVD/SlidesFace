@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import PageRender from "./PageRender";
 import Login from "./pages/login";
-import Notify from "./components/Notify/notify";
+import Notify from "./components/Notify/Notify";
 
 function App() {
   return (

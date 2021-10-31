@@ -3,6 +3,8 @@ import { postDataAPI } from "../../utils/fetchData";
 export const TYPES = {
   LOGIN_USER: "LOGIN_USER",
   LOGOUT_USER: "LOGOUT_USER",
+  AUTH: "AUTH",
+  NOTIFY: "NOTIFY",
 };
 
 export const loginUser = (user) => async (dispatch) => {
@@ -23,7 +25,7 @@ export const loginUser = (user) => async (dispatch) => {
     console.log(result);
     console.log(user);
   } catch (error) {
-    dispatch({ type: "NOTIFY", payload: { error: error.response.data.msg } });
+    dispatch({ type: "NOTIFY", payload: { error: error.msg } });
     console.log(error);
   }
 };
