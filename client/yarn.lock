@@ -9332,11 +9332,6 @@
   "resolved" "https://registry.npmjs.org/react-is/-/react-is-17.0.1.tgz"
   "version" "17.0.1"
 
-"react-js-loader@^0.1.0":
-  "integrity" "sha512-ROjgt1+3bfxigYBKAEa3pOTUJRCZgksymPoQ9djgxLEpqAXM/zin5cVt2MFs6xZ4zqM+g5XhJdgYUN9FYtNpCQ=="
-  "resolved" "https://registry.npmjs.org/react-js-loader/-/react-js-loader-0.1.0.tgz"
-  "version" "0.1.0"
-
 "react-password-toggle-icon@^1.1.5":
   "integrity" "sha512-R6ISf3GuQk9WFG/UWIkaxsSoCKWR+eJCQQcWI9P5ezq+QQnWiSkgGmuVtoI2D08lbkpm+xYtL2Od/cbo4nsTew=="
   "resolved" "https://registry.npmjs.org/react-password-toggle-icon/-/react-password-toggle-icon-1.1.5.tgz"

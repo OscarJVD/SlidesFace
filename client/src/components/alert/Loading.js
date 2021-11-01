@@ -1,5 +1,3 @@
-import Loader from "react-js-loader";
-
 const Loading = () => {
   return (
     <div>
@@ -25,13 +23,6 @@ const Loading = () => {
           </text>
         </svg>
       </div>
-      {/* <Loader
-        type="spinner-default"
-        bgColor={"#FFFFFF"}
-        title={"spinner-default"}
-        color={"#FFFFFF"}
-        size={100}
-      /> */}
     </div>
   );
 };

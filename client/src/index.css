@@ -42,8 +42,14 @@ code {
   cursor: pointer;
 }
 
-/*  ----------------- AUTH ---------- */
+/*  ---------- AUTH ---------- */
 @import url("./styles/auth.css");
 
-/*  ----------------- LOADER ---------- */
+/*  --------- LOADER ---------- */
 @import url("./styles/loading.css");
+
+/* ---------- FORMS ----------  */
+@import url("./styles/forms.css");
+
+/* ---------- TEXT  ----------  */
+@import url("./styles/text.css");
