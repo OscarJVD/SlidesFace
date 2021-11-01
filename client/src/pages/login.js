@@ -11,6 +11,8 @@ const Login = () => {
 
   const dispatch = useDispatch();
 
+  // const [typePass, setTypePass] = useState(false);
+
   const handleChangeInput = (e) => {
     const { name, value } = e.target;
     setUserData({ ...userData, [name]: value });
@@ -31,8 +33,9 @@ const Login = () => {
   );
 
   return (
-    <>
+    <div>
       {/* <!-- Login Form --> */}
+
       <div className="container">
         <div className="row justify-content-center">
           <div className="col-lg-4 col-md-6 col-sm-6">
@@ -80,9 +83,15 @@ const Login = () => {
                   </div>
 
                   {/* <div className="mb-4">
-                                        <input type="checkbox" className="form-check-input" id="remember" />
-                                        <label htmlFor="remember" className="form-label">Remember Me</label>
-                                    </div> */}
+                    <input
+                      type="checkbox"
+                      className="form-check-input"
+                      id="remember"
+                    />
+                    <label htmlFor="remember" className="form-label">
+                      Remember Me
+                    </label>
+                  </div> */}
 
                   <div className="d-grid">
                     <button
@@ -117,7 +126,6 @@ const Login = () => {
         </div>
       </div>
 
-      {/* Modal */}
       <div
         className="modal fade"
         id="exampleModal"
@@ -145,7 +153,7 @@ const Login = () => {
               <div className="container">
                 <div className="row">
                   <div className="col-md-6">
-                    <input
+                    {/* <input
                       type="text"
                       onChange={handleChangeInput}
                       className="form-control"
@@ -164,7 +172,7 @@ const Login = () => {
                       id="email"
                       name="email"
                       value={email}
-                    />
+                    /> */}
                   </div>
                 </div>
               </div>
@@ -177,29 +185,69 @@ const Login = () => {
               >
                 Cerrar
               </button>
-              {/* <button type="button" className="btn btn-primary">Guardar Cambios</button> */}
             </div>
           </div>
         </div>
       </div>
 
-      {/* <div className="registerLogo">
-            .modal-login .avatar {
-		position: absolute;
-		margin: 0 auto;
-		left: 0;
-		right: 0;
-		top: -70px;
-		width: 95px;
-		height: 95px;
-		border-radius: 50%;
-		z-index: 9;
-		background: #FE4321;
-		padding: 15px;
-		box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.1);
-	}
-            </div>  */}
-    </>
+      {/* LOGIN ALTERNATIVE */}
+      {/* <div className="auth_page">
+        <form onSubmit={handleSubmit}>
+          <h3 className="text-uppercase text-center mb-4">V-Network</h3>
+
+          <div className="form-group">
+            <label htmlFor="exampleInputEmail1">Email address</label>
+            <input
+              type="email"
+              className="form-control"
+              id="exampleInputEmail1"
+              name="email"
+              aria-describedby="emailHelp"
+              onChange={handleChangeInput}
+              value={email}
+            />
+
+            <small id="emailHelp" className="form-text text-muted">
+              We'll never share your email with anyone else.
+            </small>
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="exampleInputPassword1">Password</label>
+
+            <div className="pass">
+              <input
+                type={typePass ? "text" : "password"}
+                className="form-control"
+                id="exampleInputPassword1"
+                onChange={handleChangeInput}
+                value={password}
+                name="password"
+              />
+
+              <small onClick={() => setTypePass(!typePass)}>
+                {typePass ? "Hide" : "Show"}
+              </small>
+            </div>
+          </div>
+
+          <button
+            type="submit"
+            className="btn btn-dark w-100"
+            disabled={email && password ? false : true}
+          >
+            Login
+          </button>
+
+          <p className="my-2">
+            You don't have an account?{" "}
+            <Link to="/register" style={{ color: "crimson" }}>
+              Register Now
+            </Link>
+          </p>
+        </form>
+      </div> */}
+    </div>
   );
 };
 
