@@ -1,11 +1,31 @@
 import React, { useState, useRef, useEffect } from "react";
 // import { Link } from "react-router-dom";
 import ReactPasswordToggleIcon from "react-password-toggle-icon";
-import { loginUser } from "../redux/actions/authAction";
+import { loginUser, registerUser } from "../redux/actions/authAction";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
+// import { useForm } from "react-hook-form";
+// import { yupResolver } from "@hookform/resolvers/yup";
+// import * as yup from "yup";
+
+// const schema = yup.object().shape({
+//   username_email_or_mobile_login: yup.string().required("Required"),
+//   password: yup
+//     .string()
+//     .required("Required")
+//     .min(6, "Password must be at least 6 characters"),
+// });
 
 const LoginAndRegister = () => {
+  // FORM VALIDATION
+  // const {
+  //   register,
+  //   handleSubmit,
+  //   formState: { errors },
+  // } = useForm({ resolver: yupResolver(schema) });
+
+  // END FORM VALIDATION
+
   const dispatch = useDispatch();
 
   // EYE ICON
@@ -20,9 +40,9 @@ const LoginAndRegister = () => {
   );
   // END EYE ICON
 
-  const loginState = { email: "", password: "" };
+  const loginState = { username_email_or_mobile_login: "", password: "" };
   const [loginData, setLoginData] = useState(loginState);
-  const { email, password } = loginData;
+  const { username_email_or_mobile_login, password } = loginData;
 
   const handleChangeInputsLogin = (e) => {
     const { name, value } = e.target;
@@ -43,15 +63,21 @@ const LoginAndRegister = () => {
   }, [auth.token, history]);
 
   const registerState = {
-    fullname: "",
-    username: "",
-    new_email: "",
+    firstname: "",
+    lastname: "",
+    username_email_or_mobile_register: "",
     new_password: "",
     gender: "male",
   };
 
   const [registerData, setRegisterData] = useState(registerState);
-  const { fullname, username, new_email, new_password, gender } = registerData;
+
+  const {
+    firstname,
+    lastname,
+    username_email_or_mobile_register,
+    new_password,
+  } = registerData;
 
   const handleChangeInputsRegister = (e) => {
     const { name, value } = e.target;
@@ -60,49 +86,53 @@ const LoginAndRegister = () => {
 
   const registerSubmit = (e) => {
     e.preventDefault();
-    // dispatch(registerUser(registerData));
+    dispatch(registerUser(registerData));
   };
   // END REGISTER
 
   return (
     <div>
       {/* LOGIN */}
-      <div class="row ht-100v flex-row-reverse no-gutters">
-        <div class="col-md-6 d-flex justify-content-center align-items-center">
-          <div class="signup-form">
-            <div class="auth-logo text-center mb-5">
-              <div class="row">
-                <div class="col-md-12">
+      <div className="row ht-100v flex-row-reverse no-gutters">
+        <div className="col-md-6 d-flex justify-content-center align-items-center">
+          <div className="signup-form">
+            <div className="auth-logo text-center mb-5">
+              <div className="row">
+                <div className="col-md-12">
                   <img
                     src="https://res.cloudinary.com/slidesface-com/image/upload/v1635738378/slidesface/be_social_icon_egemeq.png"
-                    class="logo-img"
+                    className="logo-img"
                     alt="Logo"
                     width="50"
                   />
                 </div>
-                {/* <div class="col-md-10">
+                {/* <div className="col-md-10">
                   <p>Argon Social Network</p>
                   <span>Design System</span>
                 </div> */}
               </div>
             </div>
             <form onSubmit={loginSubmit}>
-              <div class="row">
-                <div class="col-md-12">
-                  <div class="form-group">
+              <div className="row">
+                <div className="col-md-12">
+                  <div className="form-group">
                     <input
                       type="text"
                       onChange={handleChangeInputsLogin}
                       className="form-control"
-                      placeholder="Usuario o Correo"
-                      id="email"
-                      name="email"
-                      value={email}
+                      // {...register("username_email_or_mobile_login")}
+                      placeholder="Usuario, correo o teléfono"
+                      id="username_email_or_mobile_login"
+                      name="username_email_or_mobile_login"
+                      value={username_email_or_mobile_login}
                     />
+                    {/* {errors.username_email_or_mobile_login && (
+                      <p>El usuario, correo teléfono es requerido</p>
+                    )} */}
                   </div>
                 </div>
-                <div class="col-md-12 mt-2">
-                  <div class="form-group">
+                <div className="col-md-12 mt-2">
+                  <div className="form-group">
                     <div className="position-relative">
                       <input
                         ref={inputRef}
@@ -125,20 +155,24 @@ const LoginAndRegister = () => {
                   </div>
                 </div>
 
-                {/* <div class="col-md-6">
-                  <label class="custom-control material-checkbox">
-                    <input type="checkbox" class="material-control-input" />
-                    <span class="material-control-indicator"></span>
-                    <span class="material-control-description">
+                {/* <div className="col-md-6">
+                  <label className="custom-control material-checkbox">
+                    <input type="checkbox" className="material-control-input" />
+                    <span className="material-control-indicator"></span>
+                    <span className="material-control-description">
                       Remember Me
                     </span>
                   </label>
                 </div> */}
-                <div class="col-md-12 mt-3 text-center">
-                  <div class="form-group">
+                <div className="col-md-12 mt-3 text-center">
+                  <div className="form-group">
                     <button
                       className="btn btn-primary sign-up w-100"
-                      disabled={email && password ? false : true}
+                      disabled={
+                        username_email_or_mobile_login && password
+                          ? false
+                          : true
+                      }
                       type="submit"
                     >
                       Entrar
@@ -157,8 +191,8 @@ const LoginAndRegister = () => {
                     </a>
                   </div>
                 </div>
-                <div class="col-md-12 text-center">
-                  {/* <p class="text-muted">Start using your fingerprint</p> */}
+                <div className="col-md-12 text-center">
+                  {/* <p className="text-muted">Start using your fingerprint</p> */}
                   <hr />
                   <button
                     type="button"
@@ -169,8 +203,8 @@ const LoginAndRegister = () => {
                     Crear cuenta nueva
                   </button>
                 </div>
-                {/* <div class="col-md-12 text-center mt-5">
-                  <span class="go-login">
+                {/* <div className="col-md-12 text-center mt-5">
+                  <span className="go-login">
                     Not yet a member? <a href="sign-up.html">Sign Up</a>
                   </span>
                 </div> */}
@@ -178,16 +212,16 @@ const LoginAndRegister = () => {
             </form>
           </div>
         </div>
-        <div class="col-md-6 d-flex justify-content-center align-items-center">
-          <div class="auth-left-content mt-5 mb-5">
-            {/* <div class="weather-small text-dark">
-              <p class="current-weather">
-                <i class="bx bx-sun"></i> <span>14&deg;</span>
+        <div className="col-md-6 d-flex justify-content-center align-items-center">
+          <div className="auth-left-content mt-5 mb-5">
+            {/* <div className="weather-small text-dark">
+              <p className="current-weather">
+                <i className="bx bx-sun"></i> <span>14&deg;</span>
               </p>
-              <p class="weather-city">Gyumri</p>
+              <p className="weather-city">Gyumri</p>
             </div> */}
-            <div class="mt-5 mb-5">
-              <h1 class="text-left display-1 create-account mb-3 auth-txt-logo fw-bolderer fs-big">
+            <div className="mt-5 mb-5">
+              <h1 className="text-left display-1 create-account mb-3 auth-txt-logo fw-bolderer fs-big">
                 slidesface
               </h1>
               <h3 className="text-left fw-normal text-dark">
@@ -200,17 +234,17 @@ const LoginAndRegister = () => {
 
       {/* <!-- Modal FINGERPRINT --> */}
       <div
-        class="modal fade fingerprint-modal"
+        className="modal fade fingerprint-modal"
         id="fingerprintModal"
-        tabindex="-1"
+        tabIndex="-1"
         role="dialog"
         aria-labelledby="fingerprintModalLabel"
         aria-hidden="true"
       >
-        <div class="modal-dialog modal-dialog-centered" role="document">
-          <div class="modal-content">
-            <div class="modal-body text-center">
-              <h3 class="text-muted display-5">
+        <div className="modal-dialog modal-dialog-centered" role="document">
+          <div className="modal-content">
+            <div className="modal-body text-center">
+              <h3 className="text-muted display-5">
                 Place your Finger on the Device Now
               </h3>
               <img
@@ -342,122 +376,126 @@ const LoginAndRegister = () => {
                 aria-label="Close"
               ></button>
             </div>
-            <div className="modal-body">
-              <div className="container">
-                <div className="row">
-                  <div className="col-md-6">
-                    <input
-                      type="text"
-                      onChange={handleChangeInputsLogin}
-                      className="form-control "
-                      placeholder="Nombre"
-                      id="email"
-                      name="email"
-                      value={email}
-                    />
-                  </div>
-                  <div className="col-md-6">
-                    <input
-                      type="text"
-                      onChange={handleChangeInputsLogin}
-                      className="form-control "
-                      placeholder="Apellidos"
-                      id="email"
-                      name="email"
-                      value={email}
-                    />
-                  </div>
-                </div>
-                <div className="row my-3">
-                  <div className="col-md-12">
-                    <input
-                      type="text"
-                      onChange={handleChangeInputsLogin}
-                      className="form-control "
-                      placeholder="Nombre de usuario o correo electrónico"
-                      id="username"
-                      name="username"
-                      value={username}
-                    />
-                  </div>
-                </div>
-                <div className="row my-3">
-                  <div className="col-md-12">
-                    <input
-                      type="text"
-                      onChange={handleChangeInputsLogin}
-                      className="form-control "
-                      placeholder="Contraseña nueva"
-                      id="new_password"
-                      name="new_password"
-                      value={new_password}
-                    />
-                  </div>
-                </div>
+            <form onSubmit={registerSubmit}>
+              <div className="modal-body">
                 <div className="container">
                   <div className="row">
-                    <div className="col-md-12">
-                      <h5 className="text-sm">
-                        <small className="text-sm">Género</small>
-                      </h5>
+                    <div className="col-md-6">
+                      <input
+                        type="text"
+                        onChange={handleChangeInputsRegister}
+                        className="form-control "
+                        placeholder="Nombre"
+                        id="firstname"
+                        name="firstname"
+                        value={firstname}
+                      />
+                    </div>
+                    <div className="col-md-6">
+                      <input
+                        type="text"
+                        onChange={handleChangeInputsRegister}
+                        className="form-control "
+                        placeholder="Apellidos"
+                        id="lastname"
+                        name="lastname"
+                        value={lastname}
+                      />
                     </div>
                   </div>
-                  <div className="row">
-                    <div className="col-md-6">
-                      <div class="form-check">
-                        <input
-                          class="form-check-input"
-                          type="radio"
-                          name="flexRadioDefault"
-                          id="manRadio"
-                        />
-                        <label class="form-check-label" for="manRadio">
-                          Hombre
-                        </label>
-                      </div>
-                    </div>
-                    <div className="col-md-6">
-                      <div class="form-check">
-                        <input
-                          class="form-check-input"
-                          type="radio"
-                          name="flexRadioDefault"
-                          id="womanRadio"
-                        />
-                        <label class="form-check-label" for="womanRadio">
-                          Mujer
-                        </label>
-                      </div>
-                    </div>
-                    {/* <div className="col-md-4">
-                    <div class="form-check">
+                  <div className="row my-3">
+                    <div className="col-md-12">
                       <input
-                        class="form-check-input"
-                        type="radio"
-                        name="flexRadioDefault"
-                        id="flexRadioDefault1"
+                        type="text"
+                        onChange={handleChangeInputsRegister}
+                        className="form-control "
+                        placeholder="Nombre de usuario, correo o móvil"
+                        id="username_email_or_mobile_register"
+                        name="username_email_or_mobile_register"
+                        value={username_email_or_mobile_register}
                       />
-                      <label class="form-check-label" for="flexRadioDefault1">
-                        Default radio
-                      </label>
                     </div>
-                  </div> */}
+                  </div>
+                  <div className="row my-3">
+                    <div className="col-md-12">
+                      <input
+                        type="text"
+                        onChange={handleChangeInputsRegister}
+                        className="form-control "
+                        placeholder="Contraseña nueva"
+                        id="new_password"
+                        name="new_password"
+                        value={new_password}
+                      />
+                    </div>
+                  </div>
+                  <div className="container">
+                    <div className="row">
+                      <div className="col-md-12">
+                        <h5 className="text-sm">
+                          <small className="text-sm">Género</small>
+                        </h5>
+                      </div>
+                    </div>
+                    <div className="row">
+                      <div className="col-md-4">
+                        <div className="form-check">
+                          <input
+                            className="form-check-input"
+                            type="radio"
+                            name="gender"
+                            id="manRadio"
+                          />
+                          <label
+                            className="form-check-label"
+                            htmlFor="manRadio"
+                          >
+                            Hombre
+                          </label>
+                        </div>
+                      </div>
+                      <div className="col-md-4">
+                        <div className="form-check">
+                          <input
+                            className="form-check-input"
+                            type="radio"
+                            name="gender"
+                            id="womanRadio"
+                          />
+                          <label
+                            className="form-check-label"
+                            htmlFor="womanRadio"
+                          >
+                            Mujer
+                          </label>
+                        </div>
+                      </div>
+                      <div className="col-md-4">
+                        <div className="form-check">
+                          <input
+                            className="form-check-input"
+                            type="radio"
+                            name="gender"
+                            id="otherRadio"
+                          />
+                          <label
+                            className="form-check-label"
+                            htmlFor="otherRadio"
+                          >
+                            Otro
+                          </label>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-            <div className="modal-footer justify-content-center">
-              {/* <button
-                type="button"
-                className="btn btn-secondary"
-                data-bs-dismiss="modal"
-              >
-                Cerrar
-              </button> */}
-              <button className="btn btn-success text-capitalize">
-                Registrarte
-              </button>
-            </div>
+              <div className="modal-footer justify-content-center">
+                <button className="btn btn-success text-capitalize">
+                  Registrarte
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       </div>

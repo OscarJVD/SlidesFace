@@ -32,6 +32,37 @@ export const loginUser = (user) => async (dispatch) => {
   }
 };
 
+export const registerUser = (user) => async (dispatch) => {
+  try {
+    dispatch({ type: GLOBAL_TYPES.ALERT, payload: { loading: true } });
+
+    const result = await postDataAPI("register", user);
+
+    console.log(result);
+
+    dispatch({
+      type: GLOBAL_TYPES.LOGIN_USER,
+      payload: { token: result.data.access_token, user: result.data.user },
+    });
+
+    localStorage.setItem("firstLogin", true);
+
+    dispatch({
+      type: GLOBAL_TYPES.ALERT,
+      payload: { success: result.data.msg },
+    });
+
+    console.log(result);
+    console.log(user);
+  } catch (error) {
+    console.log(error.response.data.msg);
+    dispatch({
+      type: GLOBAL_TYPES.ALERT,
+      payload: { error: error.response.data.msg },
+    });
+  }
+};
+
 export const refreshToken = () => async (dispatch) => {
   const firstLogin = localStorage.getItem("firstLogin");
 
