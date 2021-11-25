@@ -38,7 +38,7 @@ export const registerUser = (user) => async (dispatch) => {
 
     const result = await postDataAPI("register", user);
 
-    console.log(result);
+    // console.log(result);
 
     dispatch({
       type: GLOBAL_TYPES.LOGIN_USER,
@@ -52,8 +52,9 @@ export const registerUser = (user) => async (dispatch) => {
       payload: { success: result.data.msg },
     });
 
-    console.log(result);
-    console.log(user);
+    window.location.reload()
+    // console.log(result);
+    // console.log(user);
   } catch (error) {
     console.log(error.response.data.msg);
     dispatch({
@@ -79,11 +80,20 @@ export const refreshToken = () => async (dispatch) => {
 
       dispatch({ type: GLOBAL_TYPES.ALERT, payload: {} });
     } catch (error) {
-      console.log(error.response.data.msg);
-      dispatch({
-        type: GLOBAL_TYPES.ALERT,
-        payload: { error: error.response.data.msg },
-      });
+      // console.log(error.response.data.msg);
+
+      // console.log(window.location)
+      if (window.location.pathname !== "/login" && window.location.pathname !== "/") {
+        dispatch({
+          type: GLOBAL_TYPES.ALERT,
+          payload: { error: error.response.data.msg },
+        });
+      }else{
+        dispatch({
+          type: GLOBAL_TYPES.ALERT,
+          payload: {  },
+        });
+      }
     }
   }
 };

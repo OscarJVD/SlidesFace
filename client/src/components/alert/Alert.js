@@ -12,23 +12,21 @@ const Alert = () => {
   // console.log(state);
 
   return (
-    <div>
-      {alert.loading && <Loading />}
-      {alert.error && (
-        <Toast
-          msg={{ title: "Error", body: alert.error }}
-          handleShow={() => dispatch({ type: GLOBAL_TYPES.ALERT, payload: {} })}
-          bgColor="bg-danger"
-        />
-      )}
-      {alert.success && (
-        <Toast
-          msg={{ title: "Exito", body: alert.success }}
-          handleShow={() => dispatch({ type: GLOBAL_TYPES.ALERT, payload: {} })}
-          bgColor="bg-success"
-        />
-      )}
-    </div>
+    <div style={{zIndex:9999}}> {alert.loading && < Loading />} {
+      alert.error && (<Toast msg={
+        { title: "Error", body: alert.error }}
+        handleShow={
+          () => dispatch({ type: GLOBAL_TYPES.ALERT, payload: {} })}
+        bgColor="bg-danger" />
+      )
+    } {
+        alert.success && (<Toast msg={
+          { title: "Exito", body: alert.success }}
+          handleShow={
+            () => dispatch({ type: GLOBAL_TYPES.ALERT, payload: {} })}
+          bgColor="bg-success" />
+        )
+      } </div>
   );
 };
 
