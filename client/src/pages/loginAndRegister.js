@@ -36,10 +36,24 @@ const LoginAndRegister = () => {
 
     const login = isEmailTelOrUserName(username_email_or_mobile_login);
 
+    if (!username_email_or_mobile_login || !password) {
+      dispatch({
+        type: GLOBAL_TYPES.ALERT,
+        payload: { error: 'Llena todos los campos.' },
+      });
+    }
+
     if (login == 'error') {
       dispatch({
         type: GLOBAL_TYPES.ALERT,
         payload: { error: 'Verifica tu usuario, correo o móvil' },
+      });
+    }
+
+    if (login == 'usernameerror') {
+      dispatch({
+        type: GLOBAL_TYPES.ALERT,
+        payload: { error: 'Tu nombre de usuario debe tener letras.' },
       });
     }
 
@@ -382,6 +396,9 @@ const LoginAndRegister = () => {
                             type='radio'
                             name='gender'
                             id='manRadio'
+                            value="male" 
+                            defaultChecked 
+                            onChange={handleChangeInputsRegister} 
                           />
                           <label
                             className='form-check-label pointer'
@@ -397,6 +414,9 @@ const LoginAndRegister = () => {
                             type='radio'
                             name='gender'
                             id='womanRadio'
+                            value="female" 
+                            defaultChecked 
+                            onChange={handleChangeInputsRegister} 
                           />
                           <label
                             className='form-check-label pointer'
@@ -412,6 +432,9 @@ const LoginAndRegister = () => {
                             type='radio'
                             name='gender'
                             id='otherRadio'
+                            value="other" 
+                            defaultChecked 
+                            onChange={handleChangeInputsRegister} 
                           />
                           <label
                             className='form-check-label pointer'

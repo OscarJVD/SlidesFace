@@ -21,8 +21,8 @@ export const loginUser = (user) => async (dispatch) => {
       payload: { success: result.data.msg },
     });
 
-    console.log(result);
-    console.log(user);
+    // console.log(result);
+    // console.log(user);
   } catch (error) {
     console.log(error.response.data.msg);
     dispatch({

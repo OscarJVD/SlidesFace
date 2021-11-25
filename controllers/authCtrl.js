@@ -15,12 +15,19 @@ const authCtrl = {
         gender,
       } = req.body;
 
+      if (!firstname ||
+        !lastname ||
+        !username_email_or_mobile_register ||
+        !new_password) {
+        return res.status(400).json({ msg: 'Llena todos los campos.' });
+      }
+
       // console.log(isEmailTelOrUserName(username_email_or_mobile_register));
       const registerType = isEmailTelOrUserName(username_email_or_mobile_register)
       if (registerType == 'error') res.status(400).json({ msg: 'Verifica tu usuario, correo o móvil.' });
       if (registerType == 'usernameerror') res.status(400).json({ msg: 'Tu nombre de usuario debe tener letras.' });
 
-      console.log(registerType);
+      // console.log(registerType);
 
       const schema = new passwordValidator();
       schema.is().min(4).is().max(50);
@@ -97,14 +104,43 @@ const authCtrl = {
   },
   login: async (req, res) => {
     try {
-      const { email, password } = req.body;
+      const { username_email_or_mobile_login, password } = req.body;
 
-      const user = await Users.findOne({ email }).populate(
-        'followers following',
-        'avatar username fullname followers following'
-      );
+      if (!username_email_or_mobile_login || !password) {
+        return res.status(400).json({ msg: 'Llena todos los campos.' });
+      }
 
-      if (!user) return res.status(400).json({ msg: 'El correo no existe.' });
+      const registerType = isEmailTelOrUserName(username_email_or_mobile_login)
+      if (registerType == 'error') res.status(400).json({ msg: 'Verifica tu usuario, correo o móvil.' });
+      if (registerType == 'usernameerror') res.status(400).json({ msg: 'Tu nombre de usuario debe tener letras.' });
+
+      let user = null;
+      if (registerType == 'username') {
+        user = await Users.findOne({ username: username_email_or_mobile_login }).populate(
+          'followers following',
+          'avatar username firstname lastname mobile email fullname followers following'
+        );
+
+        if (!user) return res.status(400).json({ msg: 'El nombre de usuario no existe.' });
+      }
+
+      if (registerType == 'email') {
+        user = await Users.findOne({ email: username_email_or_mobile_login }).populate(
+          'followers following',
+          'avatar username firstname lastname mobile email fullname followers following'
+        );
+
+        if (!user) return res.status(400).json({ msg: 'El correo no existe.' });
+      }
+
+      if (registerType == 'tel') {
+        user = await Users.findOne({ mobile: username_email_or_mobile_login }).populate(
+          'followers following',
+          'avatar username firstname lastname mobile email fullname followers following'
+        );
+
+        if (!user) return res.status(400).json({ msg: 'El móvil no existe.' });
+      }
 
       const isPassMatch = await bcrypt.compare(password, user.password);
       if (!isPassMatch)

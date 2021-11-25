@@ -14,7 +14,7 @@ const Toast = ({ msg, handleShow, bgColor }) => {
           style={{ outline: "none" }}
           onClick={handleShow}
         >
-          &times;
+            &times;
         </button>
       </div>
       <div className="toast-body">{msg.body}</div>
