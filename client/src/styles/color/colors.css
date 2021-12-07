@@ -1,0 +1,11 @@
+.text-green-lime {
+    color: #4bed68;
+}
+
+.bg-green-lime {
+    color: #4bed68;
+}
+
+.text-stroke-white {
+    -webkit-text-stroke: 0.4px white !important;
+}

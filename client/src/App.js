@@ -1,37 +1,50 @@
 import { BrowserRouter as Router, Route } from "react-router-dom";
-import PageRender from "./PageRender";
 import LoginAndRegister from "./pages/loginAndRegister";
 import Home from "./pages/home";
 import Alert from "./components/alert/Alert";
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect } from "react";
 import { refreshToken } from "./redux/actions/authAction";
+import Menu from "./components/base/Menu"
+import PageRender from "./utils/customRouter/PageRender";
+import PrivateRouter from "./utils/customRouter/PrivateRouter";
 
 function App() {
   const { auth } = useSelector((state) => state);
-
-  // Refresh token
   const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(refreshToken());
-  }, [dispatch, auth.token]);
+  }, [dispatch
+    // , auth.token
+  ]);
 
+  console.log(auth.token)
   return (
     <Router>
       <Alert />
-
       <input type="checkbox" id="theme" />
       <div className="App">
-        <div className="main">
-          <Route
-            exact
-            path="/"
-            component={auth.token ? Home : LoginAndRegister}
-          />
-          <Route exact path="/:page" component={PageRender} />
-          <Route exact path="/:page/:id" component={PageRender} />
+        {/* <div className="main"> */}
+        <div className="container-fluid" id="wrapper">
+          <div className="row newsfeed-size">
+            <div className="col-md-12 newsfeed-right-side">
+              {auth.token && <Menu />}
+
+              <Route
+                exact
+                path="/"
+                component={auth.token ? Home : LoginAndRegister}
+              />
+
+              <PrivateRouter exact path="/:page" component={auth.token ? PageRender : LoginAndRegister} />
+
+              <PrivateRouter exact path="/:page/:id" component={auth.token ? PageRender : LoginAndRegister} />
+
+            </div>
+          </div>
         </div>
+        {/* </div> */}
       </div>
     </Router>
   );

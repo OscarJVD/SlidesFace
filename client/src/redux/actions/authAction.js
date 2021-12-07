@@ -14,7 +14,7 @@ export const loginUser = (user) => async (dispatch) => {
       payload: { token: result.data.access_token, user: result.data.user },
     });
 
-    localStorage.setItem("firstLogin", true);
+    localStorage.setItem("firstSlidesLogin", true);
 
     dispatch({
       type: GLOBAL_TYPES.ALERT,
@@ -45,7 +45,7 @@ export const registerUser = (user) => async (dispatch) => {
       payload: { token: result.data.access_token, user: result.data.user },
     });
 
-    localStorage.setItem("firstLogin", true);
+    localStorage.setItem("firstSlidesLogin", true);
 
     dispatch({
       type: GLOBAL_TYPES.ALERT,
@@ -56,7 +56,9 @@ export const registerUser = (user) => async (dispatch) => {
     // console.log(result);
     // console.log(user);
   } catch (error) {
-    console.log(error.response.data.msg);
+    // console.log(error.response.data.msg);
+    // console.log(error.response);
+    console.log(error);
     dispatch({
       type: GLOBAL_TYPES.ALERT,
       payload: { error: error.response.data.msg },
@@ -65,9 +67,9 @@ export const registerUser = (user) => async (dispatch) => {
 };
 
 export const refreshToken = () => async (dispatch) => {
-  const firstLogin = localStorage.getItem("firstLogin");
+  const firstSlidesLogin = localStorage.getItem("firstSlidesLogin");
 
-  if (firstLogin) {
+  if (firstSlidesLogin) {
     dispatch({ type: GLOBAL_TYPES.ALERT, payload: { loading: true } });
 
     try {
@@ -97,3 +99,14 @@ export const refreshToken = () => async (dispatch) => {
     }
   }
 };
+
+export const logout = () => async (dispatch) => {
+  try {
+    localStorage.removeItem("firstSlidesLogin");
+    await postDataAPI("logout");
+
+    window.location.href = "/"
+  } catch (error) {
+    dispatch({ type: GLOBAL_TYPES.ALERT, payload: { error: error.response.data.msg } });
+  }
+}
