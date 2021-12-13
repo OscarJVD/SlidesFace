@@ -37,6 +37,13 @@ code {
     cursor: pointer !important;
 }
 
+.container-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
 
 /*  ---------- AUTH ---------- */
 
@@ -61,3 +68,23 @@ code {
 /* ---------- NAV  ----------  */
 
 @import url("./base/nav.css");
+
+/* ---------- LOADERS  ----------  */
+
+@import url("./loaders/index.css");
+
+/* ---------- PROFILE  ----------  */
+
+@import url("./pages/profile");
+
+/* ---------- TEXT  ----------  */
+
+@import url("./text/index");
+
+/* ---------- BORDER  ----------  */
+
+@import url("./border/index");
+
+/* ---------- DISPLAY  ----------  */
+
+@import url("./display/index");

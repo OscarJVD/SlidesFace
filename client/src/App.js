@@ -5,7 +5,7 @@ import Alert from "./components/alert/Alert";
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect } from "react";
 import { refreshToken } from "./redux/actions/authAction";
-import Menu from "./components/base/Menu"
+import Menu from "./components/base/Menu";
 import PageRender from "./utils/customRouter/PageRender";
 import PrivateRouter from "./utils/customRouter/PrivateRouter";
 
@@ -15,11 +15,12 @@ function App() {
 
   useEffect(() => {
     dispatch(refreshToken());
-  }, [dispatch
+  }, [
+    dispatch,
     // , auth.token
   ]);
 
-  console.log(auth.token)
+  // console.log(auth.token);
   return (
     <Router>
       <Alert />
@@ -37,10 +38,17 @@ function App() {
                 component={auth.token ? Home : LoginAndRegister}
               />
 
-              <PrivateRouter exact path="/:page" component={auth.token ? PageRender : LoginAndRegister} />
+              <PrivateRouter
+                exact
+                path="/:page"
+                component={auth.token ? PageRender : LoginAndRegister}
+              />
 
-              <PrivateRouter exact path="/:page/:id" component={auth.token ? PageRender : LoginAndRegister} />
-
+              <PrivateRouter
+                exact
+                path="/:page/:id"
+                component={auth.token ? PageRender : LoginAndRegister}
+              />
             </div>
           </div>
         </div>

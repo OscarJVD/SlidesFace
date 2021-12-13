@@ -1,4 +1,6 @@
 /*------------------------------------------------*/
+
+
 /*    Profile Page
 /*------------------------------------------------*/
 
@@ -16,13 +18,18 @@
 
 .profile-header-background {
     overflow: hidden;
+    background-color: #f0f2f5 !important;
+    -webkit-box-shadow: inset 0px -79px 70px -54px rgba(0, 0, 0, 0.75);
+    -moz-box-shadow: inset 0px -79px 70px -54px rgba(0, 0, 0, 0.75);
+    box-shadow: inset 0px -79px 70px -54px rgba(0, 0, 0, 0.75);
 }
 
-.profile-header-background img {
+.profile-header-background img,
+#profileBanner {
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
-    width: 100%;
+    width: 100% !important;
     height: 250px;
 }
 
@@ -46,11 +53,11 @@
 }
 
 .btn-update-cover {
-    font-size: 0.9rem;
-    background-color: rgba(0, 0, 0, 0.8);
-    color: #ccc;
-    border: 1px solid #fff;
-    transition: all 0.20s;
+    font-size: 0.9rem !important;
+    background-color: rgba(0, 0, 0, 0.8) !important;
+    color: #ccc !important;
+    border: 1px solid #fff !important;
+    transition: all 0.2s !important;
 }
 
 .btn-update-cover i {
@@ -63,7 +70,8 @@
     top: -52px;
 }
 
-.profile-info-left .profile-img img.avatar {
+.profile-info-left .profile-img img.avatar,
+.profile-info-left .profile-img #profileBanner {
     width: 150px;
     border-radius: 50%;
     border: 2px solid #fff;
@@ -245,17 +253,17 @@
 }
 
 .facebook-color {
-    color: #3C5A99;
+    color: #3c5a99;
 }
 
 .twitter-color {
-    color: #1DA1F2;
+    color: #1da1f2;
 }
 
 .instagram-color {
-    -webkit-background-image: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%);
-    -moz-background-image: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%);
-    background-image: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%);
+    -webkit-background-image: radial-gradient( circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285aeb 90%);
+    -moz-background-image: radial-gradient( circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285aeb 90%);
+    background-image: radial-gradient( circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285aeb 90%);
     color: transparent;
     -webkit-background-clip: text;
     -moz-background-clip: text;
@@ -264,10 +272,10 @@
 
 .btn-follow,
 .btn-start-chat {
-    font-size: 0.8rem;
-    border-radius: 30px;
-    font-weight: 700;
-    width: 50%;
+    font-size: 0.8rem !important;
+    border-radius: 30px !important;
+    font-weight: 700 !important;
+    width: 50% !important;
 }
 
 .btn-follow {
@@ -281,8 +289,8 @@
 }
 
 .btn-start-chat {
-    background-color: #007bff;
-    color: #fff;
+    background-color: #007bff !important;
+    color: #fff !important;
 }
 
 .btn-start-chat:hover {
@@ -296,7 +304,7 @@
 }
 
 .profile-links .list-inline-item {
-    padding: 0.5rem 1rem;
+    padding: 1rem 1rem;
     margin: 0;
 }
 
@@ -367,16 +375,13 @@
         position: relative;
         top: -70px;
     }
-
     .mv-hidden,
     .profile-links {
         display: none !important;
     }
-
     .btn-start-chat {
         margin-right: 1rem;
     }
-
     .profile-center {
         padding: 0 2rem;
     }
@@ -392,7 +397,6 @@
     .profile-quick-media {
         display: none;
     }
-
     .profile-center {
         max-width: 100%;
         flex: 0 0 100% !important;

@@ -1,0 +1,19 @@
+.text-inherit {
+    text-transform: inherit !important;
+}
+
+.text-initial {
+    text-transform: initial !important;
+}
+
+.hover-text-white:hover {
+    color: white !important;
+}
+
+.fs-7 {
+    font-size: 0.97rem !important;
+}
+
+.fw-semi-bold {
+    font-weight: 450 !important;
+}
