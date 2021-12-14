@@ -11,10 +11,11 @@ const Toast = ({ msg, handleShow, bgColor }) => {
         <button
           className={`${bgColor} border-0 float-right ml-2 mb-1 close text-light`}
           data-dismiss="toast"
+          type="button"
           style={{ outline: "none" }}
           onClick={handleShow}
         >
-            &times;
+          &times;
         </button>
       </div>
       <div className="toast-body">{msg.body}</div>

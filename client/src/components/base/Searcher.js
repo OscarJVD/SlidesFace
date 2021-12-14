@@ -121,7 +121,7 @@ const Searcher = () => {
     <>
       <form
         autoComplete="off"
-        className="w-30 mx-2 my-auto d-inline form-inline mr-5 dropdown search-form"
+        className={`mx-2 my-auto d-inline form-inline mr-5 dropdown search-form`}
         onSubmit={handleSearch}
       >
         <div
@@ -157,7 +157,7 @@ const Searcher = () => {
               search ? " " : "d-none"
             }`}
             style={{
-              left: "76%",
+              left: "63%",
               top: "0.7rem",
               zIndex: "10",
             }}

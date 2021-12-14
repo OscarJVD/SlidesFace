@@ -44,7 +44,7 @@ const Menu = () => {
             </li>
 
             <li className="nav-item w-100 py-2">
-              <SearcherSm />
+              <Searcher  />
             </li>
 
             <li className="nav-item">

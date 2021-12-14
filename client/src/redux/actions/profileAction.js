@@ -20,7 +20,11 @@ export const getUserProfileById =
       } catch (error) {
         dispatch({
           type: GLOBAL_TYPES.ALERT,
-          payload: { error: error.response.data.msg },
+          payload: {
+            error: error.response.data.msg
+              ? error.response.data.msg
+              : error.response,
+          },
         });
       }
     }

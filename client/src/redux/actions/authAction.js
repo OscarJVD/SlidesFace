@@ -52,7 +52,7 @@ export const registerUser = (user) => async (dispatch) => {
       payload: { success: result.data.msg },
     });
 
-    window.location.reload()
+    window.location.reload();
     // console.log(result);
     // console.log(user);
   } catch (error) {
@@ -85,15 +85,20 @@ export const refreshToken = () => async (dispatch) => {
       // console.log(error.response.data.msg);
 
       // console.log(window.location)
-      if (window.location.pathname !== "/login" && window.location.pathname !== "/") {
+      if (
+        window.location.pathname !== "/login" &&
+        window.location.pathname !== "/"
+      ) {
         dispatch({
           type: GLOBAL_TYPES.ALERT,
-          payload: { error: error.response.data.msg },
+          payload: {
+            error:  error.response,
+          },
         });
-      }else{
+      } else {
         dispatch({
           type: GLOBAL_TYPES.ALERT,
-          payload: {  },
+          payload: {},
         });
       }
     }
@@ -105,8 +110,11 @@ export const logout = () => async (dispatch) => {
     localStorage.removeItem("firstSlidesLogin");
     await postDataAPI("logout");
 
-    window.location.href = "/"
+    window.location.href = "/";
   } catch (error) {
-    dispatch({ type: GLOBAL_TYPES.ALERT, payload: { error: error.response.data.msg } });
+    dispatch({
+      type: GLOBAL_TYPES.ALERT,
+      payload: { error: error.response.data.msg },
+    });
   }
-}
+};

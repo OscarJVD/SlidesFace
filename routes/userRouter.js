@@ -5,5 +5,6 @@ const userCtrl = require("../controllers/userCtrl");
 router.get("/searchUser", auth, userCtrl.searchUser);
 router.get("/getUser/:id", auth, userCtrl.getUser);
 router.post("/setUserName", auth, userCtrl.setUserName);
+router.post("/setStory", auth, userCtrl.setStory);
 
 module.exports = router;

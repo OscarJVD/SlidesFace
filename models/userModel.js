@@ -63,6 +63,7 @@ const userSchema = new mongoose.Schema(
     },
     socialLinks: { type: Array, required: false },
     media: { type: Array, required: false },
+    recentSearches: { type: Array, required: false },
     followers: [{ type: mongoose.Types.ObjectId, ref: "user" }],
     following: [{ type: mongoose.Types.ObjectId, ref: "user" }],
   },

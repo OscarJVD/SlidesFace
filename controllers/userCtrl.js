@@ -77,12 +77,35 @@ const userCtrl = {
         { username: usernameFixed }
       );
 
-      // console.log(newUserDoc);
-      console.log(newUserDoc._doc);
+      // console.log(newUserDoc._doc);
+      newUserDoc.username = usernameFixed;
+      console.log(newUserDoc);
 
       res.json({
         msg: "Nombre de usuario actualizado correctamente.",
         username: usernameFixed,
+        user: newUserDoc,
+      });
+    } catch (error) {
+      return res.status(500).json({ msg: error.message });
+    }
+  },
+  setStory: async (req, res) => {
+    try {
+      const { story } = req.body;
+
+      console.log(story);
+
+      const userDoc = await Users.findOneAndUpdate(
+        { _id: req.authUser._id },
+        { story }
+      );
+
+      userDoc.story = story;
+
+      res.json({
+        msg: "Presentación actualizada.",
+        user: userDoc,
       });
     } catch (error) {
       return res.status(500).json({ msg: error.message });
