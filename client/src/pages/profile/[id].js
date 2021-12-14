@@ -50,10 +50,11 @@ const Profile = () => {
         setUserData(newArr);
         setShowInputUserName(false);
 
-        return dispatch({
-          type: GLOBAL_TYPES.ALERT,
-          payload: { success: res.data.msg },
-        });
+        // return dispatch({
+        //   type: GLOBAL_TYPES.ALERT,
+        //   payload: { success: res.data.msg },
+        // });
+        return;
       })
       .catch((err) => {
         return dispatch({
@@ -76,10 +77,11 @@ const Profile = () => {
         setUserData(newArr);
         setShowInputIntro(false);
 
-        return dispatch({
-          type: GLOBAL_TYPES.ALERT,
-          payload: { success: res.data.msg },
-        });
+        // return dispatch({
+        //   type: GLOBAL_TYPES.ALERT,
+        //   payload: { success: res.data.msg },
+        // });
+        return;
       })
       .catch((err) => {
         return dispatch({
@@ -370,60 +372,73 @@ const Profile = () => {
                     )}
 
                     {/* CAMPO INGRESE PRESENTACIÓN */}
-                    <div
-                      className={`d-flex justify-content-center text-center mt-2 ${
-                        showInputIntro ? " " : "d-none"
-                      }`}
-                    >
-                      <p className="profile-username mb-3 text-muted d-flex justify-content-center text-center">
-                        <div className="input-group d-contents">
-                          @
-                          <input
-                            ref={inputIntroRef}
-                            value={intro}
-                            name="intro"
-                            onChange={(e) => setIntro(e.target.value)}
-                            type="text"
-                            placeholder="Describe quién eres"
-                            className="border-0 outline-none w-50"
-                          />
-                          <Tooltip content="Guardar" placement="bottom">
-                            <button
-                              type="button"
-                              onClick={submitSetIntro}
-                              className="btn btn-primary btn-sm text-initial"
-                            >
-                              <i className="fas fa-save"></i>
-                            </button>
-                          </Tooltip>
-                          <Tooltip content="Cancelar" placement="bottom">
-                            <button
-                              type="button"
-                              onClick={() => setShowInputIntro(false)}
-                              className="btn btn-danger btn-sm text-initial"
-                            >
-                              <i className="fas fa-window-close"></i>
-                            </button>
-                          </Tooltip>
-                        </div>
-                      </p>
-                    </div>
-                    {/* END CAMPO INGRESE PRESENTACIÓN */}
+                    {id === auth.user._id && (
+                      <>
+                        <div
+                          className={`d-flex justify-content-center text-center mt-2 ${
+                            showInputIntro ? " " : "d-none"
+                          }`}
+                        >
+                          <p className="profile-username mb-3 text-muted d-flex justify-content-center text-center">
+                            <div className="input-group d-flex">
+                              <div className="col-12">
+                                <textarea
+                                  ref={inputIntroRef}
+                                  value={intro}
+                                  rows={4}
+                                  name="intro"
+                                  maxLength="60"
+                                  onChange={(e) => setIntro(e.target.value)}
+                                  placeholder="Describe quién eres"
+                                  className="border p-2 outline-none w-100"
+                                ></textarea>
+                              </div>
 
-                    <div className="col-md-12">
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setShowInputIntro(true);
-                          setTimeout(() => {
-                            inputIntroRef.current.focus();
-                          }, 100);
-                        }}
-                        className="btn btn-sm d-block w-100 bg-neutro text-dark fw-less-bold fs-6 text-initial"
-                      >
-                        Editar presentación
-                      </button>
-                    </div>
+                              <div className="col-12">
+                                <Tooltip content="Guardar" placement="bottom">
+                                  <button
+                                    type="button"
+                                    onClick={submitSetIntro}
+                                    className="btn btn-primary btn-sm text-initial"
+                                  >
+                                    <i className="fas fa-save"></i>
+                                  </button>
+                                </Tooltip>
+                                <Tooltip content="Cancelar" placement="bottom">
+                                  <button
+                                    type="button"
+                                    onClick={() => setShowInputIntro(false)}
+                                    className="btn btn-danger btn-sm text-initial ms-2"
+                                  >
+                                    <i className="fas fa-window-close"></i>
+                                  </button>
+                                </Tooltip>
+                              </div>
+                            </div>
+                          </p>
+                        </div>
+
+                        <div
+                          className={`${
+                            showInputIntro ? "d-none" : " "
+                          } col-md-12`}
+                        >
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setShowInputIntro(true);
+                              setTimeout(() => {
+                                inputIntroRef.current.focus();
+                              }, 100);
+                            }}
+                            className="btn btn-sm d-block w-100 bg-neutro text-dark fw-less-bold fs-6 text-initial"
+                          >
+                            Editar presentación
+                          </button>
+                        </div>
+                      </>
+                    )}
+                    {/* END CAMPO INGRESE PRESENTACIÓN */}
 
                     <div className="intro-item d-flex justify-content-between align-items-center">
                       <p className="intro-title text-muted">
