@@ -2,7 +2,8 @@ const Users = require("../models/userModel");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const passwordValidator = require("password-validator");
-const { isEmailTelOrUserName } = require("../utils/functions");
+const { isEmailTelOrUserName, getRandomNum } = require("../utils/functions");
+const generator = require('nickname-generator');
 
 const authCtrl = {
   register: async (req, res) => {
@@ -93,6 +94,34 @@ const authCtrl = {
           return res.status(400).json({ msg: "El móvil ya existe." });
 
         userObj.mobile = username_email_or_mobile_register;
+      }
+
+      if (!userObj.hasOwnProperty('username')) {
+        const random = getRandomArbitrary(1, 3);
+
+        const randomUsername = generator.randomNickname(
+          {
+            locale: 'en',
+            numberOfWords: random,
+            // includes: ['adjectives'],
+            separator: random == 2 ? '-' : '_',
+            suffixLength: random,
+            wordCase: 'lower', // lowercase
+          }
+        );
+
+        // console.log('usuario:', randomUsername)
+
+        const randomUsername_exists = await Users.findOne({
+          username: randomUsername,
+        });
+
+        if (randomUsername_exists)
+          return res
+            .status(400)
+            .json({ msg: "El nombre de usuario ya existe." });
+
+        userObj.username = randomUsername;
       }
 
       // console.log(userObj);

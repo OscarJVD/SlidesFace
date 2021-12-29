@@ -202,7 +202,7 @@ const Searcher = () => {
               users.map((user) => (
                 <li key={user._id} className="dropdown-item px-3 py-2">
                   <Link
-                    to={`/profile/${user._id}`}
+                    to={`/${user.username}`}
                     onClick={() => setSearch("")}
                   >
                     <div className="col-md-2 col-sm-2 col-xs-2 align-items-center d-flex h-100">
@@ -222,7 +222,7 @@ const Searcher = () => {
                   </Link>
                   <div className="col-md-10 col-sm-10 col-xs-10 align-items-center d-flex h-100 justify-content-between">
                     <Link
-                      to={`/profile/${user._id}`}
+                      to={`/${user.username}`}
                       onClick={() => setSearch("")}
                       className="notification-user fs-6 "
                     >

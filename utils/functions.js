@@ -11,4 +11,8 @@ function isEmailTelOrUserName(value) {
   return 'error';
 }
 
-module.exports = { isEmailTelOrUserName };
+function getRandomNum(min, max) {
+  return parseInt(Math.random() * (max - min) + min);
+}
+
+module.exports = { isEmailTelOrUserName, getRandomNum };

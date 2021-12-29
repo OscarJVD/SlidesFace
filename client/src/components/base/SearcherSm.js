@@ -103,7 +103,7 @@ const SearcherSm = () => {
               searchsm &&
               users.map((user) => (
                 <li key={user._id} className="dropdown-item px-3 py-2">
-                  <Link to={`/profile/${user._id}`}>
+                  <Link to={`/${user.username}`}>
                     <div className="col-md-2 col-sm-2 col-xs-2 align-items-center d-flex h-100">
                       <div className="notify-img m-0 align-items-center d-flex h-100">
                         <img

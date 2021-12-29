@@ -34,12 +34,13 @@ const Menu = () => {
         <div className="w-100 justify-content-md-center">
           <ul className="nav navbar-nav enable-mobile px-2">
             <li className="nav-item">
-              <button type="button" className="btn nav-link p-0">
-                <img
+              <button type="button" className="btn nav-link shadow-none">
+                {/* <img
                   src="/images/icons/theme/post-image.png"
                   className="f-nav-icon"
                   alt="Quick make post"
-                />
+                /> */}
+                <i className="fas fa-plus text-dark fa-lg "></i>
               </button>
             </li>
 
@@ -498,7 +499,7 @@ const Menu = () => {
                 style={{ fontSize: "1rem" }}
               >
                 <Link
-                  to={`/profile/${auth.user._id}`}
+                  to={`/${auth.user.username}`}
                   data-title="Perfil"
                   className="nav-link settings-link rm-drop-mobile drop-w-tooltip bg-pill-shadow rounded-pill "
                 >

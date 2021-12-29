@@ -31,12 +31,12 @@ const Profile = () => {
     } else {
       dispatch(getUserProfileById({ users: profile.users, id, auth }));
       const newUserData = profile.users.filter((user) => user._id === id);
-      
+
       console.log(newUserData);
       setUserData(newUserData);
 
-      if(newUserData.story)
-      setIntro(newUserData.story);
+      if (newUserData.story)
+        setIntro(newUserData.story);
     }
   }, [id, auth, profile.users, dispatch, setUserData]);
 
@@ -542,9 +542,10 @@ const Profile = () => {
                         <li className="list-inline-item">
                           <a href="#">Fotos</a>
                         </li>
-                        <li className="list-inline-item">
+                        <li className="list-inline-item position-relative">
                           <a href="#">Más</a>
-                          <i className="fas fa-sort-down text-dark ms-1"></i>
+                          <i className="fas fa-sort-down text-dark ms-1 position-absolute"
+                            style={{ right: '0.2rem', bottom: '1.3rem' }}></i>
                         </li>
                         <li className="list-inline-item dropdown">
                           <a

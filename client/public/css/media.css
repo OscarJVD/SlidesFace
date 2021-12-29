@@ -278,7 +278,7 @@
     }
     #menu-toggle {
         margin-right: 0px !important;
-        padding: 0px;
+        padding: 7px;
     }
     #navbar-main .dropdown-menu {
         position: absolute;
@@ -307,6 +307,7 @@
     }
     #navbar-main .navbar-nav li.s-nav {
         width: 30%;
+        justify-content: center;
     }
 }
 
