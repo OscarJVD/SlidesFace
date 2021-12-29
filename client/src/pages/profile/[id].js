@@ -400,7 +400,7 @@ const Profile = () => {
                                     onClick={submitSetIntro}
                                     className="btn btn-primary btn-sm text-initial"
                                   >
-                                    <i className="fas fa-save"></i>
+                                    <i className="fas fa-save"></i> Guardar
                                   </button>
                                 </Tooltip>
                                 <Tooltip content="Cancelar" placement="bottom">
@@ -409,7 +409,7 @@ const Profile = () => {
                                     onClick={() => setShowInputIntro(false)}
                                     className="btn btn-danger btn-sm text-initial ms-2"
                                   >
-                                    <i className="fas fa-window-close"></i>
+                                    <i className="fas fa-window-close"></i> Cancelar
                                   </button>
                                 </Tooltip>
                               </div>
