@@ -75,10 +75,13 @@ export const refreshToken = () => async (dispatch) => {
     try {
       const result = await postDataAPI("refreshTkn");
 
-      dispatch({
-        type: GLOBAL_TYPES.LOGIN_USER,
-        payload: { token: result.data.access_token, user: result.data.user },
-      });
+      console.log(result);
+
+      if (result)
+        dispatch({
+          type: GLOBAL_TYPES.LOGIN_USER,
+          payload: { token: result.data.access_token, user: result.data.user },
+        });
 
       dispatch({ type: GLOBAL_TYPES.ALERT, payload: {} });
     } catch (error) {
@@ -92,7 +95,7 @@ export const refreshToken = () => async (dispatch) => {
         dispatch({
           type: GLOBAL_TYPES.ALERT,
           payload: {
-            error:  error.response,
+            error: error.response,
           },
         });
       } else {

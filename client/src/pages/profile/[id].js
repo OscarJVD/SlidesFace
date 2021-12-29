@@ -31,9 +31,12 @@ const Profile = () => {
     } else {
       dispatch(getUserProfileById({ users: profile.users, id, auth }));
       const newUserData = profile.users.filter((user) => user._id === id);
-
+      
+      console.log(newUserData);
       setUserData(newUserData);
-      setIntro(newUserData[0].story);
+
+      if(newUserData.story)
+      setIntro(newUserData.story);
     }
   }, [id, auth, profile.users, dispatch, setUserData]);
 
@@ -188,9 +191,8 @@ const Profile = () => {
                         {id === auth.user._id && (
                           <div className="p-1">
                             <div
-                              className={`${
-                                showInputUserName ? "d-none" : " "
-                              }`}
+                              className={`${showInputUserName ? "d-none" : " "
+                                }`}
                             >
                               @
                               <a
@@ -212,9 +214,8 @@ const Profile = () => {
                             </div>
                             {/* CAMPO INGRESE USUARIO */}
                             <div
-                              className={`d-flex justify-content-center text-center mt-2 ${
-                                showInputUserName ? " " : "d-none"
-                              }`}
+                              className={`d-flex justify-content-center text-center mt-2 ${showInputUserName ? " " : "d-none"
+                                }`}
                             >
                               <p className="profile-username mb-3 text-muted d-flex justify-content-center text-center">
                                 <div className="input-group d-contents">
@@ -358,9 +359,8 @@ const Profile = () => {
 
                     {user.story && (
                       <div
-                        className={`${
-                          showInputUserName ? "d-none" : " "
-                        } col-md-12 justify-content-center d-flex text-center pt-0 mt-0`}
+                        className={`${showInputUserName ? "d-none" : " "
+                          } col-md-12 justify-content-center d-flex text-center pt-0 mt-0`}
                         style={{ wordBreak: "break-word" }}
                       >
                         <div className=" p-3 w-100 text-wrap">
@@ -375,9 +375,8 @@ const Profile = () => {
                     {id === auth.user._id && (
                       <>
                         <div
-                          className={`d-flex justify-content-center text-center mt-2 ${
-                            showInputIntro ? " " : "d-none"
-                          }`}
+                          className={`d-flex justify-content-center text-center mt-2 ${showInputIntro ? " " : "d-none"
+                            }`}
                         >
                           <p className="profile-username mb-3 text-muted d-flex justify-content-center text-center">
                             <div className="input-group d-flex">
@@ -385,7 +384,7 @@ const Profile = () => {
                                 <textarea
                                   ref={inputIntroRef}
                                   value={intro}
-                                  rows={4}
+                                  rows={2}
                                   name="intro"
                                   maxLength="60"
                                   onChange={(e) => setIntro(e.target.value)}
@@ -419,9 +418,8 @@ const Profile = () => {
                         </div>
 
                         <div
-                          className={`${
-                            showInputIntro ? "d-none" : " "
-                          } col-md-12`}
+                          className={`${showInputIntro ? "d-none" : " "
+                            } col-md-12`}
                         >
                           <button
                             type="button"

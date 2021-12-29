@@ -180,6 +180,7 @@ const LoginAndRegister = () => {
                         id="password"
                         name="password"
                         value={password}
+                        
                       />
 
                       <ReactPasswordToggleIcon
@@ -204,13 +205,13 @@ const LoginAndRegister = () => {
                 <div className="col-md-12 mt-3 text-center">
                   <div className="form-group">
                     <button
+                      type="submit"
                       className="btn btn-primary sign-up w-100"
                       disabled={
                         username_email_or_mobile_login && password
                           ? false
                           : true
                       }
-                      type="submit"
                     >
                       Entrar
                     </button>
@@ -222,11 +223,11 @@ const LoginAndRegister = () => {
                       <i className="fas fa-fingerprint fa-2x"></i>
                     </button> */}
                   </div>
-                  <div className="col-md-12 mt-3">
+                  {/* <div className="col-md-12 mt-3">
                     <a href="#" className="text-decoration-none text-sm">
                       ¿Olvidaste la contraseña?
                     </a>
-                  </div>
+                  </div> */}
                 </div>
                 <div className="col-md-12 text-center">
                   {/* <p className="text-muted">Start using your fingerprint</p> */}

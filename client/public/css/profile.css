@@ -4,6 +4,20 @@
 /*    Profile Page
 /*------------------------------------------------*/
 
+.profile-active a {
+  color: #007bff !important;
+}
+
+.profile-links .profile-active {
+  background-color: white !important;
+  color: #007bff;
+  border-bottom: #007bff solid 3px;
+}
+
+.list-inline-item a{
+  font-weight: 600;
+}
+
 .user-profile {
     width: 100%;
 }
@@ -313,7 +327,7 @@
 }
 
 .profile-links .profile-active a {
-    color: #fff !important;
+    color: #fff;
 }
 
 .profile-links .list-inline-item a {
