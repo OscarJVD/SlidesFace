@@ -1,4 +1,4 @@
-const Toast = ({ msg, handleShow, bgColor }) => {
+const Toast = ({ msg, handleShow, bgColor, onlyTitle }) => {
   return (
     <div
       className={`toast show position-fixed text-light ${bgColor}`}
@@ -18,7 +18,7 @@ const Toast = ({ msg, handleShow, bgColor }) => {
           &times;
         </button>
       </div>
-      <div className="toast-body">{msg.body}</div>
+      {!onlyTitle && <div className="toast-body">{msg.body}</div>}
     </div>
   );
 };

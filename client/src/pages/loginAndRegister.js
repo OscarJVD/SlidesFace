@@ -43,14 +43,14 @@ const LoginAndRegister = () => {
       });
     }
 
-    if (login == "error") {
+    if (login === "error") {
       dispatch({
         type: GLOBAL_TYPES.ALERT,
         payload: { error: "Verifica tu usuario, correo o móvil" },
       });
     }
 
-    if (login == "usernameerror") {
+    if (login === "usernameerror") {
       dispatch({
         type: GLOBAL_TYPES.ALERT,
         payload: { error: "Tu nombre de usuario debe tener letras." },

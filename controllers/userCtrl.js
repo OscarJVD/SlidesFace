@@ -30,7 +30,25 @@ const userCtrl = {
   getUser: async (req, res) => {
     try {
       const user = await Users.findById(req.params.id).select("-password");
-      if (!user) return res.status(400).json({ msg: "User not found" });
+      if (!user) return res.status(400).json({ msg: "Usuario no encontrado. Error: US001" });
+
+      return res.json({ user });
+    } catch (error) {
+      return res.status(500).json({ msg: error.message });
+    }
+  },
+  getUserByUserName: async (req, res) => {
+    try {
+      const user = await Users.findOne({
+        username: req.params.username
+      }).select("-password");
+
+      if (!user)
+        return res
+          .status(400)
+          .json({ msg: "El usuario no existe." });
+
+      console.log(user);
 
       return res.json({ user });
     } catch (error) {
