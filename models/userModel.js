@@ -56,12 +56,21 @@ const userSchema = new mongoose.Schema(
       trim: true,
     },
     address: { type: String, default: "" },
+    workplace: { type: String, default: "" },
+    homecity: { type: String, default: "" },
+    currentCity: { type: String, default: "" },
+    civilStatus: { type: String, default: "" },
     story: {
       type: String,
       default: "",
       maxlength: 200,
     },
+    lastLogin: { type: Date, required: false },
+    birthday: { type: Date, required: false },
     socialLinks: { type: Array, required: false },
+    websites: { type: Array, required: false },
+    lenguages: { type: Array, required: false }, // muchos
+    interests: { type: Array, required: false },  // Mujeres o Hombres o las dos
     media: { type: Array, required: false },
     recentSearches: { type: Array, required: false },
     followers: [{ type: mongoose.Types.ObjectId, ref: "user" }],

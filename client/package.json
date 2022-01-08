@@ -1,7 +1,7 @@
 {
     "name": "client",
     "homepage": ".",
-    "proxy": "http://localhost:5000",
+    "proxy": "http://localhost:3245",
     "version": "0.1.0",
     "private": true,
     "dependencies": {
@@ -32,7 +32,7 @@
         "yup": "0.32.11"
     },
     "scripts": {
-        "start": "react-scripts start",
+        "start": "react-scripts start --port 3216",
         "build": "react-scripts build",
         "test": "react-scripts test",
         "eject": "react-scripts eject"

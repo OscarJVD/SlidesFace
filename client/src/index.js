@@ -7,6 +7,7 @@ import DataProvider from "./redux/store";
 
 ReactDOM.render(
   <React.StrictMode>
+    {console.log('I render 😡')}
     <DataProvider>
       <App />
     </DataProvider>

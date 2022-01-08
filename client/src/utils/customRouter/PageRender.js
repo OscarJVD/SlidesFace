@@ -23,20 +23,37 @@ const PageRender = () => {
 
   if (auth.token) {
 
-    const arrStaticRootComponents = [
+    const staticRootTargets = [
       "home",
       "loginAndRegister",
       "message",
       "notify",
-      "profile",
-      "discover"
+      "discover",
     ]
 
-    if (arrStaticRootComponents.every(file => file !== username)) {
-      pageName = `[username]`;
+    const staticProfileTargets = [
+      "about",
+      "posts",
+      "friends",
+      "photos"
+    ]
+
+    /*** username = ruta ***/
+    const ifId = id ? '/[id]' : ''
+
+    // Si es differente a cada elemento del arreglo
+    if (staticRootTargets.every(file => file !== username)) {
+
+      pageName = staticProfileTargets.every(file => file !== id)
+        ? `profile/[username]`
+        : `profile/${id}`
+
     } else {
-      if (id) pageName = `${username}/[id]`;
-      else pageName = `${username}`;
+
+      pageName = staticRootTargets.some(file => file === username)
+        ? `${username}${ifId}`
+        : `profile/${username}${ifId}`
+
     }
   }
 
