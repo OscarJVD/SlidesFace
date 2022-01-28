@@ -67,8 +67,13 @@ const userSchema = new mongoose.Schema(
     },
     lastLogin: { type: Date, required: false },
     birthday: { type: Date, required: false },
+    jobs: { type: Array, required: false },
+    universities: { type: Array, required: false },
+    secondarySchools: { type: Array, required: false },
     socialLinks: { type: Array, required: false },
     websites: { type: Array, required: false },
+    emails: { type: Array, required: false },
+    phones: { type: Array, required: false },
     lenguages: { type: Array, required: false }, // muchos
     interests: { type: Array, required: false },  // Mujeres o Hombres o las dos
     media: { type: Array, required: false },

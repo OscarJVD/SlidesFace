@@ -8,3 +8,5 @@ Operation `users.findOne()` buffering timed out after 10000ms es por mal interne
 "proxy": "http://localhost:5000",
     "proxy": "http://0.0.0.0:5000",
 
+    MONGODB_URL=mongodb+srv://ovargas:hNxahHVaLHOvmzMj@cluster0.oaook.mongodb.net/slidesfacedb?retryWrites=true&w=majority
+

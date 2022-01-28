@@ -20,6 +20,7 @@ const SideHead = ({ username, children, active }) => {
   const { auth, profile } = useSelector((state) => state);
   const dispatch = useDispatch();
   const [userData, setUserData] = useState([]);
+  const [avatar, setAvatar] = useState('')
   const [userNameCopy, setUserNameCopy] = useState(false);
   const [showInputUserName, setShowInputUserName] = useState(false);
   const [showInputIntro, setShowInputIntro] = useState(false);

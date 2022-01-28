@@ -1,4 +1,11 @@
+import { useState, useRef, useEffect, createRef } from "react";
+
 const About = ({ userData, auth }) => {
+
+  const initState = { firstname: '', lastname: '', mobile: '', address: '', websites: [], gender: '' };
+  const [aboutData, setAboutData] = useState(initState)
+  const { firstname, lastname, mobile, address, websites, gender } = aboutData
+
   return (
     <>
       {userData.map((user, index) => (
@@ -6,10 +13,13 @@ const About = ({ userData, auth }) => {
 
           <div className="nav flex-column nav-pills me-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
             <a className="text-black fs-3 fw-less-bold p-2">Información</a>
-            <button className="nav-link active" id="v-pills-home-tab" data-bs-toggle="pill" data-bs-target="#v-pills-home" type="button" role="tab" aria-controls="v-pills-home" aria-selected="true">Información General</button>
-            <button className="nav-link" id="v-pills-profile-tab" data-bs-toggle="pill" data-bs-target="#v-pills-profile" type="button" role="tab" aria-controls="v-pills-profile" aria-selected="false">Empleo y formación</button>
-            <button className="nav-link" id="v-pills-messages-tab" data-bs-toggle="pill" data-bs-target="#v-pills-messages" type="button" role="tab" aria-controls="v-pills-messages" aria-selected="false">Lugares de residencia</button>
-            <button className="nav-link" id="v-pills-settings-tab" data-bs-toggle="pill" data-bs-target="#v-pills-settings" type="button" role="tab" aria-controls="v-pills-settings" aria-selected="false">Información basica y de contacto</button>
+            <button className="nav-link fw-less-bold active" id="v-pills-home-tab" data-bs-toggle="pill" data-bs-target="#v-pills-home" type="button" role="tab" aria-controls="v-pills-home" aria-selected="true">Información General</button>
+            <button className="nav-link fw-less-bold" id="v-pills-profile-tab" data-bs-toggle="pill" data-bs-target="#v-pills-profile" type="button" role="tab" aria-controls="v-pills-profile" aria-selected="false">Empleo y formación</button>
+            <button className="nav-link fw-less-bold" id="v-pills-messages-tab" data-bs-toggle="pill" data-bs-target="#v-pills-messages" type="button" role="tab" aria-controls="v-pills-messages" aria-selected="false">Lugares de residencia</button>
+            <button className="nav-link fw-less-bold" id="v-pills-settings-tab" data-bs-toggle="pill" data-bs-target="#v-pills-settings" type="button" role="tab" aria-controls="v-pills-settings" aria-selected="false">Información basica y de contacto</button>
+            <button className="nav-link fw-less-bold" id="v-pills-settings-tab" data-bs-toggle="pill" data-bs-target="#v-pills-settings" type="button" role="tab" aria-controls="v-pills-settings" aria-selected="false">Familia y relaciones</button>
+            <button className="nav-link fw-less-bold" id="v-pills-settings-tab" data-bs-toggle="pill" data-bs-target="#v-pills-settings" type="button" role="tab" aria-controls="v-pills-settings" aria-selected="false">Información sobre ti</button>
+            <button className="nav-link fw-less-bold" id="v-pills-settings-tab" data-bs-toggle="pill" data-bs-target="#v-pills-settings" type="button" role="tab" aria-controls="v-pills-settings" aria-selected="false">Acontecimientos importantes</button>
             {/* <button className="nav-link active" id="v-pills-home-tab" data-bs-toggle="pill" data-bs-target="#v-pills-home" type="button" role="tab" aria-controls="v-pills-home" aria-selected="true">Información General</button>
           <button className="nav-link" id="v-pills-profile-tab" data-bs-toggle="pill" data-bs-target="#v-pills-profile" type="button" role="tab" aria-controls="v-pills-profile" aria-selected="false">Empleo y formación</button>
           <button className="nav-link" id="v-pills-messages-tab" data-bs-toggle="pill" data-bs-target="#v-pills-messages" type="button" role="tab" aria-controls="v-pills-messages" aria-selected="false">Lugares de residencia</button>
@@ -74,7 +84,7 @@ const About = ({ userData, auth }) => {
                       <div className="col-md-12">
 
                         {
-                          user.phone ? <div className="fs-5 fw-semi-bold">{user.phone}</div> : user.username === auth.user.username
+                          user.mobile ? <div className="fs-5 fw-semi-bold">{user.mobile}</div> : user.username === auth.user.username
                             ? <a href="#">Agrega tu celular</a>
                             : <span className="fw-less-bold text-muted">No hay información de contacto disponible</span>
                         }
@@ -106,7 +116,7 @@ const About = ({ userData, auth }) => {
                     <div className="row">
                       <div className="col-md-12">
                         {
-                          user.phone ? <div className="fs-5 fw-semi-bold">{user.phone}</div> : user.username === auth.user.username
+                          user.mobile ? <div className="fs-5 fw-semi-bold">{user.mobile}</div> : user.username === auth.user.username
                             ? <a href="#">Agrega tu celular</a>
                             : <span className="fw-less-bold text-muted">No hay información de contacto disponible</span>
                         }
