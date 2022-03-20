@@ -1,6 +1,10 @@
 import { useState, useRef, useEffect, createRef } from "react";
+import Crud from "../dinamic/Crud";
 
 const About = ({ userData, auth }) => {
+
+  // console.clear()
+  console.log(auth)
 
   const initState = { firstname: '', lastname: '', mobile: '', address: '', websites: [], gender: '' };
   const [aboutData, setAboutData] = useState(initState)
@@ -85,7 +89,8 @@ const About = ({ userData, auth }) => {
 
                         {
                           user.mobile ? <div className="fs-5 fw-semi-bold">{user.mobile}</div> : user.username === auth.user.username
-                            ? <a href="#">Agrega tu celular</a>
+                          // callToActionCmp={<h1>dsfsd</h1>} callToActionCmpFlag={true}
+                            ? <Crud auth addstr="tu celular"/>
                             : <span className="fw-less-bold text-muted">No hay información de contacto disponible</span>
                         }
                       </div>

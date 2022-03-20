@@ -73,7 +73,7 @@ export const refreshToken = () => async (dispatch) => {
     dispatch({ type: GLOBAL_TYPES.ALERT, payload: { loading: true } });
 
     try {
-      const result = await postDataAPI("refreshTkn");
+      const result = await postDataAPI("refreshtoken");
 
       console.log(result);
 

@@ -1,3 +1,7 @@
+let fs = require('fs');
+let util = require('util');
+let log_file = fs.createWriteStream(__dirname + '/debug.log', {flags : 'w'});
+let log_stdout = process.stdout;
 require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
@@ -34,6 +38,11 @@ mongoose.connect(
 );
 
 const port = process.env.PORT || 3245;
+
+console.log = function(d) { //
+  log_file.write(util.format(d) + '\n');
+  log_stdout.write(util.format(d) + '\n');
+};
 
 app.listen(port, () =>
   console.log(`slidesface.com Backend Running on port http://localhost:${port}`)

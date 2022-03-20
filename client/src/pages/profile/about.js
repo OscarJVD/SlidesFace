@@ -5,7 +5,6 @@ import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { getUserProfileByUserName } from "../../redux/actions/profileAction";
 
-
 const UserAbout = () => {
   const { username } = useParams();
   const { auth, profile } = useSelector((state) => state);
@@ -13,7 +12,7 @@ const UserAbout = () => {
   const [userData, setUserData] = useState([]);
   
   useEffect(() => {
-    if (username === auth.user.username) {
+    if (username === auth.user.username) { // si el perfil es el del usuario logeado o ajeno 
       console.log("PERFIL PROPIO");
       setUserData([auth.user]);
     } else {
