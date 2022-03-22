@@ -11,6 +11,9 @@
     "dever": "concurrently \"npm run server\" \"npm run client\" ",
     "dev": "concurrently \"npm run staticserver\" \"npm run client\" "
   },
+  "nodemonConfig": {
+    "ignore": ["./database/*.js"]
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/OscarJVD/Be-Social.git"
@@ -29,7 +32,7 @@
   "homepage": "https://github.com/OscarJVD/Be-Social#readme",
   "dependencies": {
     "bcrypt": "5.0.1",
-    "concurrently": "^7.0.0",
+    "concurrently": "7.0.0",
     "cookie-parser": "1.4.5",
     "cors": "2.8.5",
     "dotenv": "10.0.0",
@@ -40,10 +43,11 @@
     "jsonwebtoken": "8.5.1",
     "mongodb": "4.2.2",
     "mongoose": "6.0.2",
-    "nickname-generator": "^1.1.1",
+    "mongoose-dynamic-schemas": "1.2.6",
+    "nickname-generator": "1.1.1",
     "password-validator": "5.1.1"
   },
   "devDependencies": {
-    "nodemon": "^2.0.7"
+    "nodemon": "2.0.7"
   }
 }

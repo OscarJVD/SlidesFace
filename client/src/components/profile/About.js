@@ -4,7 +4,7 @@ import Crud from "../dinamic/Crud";
 const About = ({ userData, auth }) => {
 
   // console.clear()
-  console.log(auth)
+  console.log('userData', userData)
 
   const initState = { firstname: '', lastname: '', mobile: '', address: '', websites: [], gender: '' };
   const [aboutData, setAboutData] = useState(initState)
@@ -89,8 +89,8 @@ const About = ({ userData, auth }) => {
 
                         {
                           user.mobile ? <div className="fs-5 fw-semi-bold">{user.mobile}</div> : user.username === auth.user.username
-                          // callToActionCmp={<h1>dsfsd</h1>} callToActionCmpFlag={true}
-                            ? <Crud auth addstr="tu celular"/>
+                            // callToActionCmp={<h1>dsfsd</h1>} callToActionCmpFlag={true}
+                            ? <Crud auth={auth} fields={{ phones: '' }} addstr="tu celular" forallusersflag={false}/>
                             : <span className="fw-less-bold text-muted">No hay información de contacto disponible</span>
                         }
                       </div>

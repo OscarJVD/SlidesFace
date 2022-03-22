@@ -73,7 +73,7 @@ const userSchema = new mongoose.Schema(
     socialLinks: { type: Array, required: false },
     websites: { type: Array, required: false },
     emails: { type: Array, required: false },
-    phones: { type: Array, required: false },
+    // phones: { type: Array, required: false },
     lenguages: { type: Array, required: false }, // muchos
     interests: { type: Array, required: false },  // Mujeres o Hombres o las dos
     media: { type: Array, required: false },
@@ -83,7 +83,8 @@ const userSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
-  }
+    strict: false
+  },
 );
 
 module.exports = mongoose.model("user", userSchema);

@@ -90,6 +90,7 @@ const authCtrl = {
         const mobile_exists = await Users.findOne({
           mobile: username_email_or_mobile_register,
         });
+        
         if (mobile_exists)
           return res.status(400).json({ msg: "El móvil ya existe." });
 

@@ -4,9 +4,10 @@ let log_file = fs.createWriteStream(__dirname + '/debug.log', {flags : 'w'});
 let log_stdout = process.stdout;
 require("dotenv").config();
 const express = require("express");
-const mongoose = require("mongoose");
+// const mongoose = require("mongoose");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
+const connectDB = require('./database/db');
 
 const app = express();
 app.use(express.json());
@@ -20,22 +21,24 @@ app.use(cookieParser());
 // Routes
 app.use("/api", require("./routes/authRouter"));
 app.use("/api", require("./routes/userRouter"));
+app.use("/api", require("./routes/crudRouter"));
 
-const URI = process.env.MONGODB_URL;
+connectDB()
+// const URI = process.env.MONGODB_URL;
 
-mongoose.connect(
-  URI,
-  {
-    // useCreateIndex: true,
-    // useFindAndModify: false,
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  },
-  (err) => {
-    if (err) throw err;
-    console.log(`Connected to mongodb.`);
-  }
-);
+// mongoose.connect(
+//   URI,
+//   {
+//     // useCreateIndex: true,
+//     // useFindAndModify: false,
+//     useNewUrlParser: true,
+//     useUnifiedTopology: true,
+//   },
+//   (err) => {
+//     if (err) throw err;
+//     console.log(`Connected to mongodb.`);
+//   }
+// );
 
 const port = process.env.PORT || 3245;
 
