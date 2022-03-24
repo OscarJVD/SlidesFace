@@ -330,7 +330,7 @@ const LoginAndRegister = () => {
                       <input
                         type="text"
                         onChange={handleChangeInputsRegister}
-                        className="form-control"
+                        className="form-control sm-mb-field"
                         placeholder="Nombre"
                         id="firstname"
                         name="firstname"

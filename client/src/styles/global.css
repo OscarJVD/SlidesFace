@@ -8,6 +8,12 @@
     -moz-osx-font-smoothing: grayscale;
 }
 
+@media(max-width: 767px){
+  .sm-mb-field{
+    margin-bottom: 1rem !important;
+  }
+}
+
 code {
     font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
 }

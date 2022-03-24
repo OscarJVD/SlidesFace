@@ -1,15 +1,39 @@
-import { cloneElement, useRef, useState } from "react";
+import { cloneElement, useEffect, useRef, useState } from "react";
 import Tooltip from "react-simple-tooltip";
-import { postDataAPI } from "../../utils/fetchData";
+import { postDataAPI, putDataAPI } from "../../utils/fetchData";
+import { getEsDate } from "../../utils/functions";
+import MTable from './MTable';
 
-const Crud = ({ arr, addstr, forallusers, forallusersflag, auth, modelToAlter, fields, withModal, callToActionCmp, callToActionCmpFlag }) => {
+const Crud = ({ arr, addstr, forallusersflag, auth, model, fields, optional, callToActionCmp, callToActionCmpFlag }) => {
 
-  console.log(auth)
+  console.log('optional', optional)
+  /**
+   * optional
+   *  - withModal
+   *  -  tabletype(Advanced, Basic, list)
+   *  - With Detail only for advanced table
+   */
+  // console.log(auth)
   let addRef = useRef()
   let [add, setAdd] = useState(false)
   let [values, setValues] = useState(fields)
+  let [readData, setReadData] = useState([])
+  const [id, setId] = useState('');
 
-  // const { defaultVal } = values
+  useEffect(() => {
+
+    let res;
+    const getItems = async () => {
+      res = await postDataAPI('getDataField', { model, fieldsAndValues: values }, auth.token)
+      console.log(res);
+      setReadData(res.data.data.Users[0])
+      console.log('readData', readData);
+    }
+
+    getItems()
+
+    console.log('readData', readData);
+  }, [])
 
   // Uno o mas campos predefinidos dinamicos
   let manyDinamicFieldsFlag = false;
@@ -20,14 +44,8 @@ const Crud = ({ arr, addstr, forallusers, forallusersflag, auth, modelToAlter, f
       return <span className="text-danger">INGRESA EL ID DEL CAMPO POR DEFECTO QUE SE VA A GENERAR DINAMICAMENTE</span>
   }
 
-  // console.log(arr, id)
-  // let isForAllUsers = false;
-
-  if (!modelToAlter) modelToAlter = 'Users'
-
-  // if (forallusers && auth.user && auth.user.role == 'admin' && forallusersflag)
-  //   isForAllUsers = true
-  console.log('auth.token', auth, typeof auth)
+  if (!model) model = 'Users'
+  // console.log('auth.token', auth, typeof auth)
 
   // Si no hay datos
   if (!arr || arr.length <= 0 || Object.keys(arr).length <= 0) {
@@ -39,16 +57,14 @@ const Crud = ({ arr, addstr, forallusers, forallusersflag, auth, modelToAlter, f
     }
 
     const saveItem = async () => {
-
-      console.log('values', values)
+      console.log('valuesSS', values)
       let res;
-      // if (!manyDinamicFieldsFlag) {
-      //   res = await postDataAPI('createField', { modelToAlter, fieldname, values, forallusersflag }, auth.token)
-      // } else {
-      // Muchos inputs -> arreglo fields
-      res = await postDataAPI('createField', { modelToAlter, fields, values, forallusersflag }, auth.token)
-      // }
-
+      if (id) {
+        res = await putDataAPI(`editRow/${id}`, { model, values, forallusersflag }, auth.token)
+      } else {
+        res = await postDataAPI('createField', { model, values, forallusersflag }, auth.token)
+      }
+      console.log('values', values)
       console.log('res', res);
     }
 
@@ -59,9 +75,22 @@ const Crud = ({ arr, addstr, forallusers, forallusersflag, auth, modelToAlter, f
       setValues({ ...values, [name]: value });
     }
 
+    // Editar Categoría
+    const handleEditItem = (item) => {
+      console.log('item', item);
+      console.log('values', values);
+      console.log('fields', fields);
+      setId(item._id);
+      setAdd(true)
+      setValues({ ...values, [Object.keys(fields)[0]]: item.phone });
+      // Object.keys(obj)[0]
+      // setName(category.name);
+      // setCancelUpdate('d-inline');
+    };
+
     return (
       <>
-        {/* d-flex */}
+        {/* d-flex -- INPUTS*/}
         <div className={`input-group ${add ? '' : 'd-none'}`}>
           {
             manyDinamicFieldsFlag
@@ -76,7 +105,6 @@ const Crud = ({ arr, addstr, forallusers, forallusersflag, auth, modelToAlter, f
                   className="form-control" placeholder={newaddstr} />
               </div>
           }
-
 
           <div className="col-12 justify-content-center text-center mt-2">
             <Tooltip content="Guardar" placement="bottom">
@@ -99,22 +127,161 @@ const Crud = ({ arr, addstr, forallusers, forallusersflag, auth, modelToAlter, f
             </Tooltip>
           </div>
         </div>
+        {/* END INPUTS */}
 
         {
           callToActionCmpFlag
             ? cloneElement(callToActionCmp, { ref: addRef, className: `${add ? 'd-none' : ''}`, onClick: newItem })
-            : <a href="#" ref={addRef} className={`${add ? 'd-none' : ''}`} onClick={newItem}>{newaddstr}
+            : <a href="#" ref={addRef} className={`${add ? 'd-none' : ''}`} onClick={newItem}>{readData && readData.length > 0 ? newaddstr.replace('tu', 'un') : newaddstr}
             </a>
+        }
+
+        {/* // Si si hay datos */}
+        {
+          readData && readData.phones &&
+          <div className="mt-2">
+            {
+              optional.tabletype == 'list' &&
+              <>
+                {
+                  readData.phones.map((item, index) => (
+                    <p className="fs-6 fw-semi-bold border-bottom" key={index}>{item.phone}
+
+                      <Tooltip content={`Eliminar ${newaddstr.split(" ").splice(-1)}`} placement="bottom" className="float-end" style={{ float: 'right', marginRight: '0.5rem' }}>
+                        <i className="fas h-100 align-self-center align-items-center d-flex float-end ms-2 fa-trash text-end text-danger pointer"
+                        // onClick={() => handleEditItem(item)}
+                        ></i>
+                      </Tooltip>
+
+                      <Tooltip content={`Editar ${newaddstr.split(" ").splice(-1)}`} placement="bottom" className="float-end" style={{ float: 'right' }}>
+                        <i className="fas float-end fa-edit text-end text-warning pointer"
+                          onClick={() => handleEditItem(item)}></i>
+                      </Tooltip>
+                    </p>
+                  ))
+                }
+              </>
+            }
+
+            {
+              readData && readData.length > 0 &&
+              <div className="mt-2">
+
+                {optional.tabletype == 'list' &&
+                  <>
+                    {
+                      readData.map(data => (
+                        data.phones && data.phones.map((phone, index) => (
+                          <p className="fs-6 fw-semi-bold border-bottom" key={index}>{phone}
+
+                            <Tooltip content={`Eliminar ${newaddstr.split(" ").splice(-1)}`} placement="bottom" className="float-end" style={{ float: 'right', marginRight: '0.5rem' }}>
+                              <i className="fas h-100 align-self-center align-items-center d-flex float-end ms-2 fa-trash text-end text-danger pointer"
+                              // onClick={() => handleEditItem(phone)}
+                              ></i>
+                            </Tooltip>
+
+                            <Tooltip content={`Editar ${newaddstr.split(" ").splice(-1)}`} placement="bottom" className="float-end" style={{ float: 'right' }}>
+                              <i className="fas float-end fa-edit text-end text-warning pointer"
+                                onClick={() => handleEditItem(phone)}></i>
+                            </Tooltip>
+                          </p>
+                        ))
+                      ))
+                    }
+                  </>}
+
+                {
+                  optional.tabletype == 'advanced' &&
+                  <MTable
+                    withSearcher={false}
+                    withFiltering={false}
+                    withExportButton={false}
+                    withPagination={false}
+                    title={false}
+                    data={readData}
+                    columns={[
+                      // {
+                      //   title: '#',
+                      //   field: '_id',
+                      //   defaultSort: 'desc'
+                      // },
+                      {
+                        title: 'CELULARES', field: 'phones', render: (rowData) => (
+                          <>
+                            {
+                              rowData.phones.map(item => <>{item.phone.phone}</>)
+                              // rowData && rowData.map(item => (
+                              //   <p>{item.phone}</p>
+                              // ))
+                            }
+                          </>
+                        )
+                      },
+                      // {
+                      //   title: '',
+                      //   field: 'name',
+                      //   render: (rowData) => (
+                      //     <>
+                      //       <EditIcon
+                      //         className='cursor-pointer'
+                      //         onClick={() => handleEditCategory(rowData)}
+                      //         title='Editar Categoría'
+                      //         color='primary'
+                      //       />
+
+                      //       <DeleteIcon
+                      //         className='cursor-pointer'
+                      //         title='Eliminar Categoría'
+                      //         color='secondary'
+                      //         onClick={() => {
+                      //           handleClickOpen();
+                      //           dispatch({
+                      //             type: 'ADD_CONFIRM',
+                      //             payload: [
+                      //               {
+                      //                 data: categories,
+                      //                 id: rowData._id,
+                      //                 title: rowData.name,
+                      //                 type: 'ADD_CATEGORIES',
+                      //               },
+                      //             ],
+                      //           });
+                      //         }}
+                      //       />
+                      //     </>
+                      //   ),
+                      // },
+                    ]}
+                    grouping={false}
+                  // detailPanel={(rowData) => (
+                  //   <>
+                  //     <table className='table table-striped table-responsive text-center'>
+                  //       <thead>
+                  //         <tr>
+                  //           <th scope='col'>Fecha creación</th>
+                  //           <th scope='col'>Fecha actualización</th>
+                  //         </tr>
+                  //       </thead>
+                  //       <tbody>
+                  //         <tr>
+                  //           <th>{getEsDate(rowData.createdAt)}</th>
+                  //           <th>{getEsDate(rowData.updatedAt)}</th>
+                  //         </tr>
+                  //       </tbody>
+                  //     </table>
+                  //   </>
+                  // )}
+                  />}
+
+              </div>
+            }
+
+          </div>
         }
 
       </>
     )
   }
-
-  // Si si hay datos
-  return (
-    <div>Crud</div>
-  )
 }
 
 export default Crud

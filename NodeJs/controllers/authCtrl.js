@@ -16,6 +16,14 @@ const authCtrl = {
         gender,
       } = req.body;
 
+      //       const phone_exists = await Users.findOne({
+      //         firstname: '.m.m',
+      //       });
+
+      //       console.log('phone_exists', phone_exists);
+
+      //       return res.json({test: phone_exists});
+      // return;
       if (
         !firstname ||
         !lastname ||
@@ -87,18 +95,20 @@ const authCtrl = {
       }
 
       if (registerType == "tel") {
-        const mobile_exists = await Users.findOne({
-          mobile: username_email_or_mobile_register,
+        const phone_exists = await Users.findOne({
+          phones: username_email_or_mobile_register,
         });
-        
-        if (mobile_exists)
+
+        console.log('phone_exists', phone_exists);
+
+        if (phone_exists)
           return res.status(400).json({ msg: "El móvil ya existe." });
 
-        userObj.mobile = username_email_or_mobile_register;
+        userObj.phones = [username_email_or_mobile_register];
       }
 
       if (!userObj.hasOwnProperty('username')) {
-        const random = getRandomArbitrary(1, 3);
+        const random = getRandomNum(1, 3);
 
         const randomUsername = generator.randomNickname(
           {
@@ -142,7 +152,7 @@ const authCtrl = {
       await newUser.save();
 
       res.json({
-        msg: "¡Registrado!",
+        msg: gender == 'female' ? "¡Registrada!" : "¡Registrado!",
         access_token,
         user: {
           ...newUser._doc,
@@ -197,7 +207,7 @@ const authCtrl = {
 
       if (registerType == "tel") {
         user = await Users.findOne({
-          mobile: username_email_or_mobile_login,
+          phones: username_email_or_mobile_login,
         }).populate(
           "followers following",
           "avatar banner username firstname lastname mobile email fullname followers following"
@@ -270,6 +280,15 @@ const authCtrl = {
       return res.status(500).json({ msg: err.message });
     }
   },
+  testpost: async (req, res) => {
+    // const phone_exists = await Users.find({});
+    const phone_exists = await Users.find({}).select(['phones', 'lastname'])
+
+    console.log('phone_exists', phone_exists);
+
+    return res.json({ test: phone_exists });
+    return;
+  }
 };
 
 const createAccessToken = (payload) => {

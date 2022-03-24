@@ -92,6 +92,9 @@ export const refreshToken = () => async (dispatch) => {
         window.location.pathname !== "/login" &&
         window.location.pathname !== "/"
       ) {
+        localStorage.removeItem('firstSlidesLogin')
+        window.location.reload();
+        
         dispatch({
           type: GLOBAL_TYPES.ALERT,
           payload: {

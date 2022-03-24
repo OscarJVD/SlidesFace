@@ -48,5 +48,5 @@ console.log = function(d) { //
 };
 
 app.listen(port, () =>
-  console.log(`slidesface.com Backend Running on port http://localhost:${port}`)
+  console.log(`Running on port http://localhost:${port}`)
 );
