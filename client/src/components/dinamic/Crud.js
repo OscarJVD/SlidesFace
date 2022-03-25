@@ -26,13 +26,14 @@ const Crud = ({ arr, addstr, forallusersflag, auth, model, fields, optional, cal
     const getItems = async () => {
       res = await postDataAPI('getDataField', { model, fieldsAndValues: values }, auth.token)
       console.log(res);
-      setReadData(res.data.data.Users[0])
+      res = Object.values(res.data.data[0])[3]
+      console.log(res);
+      setReadData(res)
       console.log('readData', readData);
     }
 
     getItems()
-
-    console.log('readData', readData);
+    // console.log('readData', readData);
   }, [])
 
   // Uno o mas campos predefinidos dinamicos
@@ -44,28 +45,40 @@ const Crud = ({ arr, addstr, forallusersflag, auth, model, fields, optional, cal
       return <span className="text-danger">INGRESA EL ID DEL CAMPO POR DEFECTO QUE SE VA A GENERAR DINAMICAMENTE</span>
   }
 
-  if (!model) model = 'Users'
-  // console.log('auth.token', auth, typeof auth)
-
-  // Si no hay datos
+  if (!model) model = 'user'
   if (!arr || arr.length <= 0 || Object.keys(arr).length <= 0) {
     let newaddstr = addstr ? 'Agrega ' + addstr : 'Agregar'
 
     const newItem = e => {
       e.preventDefault()
       setAdd(true)
+      setId('')
     }
 
     const saveItem = async () => {
-      console.log('valuesSS', values)
-      let res;
-      if (id) {
-        res = await putDataAPI(`editRow/${id}`, { model, values, forallusersflag }, auth.token)
-      } else {
-        res = await postDataAPI('createField', { model, values, forallusersflag }, auth.token)
+      try {
+        console.log('valuesSS', values)
+        let res;
+        if (id) {
+          res = await putDataAPI(`editRow/${id}`, { model, values, forallusersflag }, auth.token)
+        } else {
+          res = await postDataAPI('createField', { model, values, forallusersflag }, auth.token)
+          console.log(Object.values(res.data)[0]);
+          // setReadData([...readData, Object.values(res.data)[0]])
+          // setReadData([...readData, Object.values(res.data.data)[0]])
+        }
+
+        // console.log(Object.values(res.data.data[0])[3]);
+        // console.log(Object.values(res.data.data[0]));
+        setReadData(Object.values(res.data.data[0])[3])
+
+        // Object.values(res.data.data[0])[1]
+
+        console.log('res', res);
+        console.log(readData)
+      } catch (error) {
+        console.error(error)
       }
-      console.log('values', values)
-      console.log('res', res);
     }
 
     const handleChange = e => {
@@ -82,10 +95,7 @@ const Crud = ({ arr, addstr, forallusersflag, auth, model, fields, optional, cal
       console.log('fields', fields);
       setId(item._id);
       setAdd(true)
-      setValues({ ...values, [Object.keys(fields)[0]]: item.phone });
-      // Object.keys(obj)[0]
-      // setName(category.name);
-      // setCancelUpdate('d-inline');
+      setValues({ ...values, [Object.keys(fields)[0]]: Object.values(item)[1] });
     };
 
     return (
@@ -111,9 +121,9 @@ const Crud = ({ arr, addstr, forallusersflag, auth, model, fields, optional, cal
               <button
                 type="button"
                 onClick={saveItem}
-                className="btn btn-primary btn-sm text-initial"
+                className={`btn btn-${id ? 'warning' : 'primary'} btn-sm text-initial`}
               >
-                <i className="fas fa-save"></i> Guardar
+                <i className={`fas fa-${id ? 'edit' : 'save'}`}></i> {id ? 'Editar' : 'Guardar'}
               </button>
             </Tooltip>
             <Tooltip content="Cancelar" placement="bottom">
@@ -138,14 +148,14 @@ const Crud = ({ arr, addstr, forallusersflag, auth, model, fields, optional, cal
 
         {/* // Si si hay datos */}
         {
-          readData && readData.phones &&
+          readData && readData.length > 0 &&
           <div className="mt-2">
             {
               optional.tabletype == 'list' &&
               <>
                 {
-                  readData.phones.map((item, index) => (
-                    <p className="fs-6 fw-semi-bold border-bottom" key={index}>{item.phone}
+                  readData.map((item, index) => (
+                    <p className="fs-6 fw-semi-bold border-bottom" key={index}>{Object.values(item)[1]}
 
                       <Tooltip content={`Eliminar ${newaddstr.split(" ").splice(-1)}`} placement="bottom" className="float-end" style={{ float: 'right', marginRight: '0.5rem' }}>
                         <i className="fas h-100 align-self-center align-items-center d-flex float-end ms-2 fa-trash text-end text-danger pointer"
@@ -163,7 +173,7 @@ const Crud = ({ arr, addstr, forallusersflag, auth, model, fields, optional, cal
               </>
             }
 
-            {
+            {/* {
               readData && readData.length > 0 &&
               <div className="mt-2">
 
@@ -274,7 +284,7 @@ const Crud = ({ arr, addstr, forallusersflag, auth, model, fields, optional, cal
                   />}
 
               </div>
-            }
+            } */}
 
           </div>
         }
