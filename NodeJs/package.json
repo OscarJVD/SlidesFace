@@ -41,8 +41,8 @@
     "is-valid-email": "0.0.5",
     "is-valid-username": "0.0.1",
     "jsonwebtoken": "8.5.1",
-    "mongodb": "4.2.2",
-    "mongoose": "6.0.2",
+    "mongodb": "4.4.1",
+    "mongoose": "6.2.9",
     "mongoose-dynamic-schemas": "1.2.6",
     "nickname-generator": "1.1.1",
     "password-validator": "5.1.1"

@@ -25,7 +25,7 @@ const crudCtrl = {
       }
 
       const dinamicObjectId = new mongoose.Types.ObjectId()
-      const objNewRow = { _id: dinamicObjectId }
+      const objNewRow = { id: dinamicObjectId.toString() }
 
       Object.defineProperty(objNewRow, Object.keys(values)[0], {
         value: Object.values(values)[0],
@@ -87,24 +87,73 @@ const crudCtrl = {
       const { id } = req.params
       const { model, forallusersflag, values } = req.body;
       let filter = {}
-      let firstKeyValues = Object.keys(values)[0]
-      let firstValValues = Object.values(values)[0]
+      let firstKeyValue = Object.keys(values)[0]
+      let firstValValue = Object.values(values)[0]
 
-      Object.defineProperty(filter, firstKeyValues, {
-        value: { $elemMatch: { _id: ObjectId(id) } },
+      Object.defineProperty(filter, firstKeyValue, {
+        value: { $elemMatch: { id } },
         writable: true,
         enumerable: true,
         configurable: true
       });
 
-      delete values[firstKeyValues]
-      let valKey = `${firstKeyValues}.$.${firstKeyValues}`
-      values[valKey] = firstValValues
+      delete values[firstKeyValue]
+      let valKey = `${firstKeyValue}.$.${firstKeyValue}`
+      values[valKey] = firstValValue
+
+      // console.log(values)
 
       const DinamicModelCall = mongoose.model(model);
-      const updated = await DinamicModelCall.update(filter, { $set: values }
-        , { upsert: true }
-      );
+      // const updated = await DinamicModelCall.updateOne(filter, { $set: values }
+      //   , { upsert: true , multi: true}
+      // );
+
+      // const updated = await DinamicModelCall.findOneAndUpdate(filter, { $set: values }
+      //   , { upsert: true , multi: true}
+      // );
+
+      // const collection = await DinamicModelCall.find(filter);
+
+      // collection[0][firstKeyValue].forEach((elem, index) => {
+      //   if (elem.id == id) {
+      //     collection[0][firstKeyValue][index][firstKeyValue] = firstValValue
+      //     return;
+      //   }
+      // })
+
+      // let objectToUpdate = {};
+      // console.log(collection[0][firstKeyValue])
+      // console.log(objectToUpdate)
+      // objectToUpdate[firstKeyValue] = collection[0][firstKeyValue]
+      // updateOne
+      // const res = await DinamicModelCall.findOne(filter, function (err, document) {
+      //   // user.username = newUser.username;
+      //   // console.log(document)
+      //   document[firstKeyValue].forEach((elem, index) => {
+      //     if (elem.id == id) {
+      //       document[firstKeyValue][index][firstKeyValue] = firstValValue
+      //       return;
+      //     }
+      //   })
+
+      //   document.save(function (err) {
+      //     if (err) {
+      //       console.log('ERROR!');
+      //     }
+      //   });
+      // }).clone();
+
+      // console.log(res)
+
+      // const subDocUpdating = await DinamicModelCall.findOneAndUpdate(
+      //   filter,
+      //   objectToUpdate
+      // );
+
+      // const subDocUpdating = await DinamicModelCall.updateOne(
+      //   filter,
+      //   objectToUpdate
+      // );
 
       values.createdAt = 'nothing'
       values.updatedAt = 'nothing'
