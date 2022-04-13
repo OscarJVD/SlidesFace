@@ -15,15 +15,18 @@ app.use(cors());
 app.use(cookieParser());
 
 // app.get('/', (req, res) => {
-//     res.json({ msg: "Hello Peter" })
-// })
-
+  //     res.json({ msg: "Hello Peter" })
+  // })
+  
 // Routes
 app.use("/api", require("./routes/authRouter"));
 app.use("/api", require("./routes/userRouter"));
 app.use("/api", require("./routes/crudRouter"));
 
 connectDB()
+// require('./schemas/indexSchemas.js');
+
+// BRING IN YOUR SCHEMAS & MODELS
 // const URI = process.env.MONGODB_URL;
 
 // mongoose.connect(

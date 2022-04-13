@@ -1,4 +1,4 @@
-const Users = require("../models/userModel");
+const User = require("../models/userModel");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const passwordValidator = require("password-validator");
@@ -16,7 +16,7 @@ const authCtrl = {
         gender,
       } = req.body;
 
-      //       const phone_exists = await Users.findOne({
+      //       const phone_exists = await User.findOne({
       //         firstname: '.m.m',
       //       });
 
@@ -73,7 +73,7 @@ const authCtrl = {
           .toLowerCase()
           .replace(/ /g, "");
 
-        const username_exists = await Users.findOne({
+        const username_exists = await User.findOne({
           username: shortUserName,
         });
         if (username_exists)
@@ -85,7 +85,7 @@ const authCtrl = {
       }
 
       if (registerType == "email") {
-        const email_exists = await Users.findOne({
+        const email_exists = await User.findOne({
           email: username_email_or_mobile_register,
         });
         if (email_exists)
@@ -95,7 +95,7 @@ const authCtrl = {
       }
 
       if (registerType == "tel") {
-        const phone_exists = await Users.findOne({
+        const phone_exists = await User.findOne({
           phones: username_email_or_mobile_register,
         });
 
@@ -123,7 +123,7 @@ const authCtrl = {
 
         // console.log('usuario:', randomUsername)
 
-        const randomUsername_exists = await Users.findOne({
+        const randomUsername_exists = await User.findOne({
           username: randomUsername,
         });
 
@@ -138,7 +138,7 @@ const authCtrl = {
       // console.log(userObj);
       // return;
       // Creamos el usuario
-      const newUser = new Users(userObj);
+      const newUser = new User(userObj);
 
       const access_token = createAccessToken({ id: newUser._id });
       const refresh_token = createRefreshToken({ id: newUser._id });
@@ -181,7 +181,7 @@ const authCtrl = {
 
       let user = null;
       if (registerType == "username") {
-        user = await Users.findOne({
+        user = await User.findOne({
           username: username_email_or_mobile_login,
         }).populate(
           "followers following",
@@ -195,7 +195,7 @@ const authCtrl = {
       }
 
       if (registerType == "email") {
-        user = await Users.findOne({
+        user = await User.findOne({
           email: username_email_or_mobile_login,
         }).populate(
           "followers following",
@@ -206,7 +206,7 @@ const authCtrl = {
       }
 
       if (registerType == "tel") {
-        user = await Users.findOne({
+        user = await User.findOne({
           phones: username_email_or_mobile_login,
         }).populate(
           "followers following",
@@ -264,7 +264,7 @@ const authCtrl = {
             return res.status(400).json({ msg: "Por favor inicia sesión." });
 
           // console.log(result);
-          const user = await Users.findById(result.id)
+          const user = await User.findById(result.id)
             .select("-password")
             .populate("followers following", "-password");
 
@@ -281,8 +281,8 @@ const authCtrl = {
     }
   },
   testpost: async (req, res) => {
-    // const phone_exists = await Users.find({});
-    const phone_exists = await Users.find({}).select(['phones', 'lastname'])
+    // const phone_exists = await User.find({});
+    const phone_exists = await User.find({}).select(['phones', 'lastname'])
 
     console.log('phone_exists', phone_exists);
 

@@ -1,4 +1,4 @@
-const Users = require("../models/userModel");
+const User = require("../models/userModel");
 const { isEmailTelOrUserName } = require("../utils/functions");
 
 const userCtrl = {
@@ -9,7 +9,7 @@ const userCtrl = {
       // const authUser = await auth(req, res);
       // console.log(authUser);
 
-      const users = await Users.find({
+      const users = await User.find({
         // fullname: { $regex: /^name@company.com$/i },
         // fullname: { $regex: new RegExp(`^${req.query.q}$`, "i") },
         fullname: { $regex: req.query.q, $options: "i" },
@@ -29,7 +29,7 @@ const userCtrl = {
   },
   getUser: async (req, res) => {
     try {
-      const user = await Users.findById(req.params.id).select("-password");
+      const user = await User.findById(req.params.id).select("-password");
       if (!user) return res.status(400).json({ msg: "Usuario no encontrado. Error: US001" });
 
       return res.json({ user });
@@ -39,7 +39,7 @@ const userCtrl = {
   },
   getUserByUserName: async (req, res) => {
     try {
-      const user = await Users.findOne({
+      const user = await User.findOne({
         username: req.params.username
       }).select("-password");
 
@@ -78,7 +78,7 @@ const userCtrl = {
       if (usernameValidation == "username") {
         usernameFixed = username.toLowerCase().replace(/ /g, "");
 
-        const username_exists = await Users.findOne({
+        const username_exists = await User.findOne({
           username: usernameFixed,
         });
 
@@ -90,7 +90,7 @@ const userCtrl = {
         return res.status(400).json({ msg: "Verifica tu nombre de usuario" });
       }
 
-      const newUserDoc = await Users.findOneAndUpdate(
+      const newUserDoc = await User.findOneAndUpdate(
         { _id: req.authUser._id },
         { username: usernameFixed }
       );
@@ -114,7 +114,7 @@ const userCtrl = {
 
       console.log(story);
 
-      const userDoc = await Users.findOneAndUpdate(
+      const userDoc = await User.findOneAndUpdate(
         { _id: req.authUser._id },
         { story }
       );
