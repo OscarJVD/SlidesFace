@@ -4,7 +4,7 @@ import { postDataAPI, putDataAPI } from "../../utils/fetchData";
 import { getEsDate } from "../../utils/functions";
 import MTable from './MTable';
 
-const Crud = ({ arr, addstr, forallusersflag, auth, model, fields, optional, callToActionCmp, callToActionCmpFlag }) => {
+const Crud = ({ arr, addstr, modelRef, forallusersflag, auth, model, fields, optional, callToActionCmp, callToActionCmpFlag }) => {
 
   console.log('optional', optional)
   /**
@@ -20,20 +20,21 @@ const Crud = ({ arr, addstr, forallusersflag, auth, model, fields, optional, cal
   let [readData, setReadData] = useState([])
   const [id, setId] = useState('');
 
-  useEffect(() => {
-
-    let res;
-    const getItems = async () => {
-      res = await postDataAPI('getDataField', { model, fieldsAndValues: values }, auth.token)
+  const getItems = async () => {
+    let res = await postDataAPI('getDataField', { model, fieldsAndValues: values, fields }, auth.token)
+    console.log(res);
+    if(res.data.data.length > 0){
+      // res = Object.values(res.data.data[0])[3]
       console.log(res);
-      res = Object.values(res.data.data[0])[3]
-      console.log(res);
-      setReadData(res)
+      setReadData(res.data.data)
       console.log('readData', readData);
     }
+  }
+
+  useEffect(() => {
 
     getItems()
-    // console.log('readData', readData);
+    console.log('readData', readData);
   }, [])
 
   // Uno o mas campos predefinidos dinamicos
@@ -62,20 +63,14 @@ const Crud = ({ arr, addstr, forallusersflag, auth, model, fields, optional, cal
         if (id) {
           res = await putDataAPI(`editRow/${id}`, { model, values, forallusersflag }, auth.token)
         } else {
-          res = await postDataAPI('createField', { model, values, forallusersflag }, auth.token)
-          console.log(Object.values(res.data)[0]);
-          // setReadData([...readData, Object.values(res.data)[0]])
-          // setReadData([...readData, Object.values(res.data.data)[0]])
+          res = await postDataAPI('createField', { model, values, fields, modelRef, forallusersflag }, auth.token)
         }
 
-        // console.log(Object.values(res.data.data[0])[3]);
-        // console.log(Object.values(res.data.data[0]));
-        setReadData(Object.values(res.data.data[0])[3])
-
-        // Object.values(res.data.data[0])[1]
-
         console.log('res', res);
+        // setReadData(res.data.data)
+        getItems()
         console.log(readData)
+
       } catch (error) {
         console.error(error)
       }
@@ -93,7 +88,7 @@ const Crud = ({ arr, addstr, forallusersflag, auth, model, fields, optional, cal
       console.log('item', item);
       console.log('values', values);
       console.log('fields', fields);
-      setId(item._id);
+      setId(item.id);
       setAdd(true)
       setValues({ ...values, [Object.keys(fields)[0]]: Object.values(item)[1] });
     };

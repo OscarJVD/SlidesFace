@@ -94,9 +94,11 @@ const About = ({ userData, auth }) => {
                         } */}
                         <Crud
                           auth={auth}
-                          fields={{ phones: '' }}
+                          fields={{ number: ''  }}
+                          modelRef="user"
                           addstr="tu celular"
                           forallusersflag={false}
+                          model="phone"
                           optional={{
                             withDetail: false,
                             tabletype: 'list'
