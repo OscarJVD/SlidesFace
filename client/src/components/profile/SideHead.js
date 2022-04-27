@@ -349,7 +349,7 @@ const SideHead = ({ username, children, active }) => {
                       </div>
                     </div>
                     <div className="intro mt-4 mv-hidden">
-                      <div className="intro-item d-flex justify-content-between align-items-center mb-0 pb-0">
+                      <div className={`${user.story ? '' : 'mb-3'} intro-item d-flex justify-content-between align-items-center mb-0 pb-0`}>
                         <h3 className="intro-about m-0 p-0">Detalles</h3>
                       </div>
 
@@ -425,9 +425,9 @@ const SideHead = ({ username, children, active }) => {
                                   inputIntroRef.current.focus();
                                 }, 100);
                               }}
-                              className="btn btn-sm d-block w-100 bg-neutro text-dark fw-less-bold fs-6 text-initial"
+                              className={`btn btn-sm btn-primary d-block w-100 ${user.story ? 'bg-neutro hover-text-white text-dark' : 'btn-primary'} fw-less-bold fs-6 text-initial`}
                             >
-                              Editar presentación
+                              {user.story ? 'Editar presentación' : 'Presentarme'}
                             </button>
                           </div>
                         </>

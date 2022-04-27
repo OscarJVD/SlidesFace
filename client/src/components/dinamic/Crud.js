@@ -1,7 +1,8 @@
 import { cloneElement, useEffect, useRef, useState } from "react";
 import Tooltip from "react-simple-tooltip";
 import { postDataAPI, putDataAPI } from "../../utils/fetchData";
-import { getEsDate } from "../../utils/functions";
+import { getEsDate, sort } from "../../utils/functions";
+import Approve from "../alert/Approve";
 import MTable from './MTable';
 
 const Crud = ({ arr, addstr, modelRef, forallusersflag, auth, model, fields, optional, callToActionCmp, callToActionCmpFlag }) => {
@@ -23,16 +24,16 @@ const Crud = ({ arr, addstr, modelRef, forallusersflag, auth, model, fields, opt
   const getItems = async () => {
     let res = await postDataAPI('getDataField', { model, fieldsAndValues: values, fields }, auth.token)
     console.log(res);
-    if(res.data.data.length > 0){
-      // res = Object.values(res.data.data[0])[3]
-      console.log(res);
-      setReadData(res.data.data)
-      console.log('readData', readData);
+    if (res.data.data && res.data.data.length > 0) {
+      console.log(res.data.data)
+      res = sort(res.data.data)
+      console.log(res)
+      setReadData(res)
     }
+    console.log('readData', readData);
   }
 
   useEffect(() => {
-
     getItems()
     console.log('readData', readData);
   }, [])
@@ -47,8 +48,9 @@ const Crud = ({ arr, addstr, modelRef, forallusersflag, auth, model, fields, opt
   }
 
   if (!model) model = 'user'
+  let newaddstr = 'Agregar'
   if (!arr || arr.length <= 0 || Object.keys(arr).length <= 0) {
-    let newaddstr = addstr ? 'Agrega ' + addstr : 'Agregar'
+    newaddstr = addstr ? 'Agrega ' : 'Agregar'
 
     const newItem = e => {
       e.preventDefault()
@@ -61,14 +63,34 @@ const Crud = ({ arr, addstr, modelRef, forallusersflag, auth, model, fields, opt
         console.log('valuesSS', values)
         let res;
         if (id) {
+          let newArr = readData, arrIndex, objIndex;
+
+          newArr.forEach((data, index) => {
+            if (data._id == id) {
+              Object.keys(data).forEach(key => {
+                Object.keys(values).forEach(valueKey => {
+                  if (key == valueKey) {
+                    // data[key] = values[valueKey]
+                    newArr[index][key] = values[valueKey]
+                    // newValueIndex = index
+                  }
+                })
+              })
+            }
+          })
+
+          console.log('newArr')
+          console.log(newArr)
+
           res = await putDataAPI(`editRow/${id}`, { model, values, forallusersflag }, auth.token)
+          await getItems()
         } else {
           res = await postDataAPI('createField', { model, values, fields, modelRef, forallusersflag }, auth.token)
+          await getItems()
         }
 
         console.log('res', res);
         // setReadData(res.data.data)
-        getItems()
         console.log(readData)
 
       } catch (error) {
@@ -83,18 +105,36 @@ const Crud = ({ arr, addstr, modelRef, forallusersflag, auth, model, fields, opt
       setValues({ ...values, [name]: value });
     }
 
-    // Editar Categoría
-    const handleEditItem = (item) => {
+    const handleEditItem = (item, field) => {
       console.log('item', item);
       console.log('values', values);
       console.log('fields', fields);
-      setId(item.id);
+      setId(item._id);
       setAdd(true)
-      setValues({ ...values, [Object.keys(fields)[0]]: Object.values(item)[1] });
+      setValues({ ...values, [Object.keys(fields)[0]]: item[field] });
+    };
+
+    const handleClickOpen = () => {
+      setOpen(true);
+    };
+  
+    const handleDialogClose = () => {
+      setOpen(false);
+    };
+
+    const handleDeleteItem = (item, field) => {
+      console.log('item', item);
+      console.log('values', values);
+      console.log('fields', fields);
+      handleClickOpen()
+      // setId(item._id);
+      // setAdd(true)
+      // setValues({ ...values, [Object.keys(fields)[0]]: item[field] });
     };
 
     return (
       <>
+        <Approve isOpen={isOpen} handleClose={handleDialogClose} />
         {/* d-flex -- INPUTS*/}
         <div className={`input-group ${add ? '' : 'd-none'}`}>
           {
@@ -102,12 +142,21 @@ const Crud = ({ arr, addstr, modelRef, forallusersflag, auth, model, fields, opt
               ? Object.keys(fields).map(field => ( // En construcción lo dinamico muy dinamico
                 <div className="col-12">
                   <input type="text" value={values[field]} id={field} name={field} onChange={handleChange}
-                    className="form-control" placeholder={newaddstr} />
+                    className="form-control"
+
+                    placeholder={Object.entries(addstr).forEach(placeholder => {
+                      if (placeholder[0] == field) {
+                        return 'Ingresa ' + placeholder[1]
+                      }
+                    })}
+                  />
                 </div>
               ))
               : <div className="col-12">
                 <input type="text" value={values[Object.keys(fields)[0]]} id={Object.keys(fields)[0]} name={Object.keys(fields)[0]} onChange={handleChange}
-                  className="form-control" placeholder={newaddstr} />
+                  className="form-control"
+                  placeholder={`Ingresa ${Object.entries(addstr)[0][1]}`}
+                />
               </div>
           }
 
@@ -124,7 +173,7 @@ const Crud = ({ arr, addstr, modelRef, forallusersflag, auth, model, fields, opt
             <Tooltip content="Cancelar" placement="bottom">
               <button
                 type="button"
-                onClick={() => setAdd(false)}
+                onClick={() => { setAdd(false); setId('') }}
                 className="btn btn-danger btn-sm text-initial ms-2"
               >
                 <i className="fas fa-window-close"></i> Cancelar
@@ -134,11 +183,20 @@ const Crud = ({ arr, addstr, modelRef, forallusersflag, auth, model, fields, opt
         </div>
         {/* END INPUTS */}
 
+
         {
-          callToActionCmpFlag
-            ? cloneElement(callToActionCmp, { ref: addRef, className: `${add ? 'd-none' : ''}`, onClick: newItem })
-            : <a href="#" ref={addRef} className={`${add ? 'd-none' : ''}`} onClick={newItem}>{readData && readData.length > 0 ? newaddstr.replace('tu', 'un') : newaddstr}
-            </a>
+          Object.keys(fields).map(field => (
+            callToActionCmpFlag
+              ? cloneElement(callToActionCmp, { ref: addRef, className: `${add ? 'd-none' : ''}`, onClick: newItem })
+              : <a href="#" ref={addRef} className={`${add ? 'd-none' : ''}`} onClick={e => { newItem(e); setValues(fields) }}>{readData && readData.length > 0
+                ? newaddstr + '' + Object.entries(addstr).map(placeholder => {
+                  return placeholder[0] == field ? placeholder[1].replace('tu', 'un') : 'item'
+                })
+                : newaddstr + '' + Object.entries(addstr).map(placeholder => {
+                  return placeholder[0] == field ? placeholder[1] : 'item'
+                })}
+              </a>
+          ))
         }
 
         {/* // Si si hay datos */}
@@ -150,19 +208,25 @@ const Crud = ({ arr, addstr, modelRef, forallusersflag, auth, model, fields, opt
               <>
                 {
                   readData.map((item, index) => (
-                    <p className="fs-6 fw-semi-bold border-bottom" key={index}>{Object.values(item)[1]}
+                    Object.keys(fields).map(field => (
+                      <p className="fs-6 fw-semi-bold border-bottom" key={index}>{item[field]}
 
-                      <Tooltip content={`Eliminar ${newaddstr.split(" ").splice(-1)}`} placement="bottom" className="float-end" style={{ float: 'right', marginRight: '0.5rem' }}>
-                        <i className="fas h-100 align-self-center align-items-center d-flex float-end ms-2 fa-trash text-end text-danger pointer"
-                        // onClick={() => handleEditItem(item)}
-                        ></i>
-                      </Tooltip>
+                        <Tooltip content={`Eliminar ${Object.entries(addstr).map(placeholder => {
+                          return placeholder[0] == field ? placeholder[1] : 'item'
+                        })}`} placement="bottom" className="float-end" style={{ float: 'right', marginRight: '0.5rem' }}>
+                          <i className="fas h-100 align-self-center align-items-center d-flex float-end ms-2 fa-trash text-end text-danger pointer"
+                            onClick={() => handleDeleteItem(item, field)}
+                          ></i>
+                        </Tooltip>
 
-                      <Tooltip content={`Editar ${newaddstr.split(" ").splice(-1)}`} placement="bottom" className="float-end" style={{ float: 'right' }}>
-                        <i className="fas float-end fa-edit text-end text-warning pointer"
-                          onClick={() => handleEditItem(item)}></i>
-                      </Tooltip>
-                    </p>
+                        <Tooltip content={`Editar ${Object.entries(addstr).map(placeholder => {
+                          return placeholder[0] == field ? placeholder[1] : 'item'
+                        })}`} placement="bottom" className="float-end" style={{ float: 'right' }}>
+                          <i className="fas float-end fa-edit text-end text-warning pointer"
+                            onClick={() => handleEditItem(item, field)}></i>
+                        </Tooltip>
+                      </p>
+                    ))
                   ))
                 }
               </>

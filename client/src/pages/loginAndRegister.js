@@ -263,7 +263,7 @@ const LoginAndRegister = () => {
                 slidesface
               </h1>
               <h3 className="text-left fw-normal text-dark">
-                El mejor lugar para disfrutar un poco de todo
+                Un sitio simple para disfrutar un poco de todo
               </h3>
             </div>
           </div>

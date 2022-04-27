@@ -94,9 +94,9 @@ const About = ({ userData, auth }) => {
                         } */}
                         <Crud
                           auth={auth}
-                          fields={{ number: ''  }}
+                          fields={{ number: '' }}
                           modelRef="user"
-                          addstr="tu celular"
+                          addstr={{ number: "tu celular" }}
                           forallusersflag={false}
                           model="phone"
                           optional={{

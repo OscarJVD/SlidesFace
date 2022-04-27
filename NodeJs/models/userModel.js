@@ -80,6 +80,7 @@ const UserSchema = new mongoose.Schema(
     recentSearches: { type: Array, required: false },
     followers: [{ type: mongoose.Types.ObjectId, ref: "user" }],
     following: [{ type: mongoose.Types.ObjectId, ref: "user" }],
+    historic: { type: Array, required: false },
   },
   {
     timestamps: true,

@@ -1,0 +1,4 @@
+Running on port http://localhost:3245
+Mongoose default connection open to mongodb+srv://ovargas:hNxahHVaLHOvmzMj@cluster0.oaook.mongodb.net/slidesfacedb?retryWrites=true&w=majority
+Mongoose default connection is open
+Connected to mongodb.
