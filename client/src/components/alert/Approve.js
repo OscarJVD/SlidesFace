@@ -9,7 +9,8 @@ import DialogTitle from '@mui/material/DialogTitle';
 export default function Approve({
   isOpen,
   handleClose,
-  title,
+  handleAction,
+  title = 'Confirmación',
   desc = '¿Esta seguro de la acción que va a realizar a continuación?',
 }) {
   const [open, setOpen] = React.useState(false);
@@ -32,8 +33,8 @@ export default function Approve({
 
   return (
     <div>
-      <Button onClick={handleClickOpen('paper')}>scroll=paper</Button>
-      <Button onClick={handleClickOpen('body')}>scroll=body</Button>
+      {/* <Button onClick={handleClickOpen('paper')}>scroll=paper</Button>
+      <Button onClick={handleClickOpen('body')}>scroll=body</Button> */}
       <Dialog
         open={isOpen}
         onClose={handleClose}
@@ -41,26 +42,19 @@ export default function Approve({
         aria-labelledby="scroll-dialog-title"
         aria-describedby="scroll-dialog-description"
       >
-        <DialogTitle id="scroll-dialog-title">Subscribe</DialogTitle>
+        <DialogTitle id="scroll-dialog-title">{title}</DialogTitle>
         <DialogContent dividers={scroll === 'paper'}>
           <DialogContentText
             id="scroll-dialog-description"
             ref={descriptionElementRef}
             tabIndex={-1}
           >
-            {[...new Array(50)]
-              .map(
-                () => `Cras mattis consectetur purus sit amet fermentum.
-Cras justo odio, dapibus ac facilisis in, egestas eget quam.
-Morbi leo risus, porta ac consectetur ac, vestibulum at eros.
-Praesent commodo cursus magna, vel scelerisque nisl consectetur et.`,
-              )
-              .join('\n')}
+            {desc}
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose}>Confirmar</Button>
-          <Button onClick={handleClose}>Cancelar</Button>
+          <Button onClick={() => handleAction('confirm')}>Confirmar</Button>
+          <Button onClick={() => handleAction('cancel')}>Cancelar</Button>
         </DialogActions>
       </Dialog>
     </div>

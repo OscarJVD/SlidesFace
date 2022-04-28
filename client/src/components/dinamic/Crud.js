@@ -1,6 +1,6 @@
 import { cloneElement, useEffect, useRef, useState } from "react";
 import Tooltip from "react-simple-tooltip";
-import { postDataAPI, putDataAPI } from "../../utils/fetchData";
+import { deleteDataAPI, postDataAPI, putDataAPI } from "../../utils/fetchData";
 import { getEsDate, sort } from "../../utils/functions";
 import Approve from "../alert/Approve";
 import MTable from './MTable';
@@ -19,7 +19,9 @@ const Crud = ({ arr, addstr, modelRef, forallusersflag, auth, model, fields, opt
   let [add, setAdd] = useState(false)
   let [values, setValues] = useState(fields)
   let [readData, setReadData] = useState([])
+  const [isOpen, setOpen] = useState(false)
   const [id, setId] = useState('');
+  const [itemToDelete, setItemToDelete] = useState()
 
   const getItems = async () => {
     let res = await postDataAPI('getDataField', { model, fieldsAndValues: values, fields }, auth.token)
@@ -60,31 +62,34 @@ const Crud = ({ arr, addstr, modelRef, forallusersflag, auth, model, fields, opt
 
     const saveItem = async () => {
       try {
-        console.log('valuesSS', values)
+        console.log('item to save or edit', values)
         let res;
+        let newArr = []
         if (id) {
-          let newArr = readData, arrIndex, objIndex;
-
-          newArr.forEach((data, index) => {
-            if (data._id == id) {
-              Object.keys(data).forEach(key => {
-                Object.keys(values).forEach(valueKey => {
-                  if (key == valueKey) {
-                    // data[key] = values[valueKey]
-                    newArr[index][key] = values[valueKey]
-                    // newValueIndex = index
-                  }
-                })
-              })
+          newArr = []
+          readData.forEach(row => {
+            if (row._id == id) {
+              row[Object.keys(values)[0]] = Object.values(values)[0]
+              newArr.push(row)
+            } else {
+              newArr.push(row)
             }
           })
 
-          console.log('newArr')
-          console.log(newArr)
+          setReadData(newArr);
 
           res = await putDataAPI(`editRow/${id}`, { model, values, forallusersflag }, auth.token)
           await getItems()
         } else {
+          newArr = []
+          readData.forEach(row => {
+            newArr.push(row)
+          })
+
+          newArr.push(values)
+
+          setReadData(newArr);
+
           res = await postDataAPI('createField', { model, values, fields, modelRef, forallusersflag }, auth.token)
           await getItems()
         }
@@ -117,7 +122,7 @@ const Crud = ({ arr, addstr, modelRef, forallusersflag, auth, model, fields, opt
     const handleClickOpen = () => {
       setOpen(true);
     };
-  
+
     const handleDialogClose = () => {
       setOpen(false);
     };
@@ -126,15 +131,46 @@ const Crud = ({ arr, addstr, modelRef, forallusersflag, auth, model, fields, opt
       console.log('item', item);
       console.log('values', values);
       console.log('fields', fields);
+      setItemToDelete(item)
       handleClickOpen()
-      // setId(item._id);
-      // setAdd(true)
-      // setValues({ ...values, [Object.keys(fields)[0]]: item[field] });
+    };
+
+    const handleAction = async (action) => {
+      try {
+        console.log(action)
+        if (action == 'cancel') {
+          setItemToDelete(null)
+          handleDialogClose()
+        } else {
+          let newArr = []
+          readData.forEach(row => {
+            if (row._id != itemToDelete._id) newArr.push(row)
+          })
+
+          // console.log('newArr')
+          // console.log(newArr)
+          setReadData(newArr);
+          handleDialogClose()
+          console.log(itemToDelete)
+          console.log(auth.token);
+          if (!itemToDelete) return console.error('Error, item no encontrado')
+          await putDataAPI(`softDeleteRow/${itemToDelete._id}`, { model, item: itemToDelete, forallusersflag }, auth.token)
+          await getItems()
+        }
+      } catch (error) {
+        console.error(error);
+        throw error
+      }
     };
 
     return (
       <>
-        <Approve isOpen={isOpen} handleClose={handleDialogClose} />
+        <Approve
+          desc={`¿Estás seguro de que desea eliminar el registro ${itemToDelete ? Object.values(itemToDelete)[3] + ' con id No. ' + Object.values(itemToDelete)[1] : ''}?`}
+          isOpen={isOpen}
+          handleClose={handleDialogClose}
+          handleAction={handleAction}
+        />
         {/* d-flex -- INPUTS*/}
         <div className={`input-group ${add ? '' : 'd-none'}`}>
           {
