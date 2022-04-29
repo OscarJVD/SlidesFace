@@ -13,7 +13,7 @@ const crudCtrl = {
     try {
       const { model, values, forallusersflag, fields, modelRef } = req.body;
 
-      let filter = {}, data;
+      let filter = {}
 
       if (!forallusersflag) {
         filter.user = req.authUser._id
@@ -22,7 +22,6 @@ const crudCtrl = {
           filter.user = req.authUser._id
       }
 
-      let collectionExistsFlag = false;
       const test = mongoose.connection.db.listCollections({ name: model + 's' })
         .next(async function (err, collinfo) {
           console.log(`Collection ${model} doesnt exists`);
@@ -93,17 +92,7 @@ const crudCtrl = {
           }
         });
 
-      // fields.createdAt = 'nothing'
-      // fields.updatedAt = 'nothing'
-      // const dinamicModelRefToGet = require(`../models/${model}Model`)
-      // data = await dinamicModelRefToGet.find(filter)
-      // .select(Object.keys(fields))
-
-      res.json({
-        msg: "Registro añadido"
-        // ,
-        // data
-      });
+      res.json({ msg: "Registro añadido" });
     } catch (error) {
       console.log('ERROR - ERROR - ERROR')
       console.log(util.inspect(error));
@@ -171,12 +160,10 @@ const crudCtrl = {
       return res.status(500).json({ msg: error.message });
     }
   },
-  deleteRow: async (req, res) => {
+  softDeleteRow: async (req, res) => {
     try {
       const { id } = req.params
-      const { model, forallusersflag, values } = req.body;
-
-      console.log(util.inspect(id, model, forallusersflag, values))
+      const { model, forallusersflag, item } = req.body;
 
       let filter = { _id: id }
 
@@ -187,12 +174,84 @@ const crudCtrl = {
           filter.user = req.authUser._id
       }
 
-      // const DinamicModelCall = require(`../models/${model}Model`)
-      // const row = await DinamicModelCall.findById(req.params.id).select("-password");
-      // if (!row) return res.status(400).json({ msg: "Fila no encontrada. Error: FI001" });
+      const DinamicModelCall = require(`../models/${model}Model`)
+      const row = await DinamicModelCall.findById(id)
+      if (!row) return res.status(400).json({ msg: "Fila no encontrada. Error: FI001" });
 
-      res.json({ msg: "Registro editado" });
+      const test = mongoose.connection.db.listCollections({ name: model + 'historic' + 's' })
+        .next(async function (err, collinfo) {
+          console.log(`Collection ${model} doesnt exists`);
+          let schemaDinamicObject = {}
+
+          console.log('schemaDinamicObject', util.inspect(schemaDinamicObject));
+          console.log(util.inspect(schemaDinamicObject));
+
+          const dinamicSchemaCall = new mongoose.Schema(schemaDinamicObject, {
+            timestamps: true,
+            strict: false
+          });
+
+          const newSchemaProps = {
+            user: req.authUser._id,
+          }
+
+          if (collinfo && collinfo.name == model + 'historics') {
+            const dinamicModelRef = require(`../models/${model}historicModel`)
+            // The collection exists
+            console.log(`Collection ${model} exists`);
+            // const newRow = new dinamicModelRef(newSchemaProps);
+            // await newRow.save();
+            await dinamicModelRef.update(
+              {},
+              { $push: { historic: item } }, { upsert: true }  // or $set
+            );
+            collectionExistsFlag = true;
+          } else {
+            // No existe
+            delete mongoose.connection.models[model.charAt(0).toUpperCase() + model.slice(1) + 'historic'];
+
+            newSchemaProps.historic = [item]
+            const dinamicNewSchema = mongoose.model(model + 'historic', dinamicSchemaCall);
+            const newRow = new dinamicNewSchema(newSchemaProps);
+            await newRow.save();
+
+            // await DinamicModelCall.update(
+            //   filter,
+            //   { $push: { historic: item } }, { upsert: true }  // or $set
+            // );
+
+            const UppModelName = model.charAt(0).toUpperCase() + model.slice(1) + 'historic';
+
+            const fileContent = `
+            const mongoose = require("mongoose");
+            const ${UppModelName}Schema = new mongoose.Schema({${model}: {
+              type: mongoose.Types.ObjectId,
+              ref: '${model}',
+            },
+            
+            historic: { type: Array, required: false }
+          },{timestamps: true,strict: false});
+            module.exports = mongoose.model('${model + 'historic'}', ${UppModelName}Schema);
+          `;
+
+            const filepath = `./models/${model}historicModel.js`;
+
+            console.log(util.inspect(fileContent));
+
+            fs.writeFileSync(filepath, fileContent, (err) => {
+              if (err) throw err;
+
+              console.log("The file was succesfully saved!");
+            });
+          }
+        });
+
+      await DinamicModelCall.findByIdAndDelete(item._id)
+
+      return res.json({ msg: "Registro eliminado" });
     } catch (error) {
+      console.log(error)
+      console.log(util.inspect(error))
       return res.status(500).json({ msg: error.message });
     }
   }

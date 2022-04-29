@@ -25,13 +25,13 @@ const UserSchema = new mongoose.Schema(
       required: false,
       trim: true,
       maxlength: 25,
-      unique: true,
+      // unique: true,
     },
     email: {
       type: String,
       required: false,
       trim: true,
-      unique: true,
+      // unique: true,
     },
     password: {
       type: String,
@@ -51,7 +51,6 @@ const UserSchema = new mongoose.Schema(
     gender: { type: String, default: "male" },
     mobile: {
       type: String,
-      default: "",
       required: false,
       trim: true,
     },

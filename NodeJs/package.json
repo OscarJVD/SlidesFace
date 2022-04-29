@@ -4,7 +4,7 @@
   "description": "app to be social",
   "main": "index.js",
   "scripts": {
-    "server": "nodemon server.js",
+    "server": "nodemon --inspect server.js",
     "staticserver": "node server.js",
     "client": "cd client && npm run start",
     "install-all": "concurrently \"npm run server-install\" \"npm run client-install\" ",

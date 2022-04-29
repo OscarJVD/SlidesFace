@@ -1,5 +1,7 @@
 const User = require("../models/userModel");
 const bcrypt = require("bcrypt");
+const util = require("util");
+const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 const passwordValidator = require("password-validator");
 const { isEmailTelOrUserName, getRandomNum } = require("../utils/functions");
@@ -8,6 +10,7 @@ const generator = require('nickname-generator');
 const authCtrl = {
   register: async (req, res) => {
     try {
+      // mongoose.connection.db.Users.dropIndexes()
       const {
         firstname,
         lastname,
@@ -16,13 +19,15 @@ const authCtrl = {
         gender,
       } = req.body;
 
-      //       const phone_exists = await User.findOne({
+      // console.log(util.inspect(req.body));
+
+      //       const mobile_exists = await User.findOne({
       //         firstname: '.m.m',
       //       });
 
-      //       console.log('phone_exists', phone_exists);
+      //       console.log('mobile_exists', mobile_exists);
 
-      //       return res.json({test: phone_exists});
+      //       return res.json({test: mobile_exists});
       // return;
       if (
         !firstname ||
@@ -88,6 +93,7 @@ const authCtrl = {
         const email_exists = await User.findOne({
           email: username_email_or_mobile_register,
         });
+
         if (email_exists)
           return res.status(400).json({ msg: "El correo ya existe." });
 
@@ -95,16 +101,16 @@ const authCtrl = {
       }
 
       if (registerType == "tel") {
-        const phone_exists = await User.findOne({
-          phones: username_email_or_mobile_register,
+        const mobile_exists = await User.findOne({
+          mobile: username_email_or_mobile_register,
         });
 
-        console.log('phone_exists', phone_exists);
+        console.log('mobile_exists', mobile_exists);
 
-        if (phone_exists)
+        if (mobile_exists)
           return res.status(400).json({ msg: "El móvil ya existe." });
 
-        userObj.phones = [username_email_or_mobile_register];
+        userObj.mobile = [username_email_or_mobile_register];
       }
 
       if (!userObj.hasOwnProperty('username')) {
@@ -135,7 +141,7 @@ const authCtrl = {
         userObj.username = randomUsername;
       }
 
-      // console.log(userObj);
+      console.log(util.inspect(userObj));
       // return;
       // Creamos el usuario
       const newUser = new User(userObj);
@@ -160,6 +166,8 @@ const authCtrl = {
         },
       });
     } catch (err) {
+      console.log(util.inspect(err));
+      console.log(err)
       return res.status(500).json({ msg: err.message });
     }
   },
@@ -207,7 +215,7 @@ const authCtrl = {
 
       if (registerType == "tel") {
         user = await User.findOne({
-          phones: username_email_or_mobile_login,
+          mobile: username_email_or_mobile_login,
         }).populate(
           "followers following",
           "avatar banner username firstname lastname mobile email fullname followers following"
@@ -281,12 +289,12 @@ const authCtrl = {
     }
   },
   testpost: async (req, res) => {
-    // const phone_exists = await User.find({});
-    const phone_exists = await User.find({}).select(['phones', 'lastname'])
+    // const mobile_exists = await User.find({});
+    const mobile_exists = await User.find({}).select(['mobile', 'lastname'])
 
-    console.log('phone_exists', phone_exists);
+    console.log('mobile_exists', mobile_exists);
 
-    return res.json({ test: phone_exists });
+    return res.json({ test: mobile_exists });
     return;
   }
 };
