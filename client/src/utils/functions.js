@@ -80,4 +80,12 @@ function sort(object) {
   return newObject;
 }
 
-export { isEmailTelOrUserName, getEsDate, sort };
+function getRandomNum(min, max) {
+  return parseInt(Math.random() * (max - min) + min);
+}
+
+function capFirstLetter(str) {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+export { isEmailTelOrUserName, getEsDate, sort, capFirstLetter, getRandomNum };

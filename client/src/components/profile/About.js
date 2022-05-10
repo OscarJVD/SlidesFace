@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect, createRef } from "react";
+import { getRandomNum } from "../../utils/functions";
 import Crud from "../dinamic/Crud";
 
 const About = ({ userData, auth }) => {
@@ -13,7 +14,7 @@ const About = ({ userData, auth }) => {
   return (
     <>
       {userData.map((user, index) => (
-        <div className="d-flex align-items-start" key={user._id + index}>
+        <div className="d-flex align-items-start mb-5" key={user._id + index}>
 
           <div className="nav flex-column nav-pills me-3 text-left" id="v-pills-tab" role="tablist" aria-orientation="vertical">
             <a className="text-black fs-3 fw-less-bold p-2">Información</a>
@@ -21,9 +22,9 @@ const About = ({ userData, auth }) => {
             <button className="nav-link text-start fw-less-bold" id="v-pills-profile-tab" data-bs-toggle="pill" data-bs-target="#v-pills-profile" type="button" role="tab" aria-controls="v-pills-profile" aria-selected="false">Empleo y formación</button>
             <button className="nav-link text-start fw-less-bold" id="v-pills-messages-tab" data-bs-toggle="pill" data-bs-target="#v-pills-messages" type="button" role="tab" aria-controls="v-pills-messages" aria-selected="false">Lugares de residencia</button>
             <button className="nav-link text-start fw-less-bold" id="v-pills-settings-tab" data-bs-toggle="pill" data-bs-target="#v-pills-settings" type="button" role="tab" aria-controls="v-pills-settings" aria-selected="false">Información basica y de contacto</button>
-            <button className="nav-link text-start fw-less-bold" id="v-pills-settings-tab" data-bs-toggle="pill" data-bs-target="#v-pills-settings" type="button" role="tab" aria-controls="v-pills-settings" aria-selected="false">Familia y relaciones</button>
+            {/* <button className="nav-link text-start fw-less-bold" id="v-pills-settings-tab" data-bs-toggle="pill" data-bs-target="#v-pills-settings" type="button" role="tab" aria-controls="v-pills-settings" aria-selected="false">Familia y relaciones</button>
             <button className="nav-link text-start fw-less-bold" id="v-pills-settings-tab" data-bs-toggle="pill" data-bs-target="#v-pills-settings" type="button" role="tab" aria-controls="v-pills-settings" aria-selected="false">Información sobre ti</button>
-            <button className="nav-link text-start fw-less-bold" id="v-pills-settings-tab" data-bs-toggle="pill" data-bs-target="#v-pills-settings" type="button" role="tab" aria-controls="v-pills-settings" aria-selected="false">Acontecimientos importantes</button>
+            <button className="nav-link text-start fw-less-bold" id="v-pills-settings-tab" data-bs-toggle="pill" data-bs-target="#v-pills-settings" type="button" role="tab" aria-controls="v-pills-settings" aria-selected="false">Acontecimientos importantes</button> */}
             {/* <button className="nav-link active" id="v-pills-home-tab" data-bs-toggle="pill" data-bs-target="#v-pills-home" type="button" role="tab" aria-controls="v-pills-home" aria-selected="true">Información General</button>
           <button className="nav-link" id="v-pills-profile-tab" data-bs-toggle="pill" data-bs-target="#v-pills-profile" type="button" role="tab" aria-controls="v-pills-profile" aria-selected="false">Empleo y formación</button>
           <button className="nav-link" id="v-pills-messages-tab" data-bs-toggle="pill" data-bs-target="#v-pills-messages" type="button" role="tab" aria-controls="v-pills-messages" aria-selected="false">Lugares de residencia</button>
@@ -43,12 +44,13 @@ const About = ({ userData, auth }) => {
                   <div className="col-md-9">
                     <div className="row">
                       <div className="col-md-12">
-                        {user.email ? <div className="fs-5 fw-semi-bold">{user.email}</div> : user.username === auth.user.username ? (<a
-                          href="#"
-                        >
-                          Agrega tu correo
-                        </a>) : <span className="fw-less-bold text-muted">No hay información de correo disponible</span>}
-
+                        <Crud
+                          model="personalemail"
+                          fields={{ personalemail: '' }}
+                          addstr={{ personalemail: "tu correo personal" }}
+                          auth={auth}
+                          user={user}
+                        />
                       </div>
                       <div className="col-md-12">
                         <div className="text-muted fs-8">Correo</div>
@@ -86,23 +88,13 @@ const About = ({ userData, auth }) => {
                   <div className="col-md-9">
                     <div className="row">
                       <div className="col-md-12">
-                        {/* 
-                        {
-                          user.mobile ? <div className="fs-5 fw-semi-bold">{user.mobile}</div> : user.username === auth.user.username
-                            ? <Crud auth={auth} fields={{ phones: '' }} addstr="tu celular" forallusersflag={false}/>
-                            : <span className="fw-less-bold text-muted">No hay información de contacto disponible</span>
-                        } */}
+
                         <Crud
-                          auth={auth}
-                          fields={{ number: '' }}
-                          modelRef="user"
-                          addstr={{ number: "tu celular" }}
-                          forallusersflag={false}
+                          user={user}
                           model="phone"
-                          optional={{
-                            withDetail: false,
-                            tabletype: 'list'
-                          }}
+                          fields={{ number: '', pais: '' }}
+                          addstr={{ number: "tu celular", pais: " - código del país" }}
+                          auth={auth}
                         />
 
                       </div>
@@ -132,11 +124,13 @@ const About = ({ userData, auth }) => {
                   <div className="col-md-9">
                     <div className="row">
                       <div className="col-md-12">
-                        {
-                          user.mobile ? <div className="fs-5 fw-semi-bold">{user.mobile}</div> : user.username === auth.user.username
-                            ? <a href="#">Agrega tu celular</a>
-                            : <span className="fw-less-bold text-muted">No hay información de contacto disponible</span>
-                        }
+                        <Crud
+                          user={user}
+                          model="phone"
+                          fields={{ number: '', pais: '' }}
+                          addstr={{ number: "tu celular", pais: " - código del país" }}
+                          auth={auth}
+                        />
                       </div>
                       <div className="col-md-12">
                         <div className="text-muted fs-8">Celular</div>
@@ -154,16 +148,16 @@ const About = ({ userData, auth }) => {
                   <div className="col-md-9">
                     <div className="row">
                       <div className="col-md-12">
-                        {
-                          user.address ? <div className="fs-5 fw-semi-bold">{user.address}</div> : user.username === auth.user.username
-                            ? <a href="#">Agrega tu dirección</a>
-                            : <span className="fw-less-bold text-muted">
-                              No hay información de ubicación disponible
-                            </span>
-                        }
+                        <Crud
+                          model="address"
+                          fields={{ address: '' }}
+                          addstr={{ address: "tu dirección" }}
+                          auth={auth}
+                          user={user}
+                        />
                       </div>
                       <div className="col-md-12">
-                        <div className="text-muted fs-8">Celular</div>
+                        <div className="text-muted fs-8">Dirección</div>
                       </div>
                     </div>
                   </div>
@@ -178,12 +172,13 @@ const About = ({ userData, auth }) => {
                   <div className="col-md-9">
                     <div className="row">
                       <div className="col-md-12">
-                        {user.email ? <div className="fs-5 fw-semi-bold">{user.email}</div> : user.username === auth.user.username ? (<a
-                          href="#"
-                        >
-                          Agrega tu correo
-                        </a>) : <span className="fw-less-bold text-muted">No hay información de correo disponible</span>}
-
+                        <Crud
+                          model="personalemail"
+                          fields={{ personalemail: '' }}
+                          addstr={{ personalemail: "tu correo personal" }}
+                          auth={auth}
+                          user={user}
+                        />
                       </div>
                       <div className="col-md-12">
                         <div className="text-muted fs-8">Correo</div>
@@ -228,12 +223,14 @@ const About = ({ userData, auth }) => {
                   <div className="col-md-9">
                     <div className="row">
                       <div className="col-md-12">
-                        {user.birthday ? <div className="fs-5 fw-semi-bold">{user.birthday}</div> : user.username === auth.user.username ? (<a
-                          href="#"
-                        >
-                          Agrega tu fecha de nacimiento
-                        </a>) : <span className="fw-less-bold text-muted">No hay información de nacimiento disponible</span>}
-
+                        <Crud
+                          model="birthday"
+                          fields={{ birthday: '' }}
+                          addstr={{ birthday: "tu fecha de nacimiento" }}
+                          auth={auth}
+                          user={user}
+                          limit={1}
+                        />
                       </div>
                       <div className="col-md-12">
                         <div className="text-muted fs-8">Cumpleaños</div>

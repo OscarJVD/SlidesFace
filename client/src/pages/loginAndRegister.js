@@ -251,7 +251,7 @@ const LoginAndRegister = () => {
           </div>
         </div>
         <div className="col-md-6 d-flex justify-content-center align-items-center">
-          <div className="auth-left-content mt-5 mb-5">
+          <div className="auth-left-content mt-5 mb-5 p-3">
             {/* <div className="weather-small text-dark">
               <p className="current-weather">
                 <i className="bx bx-sun"></i> <span>14&deg;</span>
@@ -263,7 +263,7 @@ const LoginAndRegister = () => {
                 slidesface
               </h1>
               <h3 className="text-left fw-normal text-dark">
-                Un sitio simple para disfrutar un poco de todo
+                Simple y con un poco de todo
               </h3>
             </div>
           </div>
