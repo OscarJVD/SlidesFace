@@ -52,6 +52,7 @@ const SideHead = ({ username, children, active }) => {
   }, [username, auth.user, profile.users, getUserProfileByUserName, dispatch, setUserData, setIntro]);
 
   const submitSetUserName = async (e) => {
+    
     postDataAPI(`setTxtUserName`, { txtUserName }, auth.token)
       .then((res) => {
         let newArr = [];
@@ -67,9 +68,17 @@ const SideHead = ({ username, children, active }) => {
           },
         });
       });
+
   };
 
   const submitSetIntro = async (e) => {
+
+    let tempData = userData
+    tempData[0].story = intro;
+    setUserData(tempData);
+
+    setShowInputIntro(false);
+
     postDataAPI(`setStory`, { story: intro }, auth.token)
       .then((res) => {
         let newArr = [];
@@ -86,9 +95,11 @@ const SideHead = ({ username, children, active }) => {
           },
         });
       });
+  console.log('userData:',  userData);
+
   };
 
-  // console.log('userData:',  userData);
+  console.log('userData:',  userData);
 
   return (
     <>
@@ -227,6 +238,7 @@ const SideHead = ({ username, children, active }) => {
                                       placeholder="Usuario"
                                       className="border-0 outline-none w-50"
                                     />
+
                                     <Tooltip content="Guardar" placement="bottom">
                                       <button
                                         type="button"
@@ -236,6 +248,7 @@ const SideHead = ({ username, children, active }) => {
                                         <i className="fas fa-save"></i>
                                       </button>
                                     </Tooltip>
+
                                     <Tooltip
                                       content="Cancelar"
                                       placement="bottom"

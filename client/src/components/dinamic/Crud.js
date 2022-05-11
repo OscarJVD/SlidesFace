@@ -146,6 +146,16 @@ const Crud = ({ user, arr, limit, addstr, modelRef, forallusersflag, auth, model
           await getItems()
         }
 
+        setTimeout(() => {
+          if (addRef.current) addRef.current.textContent = addRef.current.textContent.replace(/,/g, '')
+  
+          if (strAddItemRef.current.children && strAddItemRef.current.children.length > 0) {
+            Array.from(strAddItemRef.current.children).forEach((atag, index) => {
+              strAddItemRef.current.children[index].textContent = strAddItemRef.current.children[index].textContent.replace(/,/g, '')
+            })
+          }
+        }, 0.00001);
+
       } catch (error) {
         console.error(error)
       }
@@ -309,7 +319,7 @@ const Crud = ({ user, arr, limit, addstr, modelRef, forallusersflag, auth, model
       } */}
         <div className="w-100" style={{ overflowY: 'auto', overflowX: 'auto' }}>
           <Approve
-            desc={`¿Estás seguro de que desea eliminar la fila con id terminado en: ...${itemToDelete ? Object.values(itemToDelete)[1].slice(19, Object.values(itemToDelete)[1].length) : ''} ?`}
+            desc={`¿Estás seguro de que desea eliminar la fila ${itemToDelete && Object.values(itemToDelete)[1] ? 'con id terminado en: ...'+ Object.values(itemToDelete)[1].slice(19, Object.values(itemToDelete)[1].length) + '?' : ''}`}
             isOpen={isOpen}
             handleClose={handleDialogClose}
             handleAction={handleAction}
@@ -367,7 +377,7 @@ const Crud = ({ user, arr, limit, addstr, modelRef, forallusersflag, auth, model
 
           <div ref={strAddItemRef}>
             {
-              ((!forallusersflag && user && user.username === auth.user.username) && (readData.length <= limit || !limit)) &&
+              ((!forallusersflag && user && user.username === auth.user.username) && (readData.length < limit || !limit)) &&
               (Object.keys(fields).map((field, index) => (
                 callToActionCmpFlag
                   // inputFocus.current.focus(); // Esto es para que el input se quede en foco
