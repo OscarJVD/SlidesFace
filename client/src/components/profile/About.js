@@ -148,14 +148,14 @@ const About = ({ userData, auth }) => {
                   <div className="col-md-9">
                     <div className="row">
                       <div className="col-md-12">
-                        {/* <Crud
+                        <Crud
                           model="address"
                           fields={{ address: '' }}
                           addstr={{ address: "tu dirección" }}
                           auth={auth}
                           user={user}
                           limit={1}
-                        /> */}
+                        />
                       </div>
                       <div className="col-md-12">
                         <div className="text-muted fs-8">Dirección</div>
@@ -224,14 +224,14 @@ const About = ({ userData, auth }) => {
                   <div className="col-md-9">
                     <div className="row">
                       <div className="col-md-12">
-                        {/* <Crud
+                        <Crud
                           model="birthday"
                           fields={{ birthday: '' }}
                           addstr={{ birthday: "tu fecha de nacimiento" }}
                           auth={auth}
                           user={user}
-                          limit={1}
-                        /> */}
+                          // limit={1}
+                        />
                       </div>
                       <div className="col-md-12">
                         <div className="text-muted fs-8">Cumpleaños</div>
