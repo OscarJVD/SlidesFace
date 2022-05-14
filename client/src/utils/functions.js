@@ -88,4 +88,6 @@ function capFirstLetter(str) {
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
-export { isEmailTelOrUserName, getEsDate, sort, capFirstLetter, getRandomNum };
+const removeDuplicateWords = s => s.replace(/(\b\S.+\b)(?=.*\1)/g, "").trim()
+
+export { isEmailTelOrUserName, getEsDate, sort, capFirstLetter, getRandomNum, removeDuplicateWords };

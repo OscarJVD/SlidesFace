@@ -1,7 +1,7 @@
 import { cloneElement, useEffect, useRef, useState } from "react";
 import Tooltip from "react-simple-tooltip";
 import { postDataAPI, putDataAPI } from "../../utils/fetchData";
-import { capFirstLetter, getRandomNum, sort } from "../../utils/functions";
+import { capFirstLetter, getRandomNum, sort, removeDuplicateWords } from "../../utils/functions";
 import Approve from "../alert/Approve";
 import MTable from './MTable';
 import { Oval } from 'react-loader-spinner'
@@ -73,6 +73,7 @@ const Crud = ({ user, arr, limit, addstr, modelRef, forallusersflag, auth, model
     console.log('readData', readData);
   }
 
+  // aca esta el error
   useEffect(() => {
     getItems()
     console.log('readData', readData);
@@ -97,8 +98,7 @@ const Crud = ({ user, arr, limit, addstr, modelRef, forallusersflag, auth, model
         str += (index == 0 ? addTxt : '') + ' ' + strAlone
 
       } else {
-
-        strAlone += Object.entries(addstr).map(placeholder => {
+        strAlone += Object.entries(addstr).map((placeholder, index2) => {
           return placeholder[0] == field
             ? (Object.keys(addstr).length == 2
               ? placeholder[1].replace('-', 'y')
@@ -110,7 +110,8 @@ const Crud = ({ user, arr, limit, addstr, modelRef, forallusersflag, auth, model
       str += (index == 0 ? addTxt : '') + ' ' + strAlone
     })
 
-    console.log(str)
+    console.log(Object.entries(addstr))
+    str = removeDuplicateWords(str)
     setAddTitle(str)
     strAlone = capFirstLetter(strAlone)
     setAddTitleAlone(strAlone)
@@ -412,7 +413,9 @@ const Crud = ({ user, arr, limit, addstr, modelRef, forallusersflag, auth, model
               (Object.keys(fields).map((field, index) => (
                 callToActionCmpFlag
                   ? cloneElement(callToActionCmp, { ref: addRef, className: `${add ? 'd-none' : ''}`, onClick: newItem })
-                  : <a key={randomKey()} href="#" ref={addRef} className={`${add ? 'd-none' : ''}`} onClick={e => { newItem(e); setValues(fields); }}>
+                  :
+                  <a key={randomKey()} href="#" ref={addRef} className={`${add ? 'd-none' : ''}`}
+                    onClick={e => { newItem(e); setValues(fields); }}>
                     {Object.keys(fields).length > 1 && index > 0 && addTitle}
                     {Object.keys(fields).length == 1 && addTitle}
                   </a>
