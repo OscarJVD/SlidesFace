@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect, createRef } from "react";
 import { getRandomNum } from "../../utils/functions";
 import Crud from "../dinamic/Crud";
+import GeneralInformation from "./InfoAbout/GeneralInformation";
 
 const About = ({ userData, auth }) => {
 
@@ -32,81 +33,13 @@ const About = ({ userData, auth }) => {
           </div>
 
           <div className="tab-content" id="v-pills-tabContent">
+
+            {/* INFORMACIÓN GENERAL */}
             <div className="tab-pane fade show active" id="v-pills-home" role="tabpanel" aria-labelledby="v-pills-home-tab">
-
-              <div className="container mt-4">
-
-                {/* CORREO */}
-                <div className="row">
-                  <div className="col-md-2 justify-content-center d-flex align-items-center">
-                    <i className="fas fa-envelope fa-2x text-gray"></i>
-                  </div>
-                  <div className="col-md-9">
-                    <div className="row">
-                      <div className="col-md-12">
-                        <Crud
-                          model="personalemail"
-                          fields={{ personalemail: '' }}
-                          addstr={{ personalemail: "tu correo personal" }}
-                          auth={auth}
-                          user={user}
-                        />
-                      </div>
-                      <div className="col-md-12">
-                        <div className="text-muted fs-8">Correo</div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                {/* END CORREO */}
-
-                {/* USUARIO */}
-                <div className="row mt-4">
-                  <div className="col-md-2 justify-content-center d-flex align-items-center">
-                    <i className="fas fa-user fa-2x text-gray"></i>
-                  </div>
-                  <div className="col-md-9">
-                    <div className="row">
-                      <div className="col-md-12">
-                        {user.username
-                          ? <div className="fs-5 fw-semi-bold">{user.username}</div>
-                          : <span className="fw-less-bold text-muted">No hay información de usuario disponible</span>}
-                      </div>
-                      <div className="col-md-12">
-                        <div className="text-muted fs-8">Usuario</div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                {/* END USUARIO */}
-
-                {/* MÓVIL */}
-                <div className="row mt-4">
-                  <div className="col-md-2 justify-content-center d-flex align-items-center">
-                    <i className="fas fa-phone-alt fa-2x text-gray"></i>
-                  </div>
-                  <div className="col-md-9">
-                    <div className="row">
-                      <div className="col-md-12">
-
-                        <Crud
-                          user={user}
-                          model="phone"
-                          fields={{ number: '', pais: '' }}
-                          addstr={{ number: "tu celular", pais: " - código del país" }}
-                          auth={auth}
-                        />
-
-                      </div>
-                      <div className="col-md-12">
-                        <div className="text-muted fs-8">Celular</div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                {/* END MÓVIL */}
-              </div>
+              <GeneralInformation user={user} auth={auth} />
             </div>
+            {/* END INFORMACIÓN GENERAL */}
+
             <div className="tab-pane fade" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">...</div>
             <div className="tab-pane fade" id="v-pills-messages" role="tabpanel" aria-labelledby="v-pills-messages-tab">...</div>
             <div className="tab-pane fade" id="v-pills-settings" role="tabpanel" aria-labelledby="v-pills-settings-tab">
@@ -230,7 +163,7 @@ const About = ({ userData, auth }) => {
                           addstr={{ birthday: "tu fecha de nacimiento" }}
                           auth={auth}
                           user={user}
-                          // limit={1}
+                          limit={1}
                         />
                       </div>
                       <div className="col-md-12">

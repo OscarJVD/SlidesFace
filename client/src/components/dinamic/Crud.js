@@ -5,6 +5,9 @@ import { capFirstLetter, getRandomNum, sort, removeDuplicateWords } from "../../
 import Approve from "../alert/Approve";
 import MTable from './MTable';
 import { Oval } from 'react-loader-spinner'
+import Toast from "../alert/Toast";
+import { useDispatch } from "react-redux";
+import { GLOBAL_TYPES } from "../../redux/actions/globalTypes";
 
 const Crud = ({ user, arr, limit, addstr, modelRef, forallusersflag, auth, model, fields, optional, callToActionCmp, callToActionCmpFlag }) => {
 
@@ -23,12 +26,14 @@ const Crud = ({ user, arr, limit, addstr, modelRef, forallusersflag, auth, model
   let [addTitleAlone, setAddTitleAlone] = useState("")
   let [addTxt, setAddTxt] = useState("Agregar")
   let [add, setAdd] = useState(false)
+  let [showValidInputs, setShowValidInputs] = useState({ flag: false, str: '' })
   let [showLoader, setShowLoader] = useState(false)
   let [values, setValues] = useState(fields)
   let [readData, setReadData] = useState([])
   const [isOpen, setOpen] = useState(false)
   const [id, setId] = useState('');
   const [itemToDelete, setItemToDelete] = useState(null)
+  const dispatch = useDispatch();
 
   if (!model) model = 'user'
   if (!modelRef) modelRef = 'user'
@@ -44,8 +49,21 @@ const Crud = ({ user, arr, limit, addstr, modelRef, forallusersflag, auth, model
 
     if (strAddItemRef.current.children && strAddItemRef.current.children.length > 0) {
       Array.from(strAddItemRef.current.children).forEach((atag, index) => {
-        strAddItemRef.current.children[index].textContent = strAddItemRef.current.children[index].textContent.replace(/,/g, '')
+        // console.log(strAddItemRef.current.children[index]);
+        if (strAddItemRef.current.children[index].span) {
+          strAddItemRef.current.children[index].span.textContent = strAddItemRef.current.children[index].textContent.replace(/,/g, '')
+        }
+        // else{
+        //     strAddItemRef.current.children[index].remove()
+        // }
+
+        // if(strAddItemRef.current.children[index] && !strAddItemRef.current.children[index].span){
+        //   // strAddItemRef.current.removeChild(strAddItemRef.current.children[index])
+
+        // }
       })
+
+
     }
   }
 
@@ -147,6 +165,23 @@ const Crud = ({ user, arr, limit, addstr, modelRef, forallusersflag, auth, model
     const saveItem = async () => {
       try {
         console.log('item to save or edit', values)
+        // VALIDAR CAMPOS VACIOS
+        let entries = Object.entries(values)
+        let resReturnFlag = false
+        entries.map(input => {
+          if (input[1] == '' || !input[1]) {
+            resReturnFlag = true
+            setShowValidInputs({ flag: true, str: 'Todos los campos son obligatorios' })
+          }
+        })
+
+        setTimeout(() => {
+          fixAddStr()
+        }, 0.00001);
+
+        if (resReturnFlag) return;
+        // END VALIDAR CAMPOS VACIOS
+
         let res;
         let newArr = []
 
@@ -188,13 +223,7 @@ const Crud = ({ user, arr, limit, addstr, modelRef, forallusersflag, auth, model
         }
 
         setTimeout(() => {
-          if (addRef.current) addRef.current.textContent = addRef.current.textContent.replace(/,/g, '')
-
-          if (strAddItemRef.current.children && strAddItemRef.current.children.length > 0) {
-            Array.from(strAddItemRef.current.children).forEach((atag, index) => {
-              strAddItemRef.current.children[index].textContent = strAddItemRef.current.children[index].textContent.replace(/,/g, '')
-            })
-          }
+          fixAddStr()
         }, 0.00001);
 
       } catch (error) {
@@ -311,14 +340,7 @@ const Crud = ({ user, arr, limit, addstr, modelRef, forallusersflag, auth, model
           setReadData(newArr);
           // END ACTUALIZAR ESTADO SIN EL ITEM ELIMINADO
           setTimeout(() => {
-
-            if (addRef.current) addRef.current.textContent = addRef.current.textContent.replace(/,/g, '')
-
-            if (strAddItemRef.current.children && strAddItemRef.current.children.length > 0) {
-              Array.from(strAddItemRef.current.children).forEach((atag, index) => {
-                strAddItemRef.current.children[index].textContent = strAddItemRef.current.children[index].textContent.replace(/,/g, '')
-              })
-            }
+            fixAddStr();
           }, 0.00001);
 
         }
@@ -332,13 +354,7 @@ const Crud = ({ user, arr, limit, addstr, modelRef, forallusersflag, auth, model
       setAdd(false);
       setId('');
       setTimeout(() => {
-        if (addRef.current) addRef.current.textContent = addRef.current.textContent.replace(/,/g, '')
-
-        if (strAddItemRef.current.children && strAddItemRef.current.children.length > 0) {
-          Array.from(strAddItemRef.current.children).forEach((atag, index) => {
-            strAddItemRef.current.children[index].textContent = strAddItemRef.current.children[index].textContent.replace(/,/g, '')
-          })
-        }
+        fixAddStr();
       }, 0.00001);
     }
 
@@ -351,6 +367,18 @@ const Crud = ({ user, arr, limit, addstr, modelRef, forallusersflag, auth, model
       <>
 
         <div className="w-100">
+          {showValidInputs.flag && (
+            <Toast
+              msg={{ title: showValidInputs.str, body: "" }}
+              handleShow={() => {
+                setShowValidInputs(false);
+                dispatch({ type: GLOBAL_TYPES.ALERT, payload: {} });
+              }}
+              bgColor="bg-danger"
+              onlyTitle={true}
+            />
+          )}
+
           <Approve
             desc={`¿Estás seguro de que desea eliminar la fila ${itemToDelete && Object.values(itemToDelete)[1] ? 'con id terminado en: ...' + Object.values(itemToDelete)[1].slice(19, Object.values(itemToDelete)[1].length) + '?' : ''}`}
             isOpen={isOpen}
@@ -359,6 +387,8 @@ const Crud = ({ user, arr, limit, addstr, modelRef, forallusersflag, auth, model
           />
 
           <div className={`input-group ${add ? '' : 'd-none'}`}>
+
+            {/* INPUTS */}
             <div ref={inputsNewItemRef} className="justify-content-center" style={{ display: 'contents' }}>
               {
                 manyDinamicFieldsFlag
@@ -375,7 +405,8 @@ const Crud = ({ user, arr, limit, addstr, modelRef, forallusersflag, auth, model
                       />
                     </div>
                   ))
-                  : <div className="col-12 my-1">
+                  :
+                  <div className="col-12 my-1">
                     <input type="text" value={values[Object.keys(fields)[0]]} id={Object.keys(fields)[0]} name={Object.keys(fields)[0]} onChange={handleChange}
                       className="form-control"
                       placeholder={`Ingresa ${Object.entries(addstr)[0][1].replace(/,/g, '')}`}
@@ -383,7 +414,9 @@ const Crud = ({ user, arr, limit, addstr, modelRef, forallusersflag, auth, model
                   </div>
               }
             </div>
+            {/* END INPUTS */}
 
+            {/* SAVE - EDIT - CANCEL BUTTON */}
             <div className="col-12 justify-content-center text-center mt-2 mb-3">
               <Tooltip content="Guardar" placement="bottom">
                 <button
@@ -405,21 +438,29 @@ const Crud = ({ user, arr, limit, addstr, modelRef, forallusersflag, auth, model
               </Tooltip>
             </div>
           </div>
-          {/* END INPUTS */}
+          {/* END SAVE - EDIT - CANCEL BUTTON */}
 
           <div ref={strAddItemRef}>
             {
               ((!forallusersflag && user && user.username === auth.user.username) && (readData.length < limit || !limit)) &&
-              (Object.keys(fields).map((field, index) => (
-                callToActionCmpFlag
-                  ? cloneElement(callToActionCmp, { ref: addRef, className: `${add ? 'd-none' : ''}`, onClick: newItem })
-                  :
-                  <a key={randomKey()} href="#" ref={addRef} className={`${add ? 'd-none' : ''}`}
-                    onClick={e => { newItem(e); setValues(fields); }}>
-                    {Object.keys(fields).length > 1 && index > 0 && addTitle}
-                    {Object.keys(fields).length == 1 && addTitle}
-                  </a>
-              )))
+              <a href="#" className={`h-100 d-flex align-items-center justify-content-start text-left ${add ? 'd-none' : ''}`} onClick={e => { newItem(e); setValues(fields); }}>
+                <i className="fas fa-lg fa-plus-circle"></i>&nbsp;
+                <span ref={addRef}>
+                  {addTitle}
+                </span>
+              </a>
+              // (Object.keys(fields).map((field, index) => (
+              //   callToActionCmpFlag
+              //     ? cloneElement(callToActionCmp, { ref: addRef, className: `${add ? 'd-none' : ''}`, onClick: newItem })
+              //     : <a key={randomKey()} href="#" className={`${add ? 'd-none' : ''}`}
+              //       onClick={e => { newItem(e); setValues(fields); }}>
+              //       <i className="fas fa-plus-circle"></i>
+              //       <span ref={addRef}>
+              //         {Object.keys(fields).length > 1 && index > 0 && addTitle}
+              //         {Object.keys(fields).length == 1 && addTitle}
+              //       </span>
+              //     </a>
+              // )))
             }
           </div>
 
