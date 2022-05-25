@@ -14,6 +14,24 @@ const GeneralInformation = ({ user, auth }) => {
             <div className="col-md-12">
               {/* <Crud
                 model="workplace"
+                fields={[
+                    {
+                      inputAndModelName: 'workplace', // it would be differente to the parent model. It needs de validation
+                      type: 'text',
+                      inputType: 'text',
+                      title: "un lugar de trabajo",
+                      required: true,
+                      regex: '^[a-zA-Z0-9ñÑáéíóúÁÉÍÓÚ ]+$',
+                      unique: true,
+                      trim: true
+                  }
+              ]}
+                auth={auth}
+                user={user}
+              /> */}
+
+              {/* <Crud
+                model="workplace"
                 fields={{ workplace: '' }}
                 addstr={{ workplace: "un lugar de trabajo" }}
                 auth={auth}

@@ -9,7 +9,7 @@ import Toast from "../alert/Toast";
 import { useDispatch } from "react-redux";
 import { GLOBAL_TYPES } from "../../redux/actions/globalTypes";
 
-const Crud = ({ user, arr, limit, addstr, modelRef, forallusersflag, auth, model, fields, optional, callToActionCmp, callToActionCmpFlag }) => {
+const Crud = ({ user, arr, limit, addstr, modelRef, forallusersflag, auth, model, fields, optional }) => {
 
   /**
    console.log('optional', optional)
@@ -34,36 +34,26 @@ const Crud = ({ user, arr, limit, addstr, modelRef, forallusersflag, auth, model
   const [id, setId] = useState('');
   const [itemToDelete, setItemToDelete] = useState(null)
   const dispatch = useDispatch();
-
+  
   if (!model) model = 'user'
   if (!modelRef) modelRef = 'user'
   if (!forallusersflag) forallusersflag = false
-  if (!optional)
+  if (!optional) {
     optional = {
       withDetail: false,
       tabletype: 'list'
     }
+  }
 
   const fixAddStr = () => {
     if (addRef.current) addRef.current.textContent = addRef.current.textContent.replace(/,/g, '')
 
     if (strAddItemRef.current.children && strAddItemRef.current.children.length > 0) {
       Array.from(strAddItemRef.current.children).forEach((atag, index) => {
-        // console.log(strAddItemRef.current.children[index]);
         if (strAddItemRef.current.children[index].span) {
           strAddItemRef.current.children[index].span.textContent = strAddItemRef.current.children[index].textContent.replace(/,/g, '')
         }
-        // else{
-        //     strAddItemRef.current.children[index].remove()
-        // }
-
-        // if(strAddItemRef.current.children[index] && !strAddItemRef.current.children[index].span){
-        //   // strAddItemRef.current.removeChild(strAddItemRef.current.children[index])
-
-        // }
       })
-
-
     }
   }
 
@@ -134,6 +124,29 @@ const Crud = ({ user, arr, limit, addstr, modelRef, forallusersflag, auth, model
     strAlone = capFirstLetter(strAlone)
     setAddTitleAlone(strAlone)
   }, [])
+
+    /**
+   *  Default validations
+   */
+     if (fields && Array.isArray(fields)) {
+      let errorFlag = { bool: false, msg: '' }
+      fields.forEach(field => {
+        if (field.hasOwnProperty('inputAndModelName')) {
+          if (field['inputAndModelName'] == model) {
+            errorFlag.bool = true;
+            errorFlag.msg = `El modelo ${model} no puede ser igual al del campo ${field.hasOwnProperty('title') ? field.title : ''}`
+            return console.error(errorFlag.msg)
+          }
+        }
+      })
+  
+      if (errorFlag.bool == true) {
+        return console.error(errorFlag.msg)
+      }
+    }
+    /**
+   *  END -> Default validations
+   */
 
   let manyDinamicFieldsFlag = false;
   if (typeof fields !== undefined && typeof fields == 'object' && Object.keys(fields).length > 1) {
@@ -398,10 +411,12 @@ const Crud = ({ user, arr, limit, addstr, modelRef, forallusersflag, auth, model
                       <input type="text" value={values[field]} id={field} name={field} onChange={handleChange}
                         className="form-control"
 
-                        placeholder={Object.entries(addstr).map(placeholder => {
-                          if (placeholder[0] == field)
-                            return ('Ingresa ' + (placeholder[1] != ',' ? placeholder[1].replace(/,/g, '') : '').replace(' - ', '').replace(" y", "y")).replace(/,/g, '')
-                        })}
+                        placeholder={
+                          Object.entries(addstr).map(placeholder => {
+                            if (placeholder[0] == field)
+                              return ('Ingresa ' + (placeholder[1] != ',' ? placeholder[1].replace(/,/g, '') : '').replace(' - ', '').replace(" y", "y")).replace(/,/g, '')
+                          })
+                        }
                       />
                     </div>
                   ))
@@ -449,18 +464,6 @@ const Crud = ({ user, arr, limit, addstr, modelRef, forallusersflag, auth, model
                   {addTitle}
                 </span>
               </a>
-              // (Object.keys(fields).map((field, index) => (
-              //   callToActionCmpFlag
-              //     ? cloneElement(callToActionCmp, { ref: addRef, className: `${add ? 'd-none' : ''}`, onClick: newItem })
-              //     : <a key={randomKey()} href="#" className={`${add ? 'd-none' : ''}`}
-              //       onClick={e => { newItem(e); setValues(fields); }}>
-              //       <i className="fas fa-plus-circle"></i>
-              //       <span ref={addRef}>
-              //         {Object.keys(fields).length > 1 && index > 0 && addTitle}
-              //         {Object.keys(fields).length == 1 && addTitle}
-              //       </span>
-              //     </a>
-              // )))
             }
           </div>
 
