@@ -30,11 +30,12 @@ const Crud = ({ user, arr, limit, addstr, modelRef, forallusersflag, auth, model
   let [showLoader, setShowLoader] = useState(false)
   let [values, setValues] = useState(fields)
   let [readData, setReadData] = useState([])
+  const [isArrFields, setIsArrFields] = useState(false)
   const [isOpen, setOpen] = useState(false)
   const [id, setId] = useState('');
   const [itemToDelete, setItemToDelete] = useState(null)
   const dispatch = useDispatch();
-  
+
   if (!model) model = 'user'
   if (!modelRef) modelRef = 'user'
   if (!forallusersflag) forallusersflag = false
@@ -46,15 +47,15 @@ const Crud = ({ user, arr, limit, addstr, modelRef, forallusersflag, auth, model
   }
 
   const fixAddStr = () => {
-    if (addRef.current) addRef.current.textContent = addRef.current.textContent.replace(/,/g, '')
+    // if (addRef.current) addRef.current.textContent = addRef.current.textContent.replace(/,/g, '').replace('>', '')
 
-    if (strAddItemRef.current.children && strAddItemRef.current.children.length > 0) {
-      Array.from(strAddItemRef.current.children).forEach((atag, index) => {
-        if (strAddItemRef.current.children[index].span) {
-          strAddItemRef.current.children[index].span.textContent = strAddItemRef.current.children[index].textContent.replace(/,/g, '')
-        }
-      })
-    }
+    // if (strAddItemRef.current && strAddItemRef.current.children && strAddItemRef.current.children.length > 0) {
+    //   Array.from(strAddItemRef.current.children).forEach((atag, index) => {
+    //     if (strAddItemRef.current.children[index].span) {
+    //       strAddItemRef.current.children[index].span.textContent = strAddItemRef.current.children[index].textContent.replace(/,/g, '').replace('>', '')
+    //     }
+    //   })
+    // }
   }
 
   const getItems = async () => {
@@ -65,6 +66,7 @@ const Crud = ({ user, arr, limit, addstr, modelRef, forallusersflag, auth, model
     if (auth.user._id !== user._id) {
       getObj.otherUser = user._id
     }
+
 
     let res = await postDataAPI('getDataField', getObj, auth.token)
     console.log(res);
@@ -81,54 +83,14 @@ const Crud = ({ user, arr, limit, addstr, modelRef, forallusersflag, auth, model
     console.log('readData', readData);
   }
 
-  // aca esta el error
   useEffect(() => {
-    getItems()
-    console.log('readData', readData);
-
-    let addString = addstr ? 'Agrega ' : 'Agregar'
-    setAddTxt(addString);
-
-    console.log(addString, addTxt)
-
-    let str = '', strAlone = ''
-    Object.keys(fields).map((field, index) => {
-
-      if (readData && readData.length > 0) {
-        strAlone += Object.entries(addstr).map(placeholder => {
-          return placeholder[0] == field
-            ? (Object.keys(addstr).length == 2
-              ? placeholder[1].replace('tu', 'un').replace('-', 'y')
-              : placeholder[1].replace('tu', 'un'))
-            : ''
-        })
-
-        str += (index == 0 ? addTxt : '') + ' ' + strAlone
-
-      } else {
-        strAlone += Object.entries(addstr).map((placeholder, index2) => {
-          return placeholder[0] == field
-            ? (Object.keys(addstr).length == 2
-              ? placeholder[1].replace('-', 'y')
-              : placeholder[1])
-            : ''
-        })
-      }
-
-      str += (index == 0 ? addTxt : '') + ' ' + strAlone
-    })
-
-    console.log(Object.entries(addstr))
-    str = removeDuplicateWords(str)
-    setAddTitle(str)
-    strAlone = capFirstLetter(strAlone)
-    setAddTitleAlone(strAlone)
-  }, [])
-
     /**
    *  Default validations
    */
-     if (fields && Array.isArray(fields)) {
+    if (fields && Array.isArray(fields)) {
+      setIsArrFields(true)
+      console.log('isArrFields true')
+
       let errorFlag = { bool: false, msg: '' }
       fields.forEach(field => {
         if (field.hasOwnProperty('inputAndModelName')) {
@@ -139,20 +101,57 @@ const Crud = ({ user, arr, limit, addstr, modelRef, forallusersflag, auth, model
           }
         }
       })
-  
+
       if (errorFlag.bool == true) {
         return console.error(errorFlag.msg)
       }
+    } else {
+      setIsArrFields(false)
     }
     /**
    *  END -> Default validations
    */
+  }, [])
+
+  useEffect(() => {
+    getItems()
+
+    let addString = addstr ? 'Agrega ' : 'Agregar'
+    setAddTxt(addString);
+    let str = '', strAlone = '', fieldTitleSet = new Set();
+
+    if (Array.isArray(fields)) {
+      fields.forEach((field, index) => {
+        fieldTitleSet.add(field.title)
+      })
+    } else {
+      Object.values(addstr).forEach((field, index) => {
+        fieldTitleSet.add(field)
+      })
+    }
+
+    let setFieldsToArray = Array.from(fieldTitleSet), fieldLength = setFieldsToArray.length
+
+    setFieldsToArray.forEach((fieldTit, index) => {
+      if (fieldLength - 2 == index) {
+        str += fieldTit + ' y '
+      } else if (fieldLength - 1 == index) {
+        str += fieldTit
+      } else {
+        str += fieldTit + ', '
+      }
+    })
+
+    setAddTitle(addString + ' ' + str)
+    strAlone = capFirstLetter(str)
+    setAddTitleAlone(strAlone)
+  }, [])
 
   let manyDinamicFieldsFlag = false;
-  if (typeof fields !== undefined && typeof fields == 'object' && Object.keys(fields).length > 1) {
+  if (typeof fields !== undefined && typeof fields == 'object' && fields) {
     manyDinamicFieldsFlag = true
   } else {
-    if (!Object.keys(fields)[0])
+    if (!fields)
       return <span className="text-danger">INGRESA EL ID DEL CAMPO POR DEFECTO QUE SE VA A GENERAR DINAMICAMENTE</span>
   }
 
@@ -284,18 +283,40 @@ const Crud = ({ user, arr, limit, addstr, modelRef, forallusersflag, auth, model
         }
       }, 5);
 
-      let newObj = fields
-      Object.keys(item).forEach(key => {
-        if (fields.hasOwnProperty(key)) {
-          newObj[key] = item[key]
-        }
-      })
+      let newObj = fields, isArrayObjFields = {}
+      if (isArrFields) {
+        fields.forEach(field => {
+          Object.keys(field).map(key => {
+            isArrayObjFields[key] = key
+          })
+        })
 
-      Object.keys(fields).forEach(key => {
-        if (!item.hasOwnProperty(key)) {
-          newObj[key] = ''
-        }
-      })
+        Object.keys(item).forEach(key => {
+          if (isArrayObjFields.hasOwnProperty(key)) {
+            newObj[key] = item[key]
+          }
+        })
+
+        Object.keys(isArrayObjFields).forEach(key => {
+          if (!item.hasOwnProperty(key)) {
+            newObj[key] = ''
+          }
+        })
+
+      } else {
+        Object.keys(item).forEach(key => {
+          if (fields.hasOwnProperty(key)) {
+            newObj[key] = item[key]
+          }
+        })
+
+        Object.keys(fields).forEach(key => {
+          if (!item.hasOwnProperty(key)) {
+            newObj[key] = ''
+          }
+        })
+
+      }
 
       setValues(newObj)
     };
@@ -371,11 +392,9 @@ const Crud = ({ user, arr, limit, addstr, modelRef, forallusersflag, auth, model
       }, 0.00001);
     }
 
-    // console.log(auth.user._id, user._id);
-    // console.log(user.username, auth.user.username, user);
-    // console.log(forallusersflag);
     let randomKey = () => getRandomNum(1, 99999).toString() + getRandomNum(1, 99999).toString() + getRandomNum(1, 99999).toString()
 
+    console.log('fields', fields);
     return (
       <>
 
@@ -405,24 +424,60 @@ const Crud = ({ user, arr, limit, addstr, modelRef, forallusersflag, auth, model
             <div ref={inputsNewItemRef} className="justify-content-center" style={{ display: 'contents' }}>
               {
                 manyDinamicFieldsFlag
-                  ? Object.keys(fields).map((field, index) => ( // En construcción lo dinamico muy dinamico
+                  ?
+                  (
+                    isArrFields
+                      ?
+                      fields.map((field, index) => ( // En construcción lo dinamico muy dinamico
 
-                    <div className="col-12 my-1" key={randomKey()}>
-                      <input type="text" value={values[field]} id={field} name={field} onChange={handleChange}
-                        className="form-control"
+                        <div className="col-12 my-1" key={randomKey()}>
+                          <input type="text" value={values[field.inputAndModelName]} id={field.inputAndModelName} name={field.inputAndModelName} onChange={handleChange}
+                            className="form-control"
 
-                        placeholder={
-                          Object.entries(addstr).map(placeholder => {
-                            if (placeholder[0] == field)
-                              return ('Ingresa ' + (placeholder[1] != ',' ? placeholder[1].replace(/,/g, '') : '').replace(' - ', '').replace(" y", "y")).replace(/,/g, '')
-                          })
-                        }
-                      />
-                    </div>
-                  ))
+                            placeholder={
+                              ('Ingresa ' + (field.title != ',' ? field.title.replace(/,/g, '') : '').replace(' - ', '').replace(" y", "y")).replace(/,/g, '')
+                            }
+                          />
+                        </div>
+                      ))
+                      :
+                      Array.isArray(fields) ? (
+                        fields.map((field, index) => {
+                          <div className="col-12 my-1" key={randomKey()}>
+                            <input type="text" value={values[field.inputAndModelName]} id={field.inputAndModelName} name={field.inputAndModelName} onChange={handleChange}
+                              className="form-control"
+
+                              placeholder={
+                                ('Ingresa ' + (field.title != ',' ? field.title.replace(/,/g, '') : '').replace(' - ', '').replace(" y", "y")).replace(/,/g, '')
+                              }
+                            />
+                          </div>
+                        })
+                      )
+                        :
+                        (
+                          Object.keys(fields).map((field, index) => ( // En construcción lo dinamico muy dinamico
+
+                            <div className="col-12 my-1" key={randomKey()}>
+                              <input type="text" value={values[field]} id={field} name={field} onChange={handleChange}
+                                className="form-control"
+
+                                placeholder={
+                                  Object.entries(addstr).map(placeholder => {
+                                    if (placeholder[0] == field)
+                                      return ('Ingresa ' + (placeholder[1] != ',' ? placeholder[1].replace(/,/g, '') : '').replace(' - ', '').replace(" y", "y")).replace(/,/g, '')
+                                  })
+                                }
+                              />
+                            </div>
+                          ))
+                        )
+
+                  )
                   :
+                  // Nunca va a llegar acá
                   <div className="col-12 my-1">
-                    <input type="text" value={values[Object.keys(fields)[0]]} id={Object.keys(fields)[0]} name={Object.keys(fields)[0]} onChange={handleChange}
+                    <input type="text" value={values[Object.keys(fields)[0][0]]} id={Object.keys(fields)[0][0]} name={Object.keys(fields)[0][0]} onChange={handleChange}
                       className="form-control"
                       placeholder={`Ingresa ${Object.entries(addstr)[0][1].replace(/,/g, '')}`}
                     />
@@ -491,14 +546,14 @@ const Crud = ({ user, arr, limit, addstr, modelRef, forallusersflag, auth, model
                                           readData && readData.length > 0
                                             ? Object.entries(addstr).map(placeholder => {
                                               return placeholder[0] == field
-                                                ? (Object.keys(addstr).length == 2 ? placeholder[1].replace('tu', '').replace('-', '')
-                                                  : placeholder[1].replace('tu', '')) : ''
+                                                ? (Object.keys(addstr).length == 2 ? placeholder[1].replace('tu', '').replace('-', '').replace(' - ', '').replace(' ', '').replace('>', '').replace('y', '')
+                                                  : placeholder[1].replace('tu', '')).replace('-', '').replace(' - ', '').replace(' ', '').replace('>', '').replace('y', '') : ''
                                             })
                                             : Object.entries(addstr).map(placeholder => {
                                               return placeholder[0] == field
                                                 ? (Object.keys(addstr).length == 2
-                                                  ? placeholder[1].replace('-', '')
-                                                  : placeholder[1])
+                                                  ? placeholder[1].replace('-', '').replace(' - ', '').replace(' ', '').replace('>', '').replace('y', '')
+                                                  : placeholder[1]).replace('-', '').replace(' - ', '').replace(' ', '').replace('>', '').replace('y', '')
                                                 : ''
                                             })
                                         }

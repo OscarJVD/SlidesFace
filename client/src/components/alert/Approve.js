@@ -16,10 +16,10 @@ export default function Approve({
   const [open, setOpen] = React.useState(false);
   const [scroll, setScroll] = React.useState('paper');
 
-  const handleClickOpen = (scrollType) => () => {
-    setOpen(true);
-    setScroll(scrollType);
-  };
+  // const handleClickOpen = (scrollType) => () => {
+  //   setOpen(true);
+  //   setScroll(scrollType);
+  // };
 
   const descriptionElementRef = React.useRef(null);
   React.useEffect(() => {

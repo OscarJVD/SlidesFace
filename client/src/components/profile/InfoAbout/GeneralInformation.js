@@ -12,8 +12,8 @@ const GeneralInformation = ({ user, auth }) => {
         <div className="col-md-9">
           <div className="row">
             <div className="col-md-12">
-              {/* <Crud
-                model="workplace"
+              <Crud
+                model="job"
                 fields={[
                     {
                       inputAndModelName: 'workplace', // it would be differente to the parent model. It needs de validation
@@ -24,11 +24,32 @@ const GeneralInformation = ({ user, auth }) => {
                       regex: '^[a-zA-Z0-9ñÑáéíóúÁÉÍÓÚ ]+$',
                       unique: true,
                       trim: true
-                  }
+                  },
+                  {
+                    inputAndModelName: 'workplaces', // it would be differente to the parent model. It needs de validation
+                    type: 'text',
+                    inputType: 'text',
+                    title: "un lugar de trabajo secundario",
+                    required: true,
+                    regex: '^[a-zA-Z0-9ñÑáéíóúÁÉÍÓÚ ]+$',
+                    unique: true,
+                    trim: true
+                }
+                ,
+                  {
+                    inputAndModelName: 'workplacess', // it would be differente to the parent model. It needs de validation
+                    type: 'text',
+                    inputType: 'text',
+                    title: "un lugar de trabajo secundarios",
+                    required: true,
+                    regex: '^[a-zA-Z0-9ñÑáéíóúÁÉÍÓÚ ]+$',
+                    unique: true,
+                    trim: true
+                }
               ]}
                 auth={auth}
                 user={user}
-              /> */}
+              />
 
               {/* <Crud
                 model="workplace"
@@ -103,10 +124,9 @@ const GeneralInformation = ({ user, auth }) => {
                 user={user}
                 model="phone"
                 fields={{ number: '', pais: '' }}
-                addstr={{ number: "tu celular", pais: " - código del país" }}
+                addstr={{ number: "tu celular", pais: "el código del país" }}
                 auth={auth}
               />
-
             </div>
             <div className="col-md-12">
               <div className="text-muted fs-8">Celular</div>
