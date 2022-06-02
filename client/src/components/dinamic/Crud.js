@@ -20,7 +20,6 @@ const Crud = ({ user, arr, limit, addstr, modelRef, forallusersflag, auth, model
    */
   // console.log(auth)
   let addRef = useRef()
-  let strAddItemRef = useRef()
   let inputsNewItemRef = useRef()
   let [addTitle, setAddTitle] = useState("")
   let [addTitleAlone, setAddTitleAlone] = useState("")
@@ -46,27 +45,12 @@ const Crud = ({ user, arr, limit, addstr, modelRef, forallusersflag, auth, model
     }
   }
 
-  const fixAddStr = () => {
-    // if (addRef.current) addRef.current.textContent = addRef.current.textContent.replace(/,/g, '').replace('>', '')
-
-    // if (strAddItemRef.current && strAddItemRef.current.children && strAddItemRef.current.children.length > 0) {
-    //   Array.from(strAddItemRef.current.children).forEach((atag, index) => {
-    //     if (strAddItemRef.current.children[index].span) {
-    //       strAddItemRef.current.children[index].span.textContent = strAddItemRef.current.children[index].textContent.replace(/,/g, '').replace('>', '')
-    //     }
-    //   })
-    // }
-  }
-
   const getItems = async () => {
-    fixAddStr();
 
     let getObj = { model, fieldsAndValues: values, fields }
 
-    if (auth.user._id !== user._id) {
+    if (auth.user._id !== user._id)
       getObj.otherUser = user._id
-    }
-
 
     let res = await postDataAPI('getDataField', getObj, auth.token)
     console.log(res);
@@ -77,9 +61,6 @@ const Crud = ({ user, arr, limit, addstr, modelRef, forallusersflag, auth, model
       setReadData(res)
     }
 
-    fixAddStr();
-
-    // console.log(inputsNewItemRef)
     console.log('readData', readData);
   }
 
@@ -177,8 +158,31 @@ const Crud = ({ user, arr, limit, addstr, modelRef, forallusersflag, auth, model
     const saveItem = async () => {
       try {
         console.log('item to save or edit', values)
+        let newValues = {}, newFields = [], tempObj = [];
+
+        // PREVALIDATION VALUES
+        Object.entries(values).map((val) => {
+          if (typeof val[1] != 'object') newValues[val[0]] = val[1]
+          else tempObj.push(val[1])
+        })
+
+        tempObj.map((val) => {
+          Object.entries(values).map(valueObj => {
+            if (val.inputAndModelName == valueObj[0]) {
+              let newObj = {}
+              newObj = val
+              newObj["value"] = valueObj[1]
+              newFields.push(newObj)
+            }
+          })
+        })
+        // if (val[1].inputAndModelName == val[0]) {
+        //   newFields.push(val[0])
+        // }
+        // newFields.push(val[1])
+
         // VALIDAR CAMPOS VACIOS
-        let entries = Object.entries(values)
+        let entries = Object.entries(newValues)
         let resReturnFlag = false
         entries.map(input => {
           if (input[1] == '' || !input[1]) {
@@ -186,16 +190,10 @@ const Crud = ({ user, arr, limit, addstr, modelRef, forallusersflag, auth, model
             setShowValidInputs({ flag: true, str: 'Todos los campos son obligatorios' })
           }
         })
-
-        setTimeout(() => {
-          fixAddStr()
-        }, 0.00001);
-
         if (resReturnFlag) return;
         // END VALIDAR CAMPOS VACIOS
 
-        let res;
-        let newArr = []
+        let res, newArr = []
 
         if (id) {
           let idToEdit = id
@@ -222,21 +220,12 @@ const Crud = ({ user, arr, limit, addstr, modelRef, forallusersflag, auth, model
           setAdd(false);
           setId('')
           newArr = []
-          readData.forEach(row => {
-            newArr.push(row)
-          })
-
+          readData.forEach(row => newArr.push(row))
           newArr.push(values)
-
           setReadData(newArr);
-
-          res = await postDataAPI('createField', { model, values, fields, modelRef, forallusersflag }, auth.token)
+          res = await postDataAPI('createField', { model, values, fields, newFields, modelRef, forallusersflag }, auth.token)
           await getItems()
         }
-
-        setTimeout(() => {
-          fixAddStr()
-        }, 0.00001);
 
       } catch (error) {
         console.error(error)
@@ -373,9 +362,6 @@ const Crud = ({ user, arr, limit, addstr, modelRef, forallusersflag, auth, model
           })
           setReadData(newArr);
           // END ACTUALIZAR ESTADO SIN EL ITEM ELIMINADO
-          setTimeout(() => {
-            fixAddStr();
-          }, 0.00001);
 
         }
       } catch (error) {
@@ -387,9 +373,6 @@ const Crud = ({ user, arr, limit, addstr, modelRef, forallusersflag, auth, model
     const handleCancelAdd = () => {
       setAdd(false);
       setId('');
-      setTimeout(() => {
-        fixAddStr();
-      }, 0.00001);
     }
 
     let randomKey = () => getRandomNum(1, 99999).toString() + getRandomNum(1, 99999).toString() + getRandomNum(1, 99999).toString()
@@ -397,7 +380,6 @@ const Crud = ({ user, arr, limit, addstr, modelRef, forallusersflag, auth, model
     console.log('fields', fields);
     return (
       <>
-
         <div className="w-100">
           {showValidInputs.flag && (
             <Toast
@@ -510,7 +492,7 @@ const Crud = ({ user, arr, limit, addstr, modelRef, forallusersflag, auth, model
           </div>
           {/* END SAVE - EDIT - CANCEL BUTTON */}
 
-          <div ref={strAddItemRef}>
+          <div>
             {
               ((!forallusersflag && user && user.username === auth.user.username) && (readData.length < limit || !limit)) &&
               <a href="#" className={`h-100 d-flex align-items-center justify-content-start text-left ${add ? 'd-none' : ''}`} onClick={e => { newItem(e); setValues(fields); }}>
@@ -536,30 +518,38 @@ const Crud = ({ user, arr, limit, addstr, modelRef, forallusersflag, auth, model
                             <div className="row w-100 ms-1 my-2 border card-crud p-2" style={{ overflow: 'hidden' }} key={randomKey()}>
                               <div className={`mb-2 col-${(!forallusersflag && user && user.username !== auth.user.username) ? '12' : '9'}`}>
                                 {
-                                  // INFORMACIÓN (READ)
-                                  Object.keys(fields).map((field, fieldIndex) => (
+                                  (isArrFields || Array.isArray(fields) ? fields : Object.keys(fields)).map((field, fieldIndex) => (
                                     <div key={randomKey()}>
+                                      {console.log(item, field)}
                                       <p className={`fs-6 fw-semi-bold border-bottom ${fieldIndex > 0 ? 'mt-2' : ''} pb-0 mb-0 ${fieldIndex == 0 ? 'pt-2' :
-                                        ''}`} style={{ wordWrap: 'break-word' }} key={randomKey()}>{item[field]}</p>
-                                      <span className="fw-bold text-muted p-0 m-0 fs-8 fst-italic text-capitalize">
-                                        {
-                                          readData && readData.length > 0
-                                            ? Object.entries(addstr).map(placeholder => {
-                                              return placeholder[0] == field
-                                                ? (Object.keys(addstr).length == 2 ? placeholder[1].replace('tu', '').replace('-', '').replace(' - ', '').replace(' ', '').replace('>', '').replace('y', '')
-                                                  : placeholder[1].replace('tu', '')).replace('-', '').replace(' - ', '').replace(' ', '').replace('>', '').replace('y', '') : ''
-                                            })
-                                            : Object.entries(addstr).map(placeholder => {
-                                              return placeholder[0] == field
-                                                ? (Object.keys(addstr).length == 2
-                                                  ? placeholder[1].replace('-', '').replace(' - ', '').replace(' ', '').replace('>', '').replace('y', '')
-                                                  : placeholder[1]).replace('-', '').replace(' - ', '').replace(' ', '').replace('>', '').replace('y', '')
-                                                : ''
-                                            })
-                                        }
-                                      </span>
+                                        ''}`} style={{ wordWrap: 'break-word' }} key={randomKey()}>{item[isArrFields || Array.isArray(fields) ? field.inputAndModelName : field]}</p>
+                                      {
+                                        isArrFields || Array.isArray(fields) ?
+                                          <span className="fw-bold text-muted p-0 m-0 fs-8 fst-italic text-capitalize">
+                                            {field.title.replace('un','').trim()}
+                                          </span>
+                                          : <span className="fw-bold text-muted p-0 m-0 fs-8 fst-italic text-capitalize">
+                                            {
+                                              readData && readData.length > 0
+                                                ? Object.entries(addstr).map(placeholder => {
+                                                  return placeholder[0] == field
+                                                    ? (Object.keys(addstr).length == 2 ? placeholder[1].replace('tu', '').replace('-', '').replace(' - ', '').replace(' ', '').replace('>', '').replace('y', '')
+                                                      : placeholder[1].replace('tu', '')).replace('-', '').replace(' - ', '').replace(' ', '').replace('>', '').replace('y', '') : ''
+                                                })
+                                                : Object.entries(addstr).map(placeholder => {
+                                                  return placeholder[0] == field
+                                                    ? (Object.keys(addstr).length == 2
+                                                      ? placeholder[1].replace('-', '').replace(' - ', '').replace(' ', '').replace('>', '').replace('y', '')
+                                                      : placeholder[1]).replace('-', '').replace(' - ', '').replace(' ', '').replace('>', '').replace('y', '')
+                                                    : ''
+                                                })
+                                            }
+                                          </span>
+                                      }
+
                                     </div>
                                   ))
+                                  //  END READ
                                 }
                               </div>
 

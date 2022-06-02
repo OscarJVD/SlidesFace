@@ -61,7 +61,7 @@ const About = ({ userData, auth }) => {
                           user={user}
                           model="phone"
                           fields={{ number: '', pais: '' }}
-                          addstr={{ number: "tu celular", pais: " - código del país" }}
+                          addstr={{ number: "tu celular", pais: "código del país" }}
                           auth={auth}
                         />
                       </div>
