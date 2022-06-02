@@ -1,6 +1,20 @@
 const isValidEmail = require('is-valid-email');
 const isPhone = require('is-phone');
 const isValidUsername = require('is-valid-username');
+const mongoose = require('mongoose');
+
+const getMyCollections = mongoose => new Promise((resolve, reject) => {
+  try {
+    mongoose.connection.db.listCollections().toArray().then(collections => {
+      const names = collections.map(col => col.name);
+      resolve(names);
+    })
+    
+  } catch (error) {
+    console.log(error)
+    console.log(util.inspect(error))
+  }
+});
 
 function isEmailTelOrUserName(value) {
   if (isValidEmail(value)) return 'email';
@@ -57,4 +71,4 @@ function sort(object) {
   return newObject;
 }
 
-module.exports = { isEmailTelOrUserName, getRandomNum, sort };
+module.exports = { isEmailTelOrUserName, getRandomNum, sort, getMyCollections };

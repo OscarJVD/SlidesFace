@@ -39,7 +39,7 @@
     "cors": "2.8.5",
     "dotenv": "10.0.0",
     "express": "4.17.1",
-    "inflection": "^1.13.2",
+    "inflection": "1.13.2",
     "is-phone": "2.0.0",
     "is-valid-email": "0.0.5",
     "is-valid-username": "0.0.1",

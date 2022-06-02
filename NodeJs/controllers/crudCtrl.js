@@ -1,17 +1,38 @@
 const mongoose = require("mongoose");
 const util = require('util')
 const fs = require('fs');
-// const fsPromises = require("fs/promises");
-// let mongooseDynamic = require('mongoose-dynamic-schemas');
-// require("../models/userModel");
-// const Users = require("../models/userModel");
-// let ObjectId = require('mongodb').ObjectID;
-// const { sort } = require('../utils/functions');
 
 const crudCtrl = {
   createField: async (req, res) => {
     try {
-      const { model, values, forallusersflag, fields, modelRef } = req.body;
+      const { model, values, forallusersflag, newFields, fields, modelRef } = req.body;
+
+      // console.log(util.inspect(values));
+      // console.log('fields:')
+      // console.log(util.inspect(fields));
+      // return;
+      const isArrFields = Array.isArray(fields)
+      const existsNewFields = newFields && newFields.length > 0 && Array.isArray(newFields)
+      const newFieldsFlag = isArrFields && existsNewFields ? true : false
+
+      // VALIDACIÓN DE DATOS NO VACIOS
+      let fieldValues = Object.values(values), resReturnFlag = { bool: false, fieldName: '' }
+      if (newFieldsFlag) {
+        newFields.forEach(newField => {
+          if (newField.required && !newField.value) {
+            resReturnFlag.bool = true
+            resReturnFlag.fieldName = newField.inputAndModelName + ' - ' + newField.title
+          }
+        })
+      } else {
+        fieldValues.map(value => {
+          if (value == '' || !value) resReturnFlag.bool = true
+        })
+      }
+
+      if (resReturnFlag.bool)
+        return res.status(400).json({ msg: `${resReturnFlag.fieldName ? `El campo ${resReturnFlag.fieldName} es obligatorio.` : 'Todos los campos son obligatorios.'}` });
+      // END VALIDACIÓN DE DATOS NO VACIOS
 
       let filter = {}
 
@@ -22,54 +43,69 @@ const crudCtrl = {
           filter.user = req.authUser._id
       }
 
-      const test = mongoose.connection.db.listCollections({ name: model + 's' })
-        .next(async function (err, collinfo) {
-          console.log(`Collection ${model} doesnt exists`);
-          let schemaDinamicObject = {}
+      let schemaDinamicObject = {}
 
-          console.log('schemaDinamicObject', util.inspect(schemaDinamicObject));
-          console.log(util.inspect(schemaDinamicObject));
+      const dinamicSchemaCall = new mongoose.Schema(schemaDinamicObject, {
+        timestamps: true,
+        strict: false
+      });
 
-          const dinamicSchemaCall = new mongoose.Schema(schemaDinamicObject, {
-            timestamps: true,
-            strict: false
-          });
+      const newSchemaProps = {
+        user: req.authUser._id,
+      }
 
-          const newSchemaProps = {
-            user: req.authUser._id,
+      if (newFieldsFlag) {
+        newFields.forEach(newField => {
+          newSchemaProps[newField.inputAndModelName] = newField.value
+        })
+      } else {
+        for (const key in values)
+          newSchemaProps[key] = values[key]
+      }
+
+      let models = mongoose.modelNames()
+      if (models.includes(model)) {
+        const dinamicModelRef = require(`../models/${model}Model`)
+        // The collection exists
+        console.log(`Collection ${model} exists`);
+        const newRow = new dinamicModelRef(newSchemaProps);
+        await newRow.save();
+        collectionExistsFlag = true;
+      } else {
+        // No se ha compilado el modelo
+        delete mongoose.connection.models[model.charAt(0).toUpperCase() + model.slice(1)];
+        const dinamicNewSchema = mongoose.model(model, dinamicSchemaCall);
+        const newRow = new dinamicNewSchema(newSchemaProps);
+        await newRow.save();
+
+        const UppModelName = model.charAt(0).toUpperCase() + model.slice(1);
+
+        let schemaObj = ``
+
+        if (newFieldsFlag) {
+          newFields.forEach(newField => {
+            let type;
+
+            if (newField.type == 'text' || newField.type == 'string' || newField.type == '') type = `String`
+            if (newField.type == 'number' || newField.type == 0) type = `Number`
+
+            schemaObj += `${newField.inputAndModelName}:
+            { 
+              type:  ${type}, 
+              ${newField.required ? `required: ${`${newField.required ? `true` : `false`},`}` : ` `}
+              ${newField.unique ? `unique: ${`${newField.unique}`},` : ` `}
+              ${newField.trim ? `trim: ${`${newField.trim}`},` : ` `}
+              ${newField.default ? `default: ${`${newField.default}`},` : ` `}
+              ${newField.minlength ? `minlength: ${`${newField.minlength}`},` : ` `}
+              ${newField.maxlength ? `maxlength: ${`${newField.maxlength}`},` : ` `}},`
+          })
+        } else {
+          for (const keyField in fields) {
+            schemaObj += `${keyField}:{type:  ${typeof fields[keyField] == 'string' ? `String` : `Number`}, required: true},`
           }
+        }
 
-          for (const key in values) {
-            newSchemaProps[key] = values[key]
-          }
-
-          // const newSchema = mongoose.model(model, dinamicSchemaCall);
-          console.log(util.inspect(newSchemaProps));
-
-          if (collinfo && collinfo.name == model + 's') {
-            const dinamicModelRef = require(`../models/${model}Model`)
-            // The collection exists
-            console.log(`Collection ${model} exists`);
-            const newRow = new dinamicModelRef(newSchemaProps);
-            await newRow.save();
-            collectionExistsFlag = true;
-          } else {
-            // No existe
-            delete mongoose.connection.models[model.charAt(0).toUpperCase() + model.slice(1)];
-
-            const dinamicNewSchema = mongoose.model(model, dinamicSchemaCall);
-            const newRow = new dinamicNewSchema(newSchemaProps);
-            await newRow.save();
-
-            const UppModelName = model.charAt(0).toUpperCase() + model.slice(1);
-
-            let schemaObj = ``
-
-            for (const keyField in fields) {
-              schemaObj += `${keyField}:{type:  ${typeof fields[keyField] == 'string' ? `String` : `Number`}, required: true},`
-            }
-
-            const fileContent = `
+        const fileContent = `
               const mongoose = require("mongoose");
               const ${UppModelName}Schema = new mongoose.Schema({${schemaObj}user: {
                 type: mongoose.Types.ObjectId,
@@ -80,17 +116,16 @@ const crudCtrl = {
               module.exports = mongoose.model('${model}', ${UppModelName}Schema);
             `;
 
-            const filepath = `./models/${model}Model.js`;
+        const filepath = `./models/${model}Model.js`;
 
-            console.log(util.inspect(fileContent));
+        console.log(util.inspect(fileContent));
 
-            fs.writeFileSync(filepath, fileContent, (err) => {
-              if (err) throw err;
+        fs.writeFileSync(filepath, fileContent, (err) => {
+          if (err) throw err;
 
-              console.log("The file was succesfully saved!");
-            });
-          }
+          console.log("The file was succesfully saved!");
         });
+      }
 
       res.json({ msg: "Registro añadido" });
     } catch (error) {
@@ -102,7 +137,7 @@ const crudCtrl = {
   },
   getDataField: async (req, res) => {
 
-    const { model, forallusersflag, fields, fieldsAndValues } = req.body;
+    const { model, forallusersflag, otherUser, fields, fieldsAndValues } = req.body;
 
     let filter = {}
 
@@ -113,9 +148,11 @@ const crudCtrl = {
         filter.user = req.authUser._id
     }
 
+    if (otherUser) filter.user = otherUser
+
     const filePath = `./models/${model}Model.js`
     if (fs.existsSync(filePath)) {
-      console.log("El archivo EXISTE!");
+      console.log("El archivo EXISTE! " + `../models/${model}Model`);
       const dinamicModelRef = require(`../models/${model}Model`)
       const data = await dinamicModelRef.find(filter)
       // util.inspect('data')
@@ -143,6 +180,14 @@ const crudCtrl = {
       const { id } = req.params
       const { model, forallusersflag, values } = req.body;
 
+      let entries = Object.entries(values)
+      let resReturnFlag = false
+      entries.map(input => {
+        if (input[1] == '' || !input[1]) resReturnFlag = true
+      })
+
+      if (resReturnFlag) return res.status(400).json({ msg: 'Todos los campos son obligatorios.' });
+
       let filter = { _id: id }
 
       if (!forallusersflag) {
@@ -164,6 +209,10 @@ const crudCtrl = {
     try {
       const { id } = req.params
       const { model, forallusersflag, item } = req.body;
+
+      console.log('ITEM');
+      console.log(util.inspect(item));
+      console.log('END ITEM');
 
       let filter = { _id: id }
 

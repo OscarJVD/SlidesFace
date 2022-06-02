@@ -54,7 +54,6 @@ const UserSchema = new mongoose.Schema(
       required: false,
       trim: true,
     },
-    address: { type: String, default: "" },
     workplace: { type: String, default: "" },
     homecity: { type: String, default: "" },
     currentCity: { type: String, default: "" },
