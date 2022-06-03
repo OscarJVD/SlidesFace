@@ -13,7 +13,7 @@ const GeneralInformation = ({ user, auth }) => {
           <div className="row">
             <div className="col-md-12">
               <Crud
-                model="job"
+                model="job" // Nombre de la tabla
                 fields={[
                     {
                       inputAndModelName: 'workplace', // it would be differente to the parent model. It needs de validation
@@ -22,7 +22,7 @@ const GeneralInformation = ({ user, auth }) => {
                       title: "un lugar de trabajo",
                       required: true,
                       regex: '^[a-zA-Z0-9ñÑáéíóúÁÉÍÓÚ ]+$',
-                      unique: true,
+                      unique: false,
                       trim: true
                   },
                   {
@@ -32,7 +32,7 @@ const GeneralInformation = ({ user, auth }) => {
                     title: "un lugar de trabajo secundario",
                     required: true,
                     regex: '^[a-zA-Z0-9ñÑáéíóúÁÉÍÓÚ ]+$',
-                    unique: true,
+                    unique: false,
                     trim: true
                 }
                 ,
@@ -43,7 +43,7 @@ const GeneralInformation = ({ user, auth }) => {
                     title: "un lugar de trabajo secundarios",
                     required: true,
                     regex: '^[a-zA-Z0-9ñÑáéíóúÁÉÍÓÚ ]+$',
-                    unique: true,
+                    unique: false,
                     trim: true
                 }
               ]}

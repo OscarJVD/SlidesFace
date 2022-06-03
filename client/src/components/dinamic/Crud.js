@@ -10,7 +10,7 @@ import { useDispatch } from "react-redux";
 import { GLOBAL_TYPES } from "../../redux/actions/globalTypes";
 
 const Crud = ({ user, arr, limit, addstr, modelRef, forallusersflag, auth, model, fields, optional }) => {
-
+  console.log()
   /**
    console.log('optional', optional)
    * optional
@@ -58,10 +58,11 @@ const Crud = ({ user, arr, limit, addstr, modelRef, forallusersflag, auth, model
       console.log(res.data.data)
       res = sort(res.data.data)
       console.log(res)
-      setReadData(res)
+      setReadData([...res])
+      console.log(res)
     }
 
-    console.log('readData', readData);
+    console.log('readData', readData, readData.data, model);
   }
 
   useEffect(() => {
@@ -237,6 +238,7 @@ const Crud = ({ user, arr, limit, addstr, modelRef, forallusersflag, auth, model
       const { name, value } = e.target;
 
       console.log(name, value);
+      console.log(values);
       setValues({ ...values, [name]: value });
 
       setTimeout(() => {
@@ -255,42 +257,30 @@ const Crud = ({ user, arr, limit, addstr, modelRef, forallusersflag, auth, model
 
     }
 
-    const handleEditItem = (item, field) => {
-      console.log(readData)
+    const handleEditItem = (item) => {
+      // console.log(readData)
       console.log('item', item);
       console.log('values', values);
       console.log('fields', fields);
       setId(item._id);
       setAdd(true)
 
-      setTimeout(() => {
-        console.log(inputsNewItemRef.current.children)
-        if (inputsNewItemRef.current.children && inputsNewItemRef.current.children.length > 0) {
-          Array.from(inputsNewItemRef.current.children).forEach((div, index) => {
-            inputsNewItemRef.current.children[index].children[0].placeholder = inputsNewItemRef.current.children[index].children[0].placeholder.replace(/,/g, '')
-          })
-        }
-      }, 5);
-
       let newObj = fields, isArrayObjFields = {}
-      if (isArrFields) {
-        fields.forEach(field => {
-          Object.keys(field).map(key => {
-            isArrayObjFields[key] = key
+      if (isArrFields || Array.isArray(fields)) {
+        let newValues = []
+        Object.entries(values).forEach(val => {
+          newValues.push(val[1].inputAndModelName)
+        })
+
+        Object.keys(item).forEach(itemObjKey => {
+          newValues.forEach(newValue => {
+            if(itemObjKey == newValue){
+              isArrayObjFields[itemObjKey] = item[itemObjKey]
+            }
           })
         })
 
-        Object.keys(item).forEach(key => {
-          if (isArrayObjFields.hasOwnProperty(key)) {
-            newObj[key] = item[key]
-          }
-        })
-
-        Object.keys(isArrayObjFields).forEach(key => {
-          if (!item.hasOwnProperty(key)) {
-            newObj[key] = ''
-          }
-        })
+        newObj = Object.assign({}, values, isArrayObjFields)
 
       } else {
         Object.keys(item).forEach(key => {
@@ -306,6 +296,8 @@ const Crud = ({ user, arr, limit, addstr, modelRef, forallusersflag, auth, model
         })
 
       }
+
+      console.log('newObj', newObj);
 
       setValues(newObj)
     };
@@ -408,7 +400,7 @@ const Crud = ({ user, arr, limit, addstr, modelRef, forallusersflag, auth, model
                 manyDinamicFieldsFlag
                   ?
                   (
-                    isArrFields
+                    isArrFields || Array.isArray(fields)
                       ?
                       fields.map((field, index) => ( // En construcción lo dinamico muy dinamico
 
@@ -417,7 +409,8 @@ const Crud = ({ user, arr, limit, addstr, modelRef, forallusersflag, auth, model
                             className="form-control"
 
                             placeholder={
-                              ('Ingresa ' + (field.title != ',' ? field.title.replace(/,/g, '') : '').replace(' - ', '').replace(" y", "y")).replace(/,/g, '')
+                              `Ingresa ${field.title}`
+                              // ('Ingresa ' + (field.title != ',' ? field.title.replace(/,/g, '') : '').replace(' - ', '').replace(" y", "y")).replace(/,/g, '')
                             }
                           />
                         </div>
@@ -518,26 +511,32 @@ const Crud = ({ user, arr, limit, addstr, modelRef, forallusersflag, auth, model
                             <div className="row w-100 ms-1 my-2 border card-crud p-2" style={{ overflow: 'hidden' }} key={randomKey()}>
                               <div className={`mb-2 col-${(!forallusersflag && user && user.username !== auth.user.username) ? '12' : '9'}`}>
                                 {
-                                  (isArrFields || Array.isArray(fields) ? fields : Object.keys(fields)).map((field, fieldIndex) => (
-                                    <div key={randomKey()}>
-                                      {console.log(item, field)}
-                                      <p className={`fs-6 fw-semi-bold border-bottom ${fieldIndex > 0 ? 'mt-2' : ''} pb-0 mb-0 ${fieldIndex == 0 ? 'pt-2' :
-                                        ''}`} style={{ wordWrap: 'break-word' }} key={randomKey()}>{item[isArrFields || Array.isArray(fields) ? field.inputAndModelName : field]}</p>
-                                      {
-                                        isArrFields || Array.isArray(fields) ?
+                                  isArrFields || Array.isArray(fields)
+                                    ? fields.map((fieldMap, fieldIndex) => (
+                                      <div key={randomKey()}>
+                                        {console.log(item, fieldMap)}
+                                        <p className={`fs-6 fw-semi-bold border-bottom ${fieldIndex > 0 ? 'mt-2' : ''} pb-0 mb-0 ${fieldIndex == 0 ? 'pt-2' :
+                                          ''}`} style={{ wordWrap: 'break-word' }} key={randomKey()}>{item[isArrFields || Array.isArray(fields) ? fieldMap.inputAndModelName : fieldMap]}</p>
+                                        <span className="fw-bold text-muted p-0 m-0 fs-8 fst-italic text-capitalize">
+                                          {fieldMap && fieldMap.title && fieldMap.title.replace('un', '').trim()}
+                                        </span>
+                                      </div>
+                                    ))
+                                    : Object.keys(fields).map((fieldMap, fieldIndex) => (
+                                      <div key={randomKey()}>
+                                        <p className={`fs-6 fw-semi-bold border-bottom ${fieldIndex > 0 ? 'mt-2' : ''} pb-0 mb-0 ${fieldIndex == 0 ? 'pt-2' :
+                                          ''}`} style={{ wordWrap: 'break-word' }} key={randomKey()}>{item[isArrFields || Array.isArray(fields) ? fieldMap : fieldMap]}</p>
+                                        {
                                           <span className="fw-bold text-muted p-0 m-0 fs-8 fst-italic text-capitalize">
-                                            {field.title.replace('un','').trim()}
-                                          </span>
-                                          : <span className="fw-bold text-muted p-0 m-0 fs-8 fst-italic text-capitalize">
                                             {
                                               readData && readData.length > 0
                                                 ? Object.entries(addstr).map(placeholder => {
-                                                  return placeholder[0] == field
+                                                  return placeholder[0] == fieldMap
                                                     ? (Object.keys(addstr).length == 2 ? placeholder[1].replace('tu', '').replace('-', '').replace(' - ', '').replace(' ', '').replace('>', '').replace('y', '')
                                                       : placeholder[1].replace('tu', '')).replace('-', '').replace(' - ', '').replace(' ', '').replace('>', '').replace('y', '') : ''
                                                 })
                                                 : Object.entries(addstr).map(placeholder => {
-                                                  return placeholder[0] == field
+                                                  return placeholder[0] == fieldMap
                                                     ? (Object.keys(addstr).length == 2
                                                       ? placeholder[1].replace('-', '').replace(' - ', '').replace(' ', '').replace('>', '').replace('y', '')
                                                       : placeholder[1]).replace('-', '').replace(' - ', '').replace(' ', '').replace('>', '').replace('y', '')
@@ -545,10 +544,10 @@ const Crud = ({ user, arr, limit, addstr, modelRef, forallusersflag, auth, model
                                                 })
                                             }
                                           </span>
-                                      }
+                                        }
 
-                                    </div>
-                                  ))
+                                      </div>
+                                    ))
                                   //  END READ
                                 }
                               </div>
