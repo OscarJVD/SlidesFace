@@ -98,3 +98,6 @@ code {
 /* ---------- BUTTON  ----------  */
 
 @import url("./button/index.css");
+
+/* ----------- INPUT ----------- */
+@import url("./input/index.css");

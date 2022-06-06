@@ -15,37 +15,47 @@ const GeneralInformation = ({ user, auth }) => {
               <Crud
                 model="job" // Nombre de la tabla
                 fields={[
-                    {
-                      inputAndModelName: 'workplace', // it would be differente to the parent model. It needs de validation
-                      type: 'text',
-                      inputType: 'text',
-                      title: "un lugar de trabajo",
-                      required: true,
-                      regex: '^[a-zA-Z0-9ñÑáéíóúÁÉÍÓÚ ]+$',
-                      unique: false,
-                      trim: true
-                  },
-                  {
-                    inputAndModelName: 'workplaces', // it would be differente to the parent model. It needs de validation
-                    type: 'text',
-                    inputType: 'text',
-                    title: "un lugar de trabajo secundario",
-                    required: true,
-                    regex: '^[a-zA-Z0-9ñÑáéíóúÁÉÍÓÚ ]+$',
-                    unique: false,
-                    trim: true
-                }
-                ,
-                  {
-                    inputAndModelName: 'workplacess', // it would be differente to the parent model. It needs de validation
-                    type: 'text',
-                    inputType: 'text',
-                    title: "un lugar de trabajo secundarios",
-                    required: true,
-                    regex: '^[a-zA-Z0-9ñÑáéíóúÁÉÍÓÚ ]+$',
-                    unique: false,
-                    trim: true
-                }
+                  //   {
+                  //     inputAndModelName: 'workplace', // it would be differente to the parent model. It needs de validation
+                  //     type: 'text',
+                  //     inputType: 'autoselect',
+                  //     title: "un lugar de trabajo",
+                  //     required: true,
+                  //     regex: '^[a-zA-Z0-9ñÑáéíóúÁÉÍÓÚ ]+$',
+                  //     unique: false,
+                  //     trim: true
+                  // },
+                //   {
+                //     inputAndModelName: 'workplaces', // it would be differente to the parent model. It needs de validation
+                //     type: 'text',
+                //     inputType: 'number',
+                //     title: "Actualmente trabajo aquí",
+                //     required: true,
+                //     regex: '^[a-zA-Z0-9ñÑáéíóúÁÉÍÓÚ ]+$',
+                //     unique: false,
+                //     trim: true
+                // },
+                {
+                  inputAndModelName: 'workplaces', // it would be differente to the parent model. It needs de validation
+                  type: 'text',
+                  inputType: 'text',
+                  title: "Actualmente trabajo aquí",
+                  required: true,
+                  regex: '^[a-zA-Z0-9ñÑáéíóúÁÉÍÓÚ ]+$',
+                  unique: false,
+                  trim: true
+              }
+                // ,
+                //   {
+                //     inputAndModelName: 'workplacess', // it would be differente to the parent model. It needs de validation
+                //     type: 'text',
+                //     inputType: 'text',
+                //     title: "un lugar de trabajo secundarios",
+                //     required: true,
+                //     regex: '^[a-zA-Z0-9ñÑáéíóúÁÉÍÓÚ ]+$',
+                //     unique: false,
+                //     trim: true
+                // }
               ]}
                 auth={auth}
                 user={user}

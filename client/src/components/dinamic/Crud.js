@@ -6,8 +6,13 @@ import Approve from "../alert/Approve";
 import MTable from './MTable';
 import { Oval } from 'react-loader-spinner'
 import Toast from "../alert/Toast";
+import TextField from 'react-autocomplete-input';
+import 'react-autocomplete-input/dist/bundle.css';
 import { useDispatch } from "react-redux";
 import { GLOBAL_TYPES } from "../../redux/actions/globalTypes";
+import NumericInput from 'react-numeric-input';
+import { Hint } from 'react-autocomplete-hint';
+
 
 const Crud = ({ user, arr, limit, addstr, modelRef, forallusersflag, auth, model, fields, optional }) => {
   console.log()
@@ -148,7 +153,7 @@ const Crud = ({ user, arr, limit, addstr, modelRef, forallusersflag, auth, model
         console.log(inputsNewItemRef.current.children)
         if (inputsNewItemRef.current.children && inputsNewItemRef.current.children.length > 0) {
           Array.from(inputsNewItemRef.current.children).forEach((div, index) => {
-            if (inputsNewItemRef.current.children[index].children[0] && inputsNewItemRef.current.children[index].children[0].placeholder) {
+            if (inputsNewItemRef.current.children[index].children[0] && inputsNewItemRef.current.children[index].children[0].type == 'text' && inputsNewItemRef.current.children[index].children[0].placeholder) {
               inputsNewItemRef.current.children[index].children[0].placeholder = inputsNewItemRef.current.children[index].children[0].placeholder.replace(/,/g, '')
             }
           })
@@ -233,27 +238,42 @@ const Crud = ({ user, arr, limit, addstr, modelRef, forallusersflag, auth, model
       }
     }
 
-    const handleChange = e => {
+    const handleChange = (e, objCustomInput = {}) => {
 
-      const { name, value } = e.target;
+      console.log(e)
+      console.log(objCustomInput)
+      let inputAttrs = {}
+      if (typeof e == 'string') {
+        inputAttrs = objCustomInput
+      } else {
+        inputAttrs = e.target
+      }
+
+      const { name, value } = inputAttrs
 
       console.log(name, value);
       console.log(values);
       setValues({ ...values, [name]: value });
 
-      setTimeout(() => {
-        let elemInp;
-        console.log(inputsNewItemRef.current.children)
-        if (inputsNewItemRef.current.children && inputsNewItemRef.current.children.length > 0) {
-          Array.from(inputsNewItemRef.current.children).forEach((div, index) => {
-            let elem = inputsNewItemRef.current.children[index].children[0]
-            console.log(elem);
-            if (elem.name == name) elemInp = elem
-            elem.placeholder = elem.placeholder.replace(/,/g, '')
-          })
-        }
-        elemInp.focus();
-      }, 0.000001);
+      // if (typeof e != 'string') {
+      //   setTimeout(() => {
+      //     let elemInp, flagInpText;
+      //     // console.log(inputsNewItemRef.current.children)
+      //     if (inputsNewItemRef.current && inputsNewItemRef.current.children && inputsNewItemRef.current.children.length > 0) {
+      //       Array.from(inputsNewItemRef.current.children).forEach((div, index) => {
+      //         let elem = inputsNewItemRef.current.children[index].children[0]
+      //         console.log(elem);
+      //         if (elem.type == 'text') {
+      //           flagInpText = true
+      //           if (elem.name == name) elemInp = elem
+      //           elem.placeholder = elem.placeholder.replace(/,/g, '')
+      //         }
+      //       })
+      //     }
+      //     // if (flagInpText && elemInp) elemInp.focus();
+      //   }, 0.000001);
+      // }
+
 
     }
 
@@ -274,7 +294,7 @@ const Crud = ({ user, arr, limit, addstr, modelRef, forallusersflag, auth, model
 
         Object.keys(item).forEach(itemObjKey => {
           newValues.forEach(newValue => {
-            if(itemObjKey == newValue){
+            if (itemObjKey == newValue) {
               isArrayObjFields[itemObjKey] = item[itemObjKey]
             }
           })
@@ -370,6 +390,13 @@ const Crud = ({ user, arr, limit, addstr, modelRef, forallusersflag, auth, model
     let randomKey = () => getRandomNum(1, 99999).toString() + getRandomNum(1, 99999).toString() + getRandomNum(1, 99999).toString()
 
     console.log('fields', fields);
+
+    const optionsTest = [
+      { id: 1, label: "orange" },
+      { id: '2', label: "banana asfsdfsdfsdfsdf sd fsdf sdf sd sd" },
+      { id: 3, label: "apple" }
+    ];
+
     return (
       <>
         <div className="w-100">
@@ -402,41 +429,128 @@ const Crud = ({ user, arr, limit, addstr, modelRef, forallusersflag, auth, model
                   (
                     isArrFields || Array.isArray(fields)
                       ?
-                      fields.map((field, index) => ( // En construcción lo dinamico muy dinamico
-
+                      fields.map((field) => ( // En construcción lo dinamico muy dinamico
                         <div className="col-12 my-1" key={randomKey()}>
-                          <input type="text" value={values[field.inputAndModelName]} id={field.inputAndModelName} name={field.inputAndModelName} onChange={handleChange}
-                            className="form-control"
 
-                            placeholder={
-                              `Ingresa ${field.title}`
-                              // ('Ingresa ' + (field.title != ',' ? field.title.replace(/,/g, '') : '').replace(' - ', '').replace(" y", "y")).replace(/,/g, '')
-                            }
-                          />
+                          {/* console.log() */}
+
+                          {/* Tipos de campos (TEXT😉, NUMBER, DATE, DATETIME, SELECT(MULTIPLE), CHECKBOX, TOGGLE, RADIO BUTTON, RANGE INPUT) */}
+
+                          {
+                            ((field.inputType == 'triggerautoselect' && field.triggerArray && field.triggerArray.length > 0
+                              && field.optionsObj && Object.keys(field.optionsObj).length > 0) &&
+                              <TextField trigger={field.triggerArray} options={field.optionsObj} />)
+                            //  trigger={[" ", "@@"]} options={{"@": ["aa", "ab", "abc", "abcd"], "@@": ["az", "ar"]}}
+                          }
+
+                          {
+                            ((field.inputType == 'checkbox') &&
+                              <label htmlFor={field.inputAndModelName} className="my-2 fw-bold">
+                                <input
+                                  type="checkbox"
+                                  value={values[field.inputAndModelName]}
+                                  id={field.inputAndModelName}
+                                  name={field.inputAndModelName}
+                                  onChange={handleChange}
+                                  className="form-check-input"
+                                />
+                                &nbsp;{capFirstLetter(field.title)}
+                              </label>)
+                          }
+
+                          {
+                            ((field.inputType == 'select') &&
+                              <div class="input-group mb-3">
+
+                                <select
+                                  aria-label="Example text with button addon" aria-describedby="button-addon1"
+                                  value={values[field.inputAndModelName]}
+                                  id={field.inputAndModelName}
+                                  name={field.inputAndModelName}
+                                  onChange={handleChange}
+                                  required={field.required}
+                                  className="form-select my-2"
+                                  style={{ height: '50px' }}>
+                                  <option selected value="">{capFirstLetter(field.title)}</option>
+                                </select>
+
+                                <button className="btn btn-sm btn-primary my-2 px-3" style={{ height: '50px' }} type="button" id="button-addon1">
+                                  <i className="fas fa-plus"></i>
+                                </button>
+                              </div>)
+
+                          }
+
+                          {
+                            ((field.inputType == 'number') &&
+                              <NumericInput
+                                value={values[field.inputAndModelName]}
+                                id={field.inputAndModelName}
+                                name={field.inputAndModelName}
+                                onChange={e => handleChange("numericInput", {
+                                  value: e,
+                                  id: field.inputAndModelName,
+                                  name: field.inputAndModelName
+                                })}
+                                min={field.hasOwnProperty('min') ? field.min : null}
+                                max={field.hasOwnProperty('max') ? field.max : null}
+                                className="form-control my-2"
+                                placeholder={`Ingresa ${field.title}`} />)
+                          }
+
+                          {
+                            ((field.inputType == 'text' || field.inputType == 'string' || !field.inputType) &&
+                              <Hint options={optionsTest}>
+                                <input
+                                  type="text"
+                                  value={values[field.inputAndModelName]}
+                                  id={field.inputAndModelName}
+                                  name={field.inputAndModelName}
+                                  onChange={handleChange}
+                                  className="form-control my-2"
+                                  placeholder={`Ingresa ${field.title}`}
+                                />
+                              </Hint>
+                            )
+                          }
+
                         </div>
                       ))
                       :
-                      Array.isArray(fields) ? (
-                        fields.map((field, index) => {
+                      (
+                        Object.keys(fields).map((field) => ( // En construcción lo dinamico muy dinamico
+
                           <div className="col-12 my-1" key={randomKey()}>
-                            <input type="text" value={values[field.inputAndModelName]} id={field.inputAndModelName} name={field.inputAndModelName} onChange={handleChange}
-                              className="form-control"
 
-                              placeholder={
-                                ('Ingresa ' + (field.title != ',' ? field.title.replace(/,/g, '') : '').replace(' - ', '').replace(" y", "y")).replace(/,/g, '')
-                              }
-                            />
-                          </div>
-                        })
-                      )
-                        :
-                        (
-                          Object.keys(fields).map((field, index) => ( // En construcción lo dinamico muy dinamico
+                            {
+                              field.inputType == 'select' &&
+                              <select
+                                value={values[field]}
+                                id={field}
+                                name={field}
+                                onChange={handleChange}
+                                className="form-select"
+                              >
+                                <option selected>
+                                  {capFirstLetter(
+                                    Object.entries(addstr).map(placeholder => {
+                                      if (placeholder[0] == field)
+                                        return (placeholder[1] != ',' ? placeholder[1].replace(/,/g, '') : '').replace(' - ', '').replace(" y", "y").replace(/,/g, '')
+                                    })
+                                  )}
+                                </option>
+                              </select>
+                            }
 
-                            <div className="col-12 my-1" key={randomKey()}>
-                              <input type="text" value={values[field]} id={field} name={field} onChange={handleChange}
+                            {
+                              field.inputType == 'text' || !field.inputType &&
+                              <input
+                                type="text"
+                                value={values[field]}
+                                id={field}
+                                name={field}
+                                onChange={handleChange}
                                 className="form-control"
-
                                 placeholder={
                                   Object.entries(addstr).map(placeholder => {
                                     if (placeholder[0] == field)
@@ -444,10 +558,10 @@ const Crud = ({ user, arr, limit, addstr, modelRef, forallusersflag, auth, model
                                   })
                                 }
                               />
-                            </div>
-                          ))
-                        )
-
+                            }
+                          </div>
+                        ))
+                      )
                   )
                   :
                   // Nunca va a llegar acá
