@@ -1,13 +1,22 @@
 import MaterialTable from 'material-table'
 import esLocale from 'date-fns/locale/es'
+import { useState } from 'react'
 
-const MTable = ({ title, data, columns, grouping = true, detailPanel, withPagination, withSearcher, withFiltering, withExportButton}) => {
+const MTable = ({ title, data, columns,
+    // actions = [], actionsColIndex = 0,
+    grouping = true, detailPanel
+}) => {
+
+    // console.log('TABLE DATA AND COLUMNS');
+    // console.log(data);
+    // console.log(columns);
+    // console.log('END TABLE DATA AND COLUMNS');
 
     return (
         <MaterialTable
             // parentChildData={(row, rows) => rows.find(a => a._id === row.user)}
             size={'small'}
-            title={title ? title : ''}
+            title={title}
             data={data}
             columns={columns}
             // actions={actions}
@@ -16,10 +25,10 @@ const MTable = ({ title, data, columns, grouping = true, detailPanel, withPagina
                 // defaultSort: 'desc',
                 // selection: true,
                 // actionsColumnIndex: parseInt(actionsColIndex),
-                search: withSearcher,
-                paging: withPagination,
-                filtering: withFiltering,
-                exportButton: withExportButton,
+                search: true,
+                paging: true,
+                filtering: true,
+                // exportButton: true,
                 // columnsButton: true,
                 // detailPanelType: 'multiple',
                 // draggable: true,
@@ -30,7 +39,7 @@ const MTable = ({ title, data, columns, grouping = true, detailPanel, withPagina
                 tableLayout: 'auto',
                 padding: 'dense',
                 grouping: grouping,
-                pageSize: 3,
+                pageSize: 10,
                 // cspNonce: 'sdkjfhsdkfh'
             }}
             detailPanel={detailPanel}
@@ -38,9 +47,17 @@ const MTable = ({ title, data, columns, grouping = true, detailPanel, withPagina
                 body: {
                     dateTimePickerLocalization: esLocale,
                     emptyDataSourceMessage: "No hay registros para mostrar",
+                    // addTooltip: 'Añadir',
+                    // deleteTooltip: 'Eliminar',
+                    // editTooltip: 'Editar',
                     filterRow: {
                         filterTooltip: 'Filtrar'
                     },
+                    // editRow: {
+                    //     deleteText: '¿Quiere eliminar esta línea?',
+                    //     cancelTooltip: 'Anular',
+                    //     saveTooltip: 'Registro'
+                    // }
                 },
                 grouping: {
                     placeholder: "Arrastra los encabezados aquí para agruparlos",
@@ -63,6 +80,10 @@ const MTable = ({ title, data, columns, grouping = true, detailPanel, withPagina
                     lastTooltip: 'Última página'
                 },
                 toolbar: {
+                    // addRemoveColumns: 'Añadir o Eliminar columnas',
+                    // // nRowsSelected: '{0} fila(s) seleccionada(s)',
+                    // showColumnsTitle: 'Ver las columnas',
+                    // showColumnsAriaLabel: 'Ver las columnas',
                     exportTitle: 'Exportar',
                     exportAriaLabel: 'Exportar',
                     exportName: 'Exportar como CSV',
@@ -74,5 +95,13 @@ const MTable = ({ title, data, columns, grouping = true, detailPanel, withPagina
         />
     );
 }
+
+// actions={
+//     {
+//         icon: 'edit',
+//         tooltip: 'Editar',
+//         render: rowData => <h2>TEST</h2>
+//     }
+// }
 
 export default MTable;

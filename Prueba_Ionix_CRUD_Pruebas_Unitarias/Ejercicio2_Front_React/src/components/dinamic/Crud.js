@@ -9,12 +9,14 @@ import Toast from "../alert/Toast";
 import 'react-autocomplete-input/dist/bundle.css';
 import { useDispatch } from "react-redux";
 import { GLOBAL_TYPES } from "../../redux/actions/globalTypes";
+import ReactPasswordToggleIcon from "react-password-toggle-icon";
 
 
 const Crud = ({ user, arr, limit, addstr, modelRef, forallusersflag, auth, model, fields, optional }) => {
 
   console.log(user)
   console.log(auth)
+  let inputPasswordIconRef = useRef();
   let addRef = useRef()
   let inputsNewItemRef = useRef()
   let [addTitle, setAddTitle] = useState("")
@@ -24,6 +26,7 @@ const Crud = ({ user, arr, limit, addstr, modelRef, forallusersflag, auth, model
   let [showValidInputs, setShowValidInputs] = useState({ flag: false, str: '' })
   let [showLoader, setShowLoader] = useState(false)
   let [values, setValues] = useState(fields)
+  let [mTableCols, setMTableCols] = useState([])
   let [readData, setReadData] = useState([])
   const [isArrFields, setIsArrFields] = useState(false)
   const [isOpen, setOpen] = useState(false)
@@ -41,6 +44,65 @@ const Crud = ({ user, arr, limit, addstr, modelRef, forallusersflag, auth, model
     }
   }
 
+  const handleEditItem = (item) => {
+    // console.log(readData)
+    console.log('item', item);
+    console.log('values', values);
+    console.log('fields', fields);
+    setId(item._id);
+    setAdd(true)
+
+    let newObj = fields, isArrayObjFields = {}
+    if (isArrFields || Array.isArray(fields)) {
+      let newValues = []
+      Object.entries(values).forEach(val => {
+        newValues.push(val[1].inputAndModelName)
+      })
+
+      Object.keys(item).forEach(itemObjKey => {
+        newValues.forEach(newValue => {
+          if (itemObjKey == newValue) {
+            isArrayObjFields[itemObjKey] = item[itemObjKey]
+          }
+        })
+      })
+
+      newObj = Object.assign({}, values, isArrayObjFields)
+
+    } else {
+      Object.keys(item).forEach(key => {
+        if (fields.hasOwnProperty(key)) {
+          newObj[key] = item[key]
+        }
+      })
+
+      Object.keys(fields).forEach(key => {
+        if (!item.hasOwnProperty(key)) {
+          newObj[key] = ''
+        }
+      })
+
+    }
+
+    console.log('newObj', newObj);
+
+    setValues(newObj)
+  };
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const prepareDeleteItem = (item) => {
+    console.log('item', item);
+    console.log('values', values);
+    console.log('fields', fields);
+    setItemToDelete(item)
+    handleClickOpen()
+  };
+
+  let randomKey = () => getRandomNum(1, 99999).toString() + getRandomNum(1, 99999).toString() + getRandomNum(1, 99999).toString()
+
   const getItems = async () => {
 
     let getObj = { model, fieldsAndValues: values, fields }
@@ -49,17 +111,98 @@ const Crud = ({ user, arr, limit, addstr, modelRef, forallusersflag, auth, model
       getObj.otherUser = user._id
 
     let res = await postDataAPI('getDataField', getObj, auth.token)
-    console.log(res);
+    // console.log(res);
     if (res.data.data && res.data.data.length > 0) {
-      console.log(res.data.data)
+      // console.log(res.data.data)
       res = sort(res.data.data)
-      console.log(res)
+      // console.log(res)
       setReadData([...res])
-      console.log(res)
+      // console.log(res)
+
+      let arrSimpleFieldsJoin = []
+
+      if (fields && Array.isArray(fields)) {
+        fields.map(field => {
+          if (field.hasOwnProperty("tableShow") && field.tableShow == false) {
+            return;
+          } else {
+            let newTitle = field.title.toLowerCase().trim().replace('un ', '').replace('tu ', '').trim()
+            arrSimpleFieldsJoin.push({
+              field: field.inputAndModelName,
+              title: capFirstLetter(newTitle)
+            })
+          }
+        })
+      } else {
+        Object.keys(fields).map(field => {
+          Object.entries(addstr).map(titles => {
+            if (field == titles[0]) {
+              let newTitle = titles[1].replace('un, ').replace('tu', '').trim()
+              arrSimpleFieldsJoin.push({
+                field,
+                title: capFirstLetter(newTitle)
+              })
+            }
+          })
+        })
+      }
+
+      let arrColumnsMTable = []
+
+      arrSimpleFieldsJoin.map(field => {
+        arrColumnsMTable.push({
+          title: field.title,
+          field: field.field,
+        })
+      })
+
+      // Acciones
+      arrColumnsMTable.push({
+        title: '',
+        field: 'anyany',
+        render: (rowData, index) => (
+          <div key={index} className="justify-content-center text-center d-flex align-items-center col-3">
+            <div className="row align-items-center text-center justify-content-center d-flex">
+
+              <div className="w-100 col-md-12 align-items-center text-center justify-content-center d-flex">
+                <Tooltip content={`Editar fila`} placement="left" className="float-end" style={{ float: 'right' }}>
+                  <i className="text-center border border-warning justify-content-center h-100 align-items-center d-flex edit-crud-btn  w-100 btn fas float-end fa-edit text-warning pointer"
+                    onClick={() => handleEditItem(rowData)}></i>
+                </Tooltip>
+              </div>
+
+              <div className="w-100 col-md-12 mt-2 align-items-center text-center justify-content-center d-flex">
+                <Tooltip content={`Eliminar fila`} placement="left" className="float-end" style={{ float: 'right' }}>
+                  <i style={{
+                    paddingRight: '0.86rem',
+                    paddingLeft: '0.86rem'
+                  }} className="delete-crud-button border border-danger text-center justify-content-center w-100 btn fas h-100 align-items-center d-flex float-end ms-2 fa-trash text-danger pointer"
+                    onClick={() => { prepareDeleteItem(rowData); }}
+                  ></i>
+                </Tooltip>
+              </div>
+            </div>
+          </div>
+        ),
+      })
+
+      console.log('arrColumnsMTable', arrColumnsMTable)
+
+      setMTableCols(arrColumnsMTable)
     }
 
     console.log('readData', readData, readData.data, model);
   }
+
+  // EYE ICON
+  const showIcon = () => (
+    <i className="fas fa-eye pointer" aria-hidden="true"></i>
+  );
+
+  const hideIcon = () => (
+    <i className="fas fa-eye-slash pointer" aria-hidden="true"></i>
+  );
+  // END EYE ICON
 
   useEffect(() => {
     /**
@@ -92,6 +235,12 @@ const Crud = ({ user, arr, limit, addstr, modelRef, forallusersflag, auth, model
   }, [])
 
   useEffect(() => {
+    if (fields && Array.isArray(fields)) {
+      setIsArrFields(true)
+    } else {
+      setIsArrFields(false)
+    }
+
     getItems()
 
     let addString = addstr ? 'Agrega ' : 'Agregar'
@@ -134,12 +283,11 @@ const Crud = ({ user, arr, limit, addstr, modelRef, forallusersflag, auth, model
   }
 
   if (!arr || arr.length <= 0 || Object.keys(arr).length <= 0) {
-    
+
     const newItem = e => {
       e.preventDefault()
       setAdd(true)
       setId('')
-      console.log(fields)
 
       setTimeout(() => {
         console.log(inputsNewItemRef.current.children)
@@ -151,8 +299,9 @@ const Crud = ({ user, arr, limit, addstr, modelRef, forallusersflag, auth, model
           })
         }
       }, 0.00001);
-      console.log("TEST-SDSDSD")
-      // setValues()
+
+      let newArr = fields
+      setValues(newArr)
     }
 
     const saveItem = async () => {
@@ -245,65 +394,8 @@ const Crud = ({ user, arr, limit, addstr, modelRef, forallusersflag, auth, model
       e.target.focus();
     }
 
-    const handleEditItem = (item) => {
-      // console.log(readData)
-      console.log('item', item);
-      console.log('values', values);
-      console.log('fields', fields);
-      setId(item._id);
-      setAdd(true)
-
-      let newObj = fields, isArrayObjFields = {}
-      if (isArrFields || Array.isArray(fields)) {
-        let newValues = []
-        Object.entries(values).forEach(val => {
-          newValues.push(val[1].inputAndModelName)
-        })
-
-        Object.keys(item).forEach(itemObjKey => {
-          newValues.forEach(newValue => {
-            if (itemObjKey == newValue) {
-              isArrayObjFields[itemObjKey] = item[itemObjKey]
-            }
-          })
-        })
-
-        newObj = Object.assign({}, values, isArrayObjFields)
-
-      } else {
-        Object.keys(item).forEach(key => {
-          if (fields.hasOwnProperty(key)) {
-            newObj[key] = item[key]
-          }
-        })
-
-        Object.keys(fields).forEach(key => {
-          if (!item.hasOwnProperty(key)) {
-            newObj[key] = ''
-          }
-        })
-
-      }
-
-      console.log('newObj', newObj);
-
-      setValues(newObj)
-    };
-
-    const handleClickOpen = () => {
-      setOpen(true);
-    };
-
     const handleDialogClose = () => {
       setOpen(false);
-    };
-
-    const prepareDeleteItem = (item) => {
-      console.log('item', item);
-      console.log('values', values);
-      console.log('fields', fields);
-      setItemToDelete(item)
-      handleClickOpen()
     };
 
     const handleDelete = async (action) => {
@@ -355,8 +447,6 @@ const Crud = ({ user, arr, limit, addstr, modelRef, forallusersflag, auth, model
       setId('');
     }
 
-    let randomKey = () => getRandomNum(1, 99999).toString() + getRandomNum(1, 99999).toString() + getRandomNum(1, 99999).toString()
-
     console.log('fields', fields);
 
     return (
@@ -403,9 +493,36 @@ const Crud = ({ user, arr, limit, addstr, modelRef, forallusersflag, auth, model
                                 id={field.inputAndModelName}
                                 name={field.inputAndModelName}
                                 onChange={handleChange}
-                                className="form-control my-2"
-                                placeholder={`Ingresa ${field.title}`}
+                                className="form-control"
+                                placeholder={`Ingresa ${field.title.toLowerCase()}`}
                               />
+                            )
+                          }
+
+                          {
+                            ((field.inputType == 'password') &&
+
+
+                              <div className="form-group">
+                                <div className="position-relative">
+                                  <input
+                                    type="password"
+                                    ref={inputPasswordIconRef}
+                                    value={values[field.inputAndModelName]}
+                                    id={field.inputAndModelName}
+                                    name={field.inputAndModelName}
+                                    onChange={handleChange}
+                                    className="form-control my-2"
+                                    placeholder={`Ingresa ${field.title.toLowerCase()}`}
+                                  />
+
+                                  <ReactPasswordToggleIcon
+                                    inputRef={inputPasswordIconRef}
+                                    showIcon={showIcon}
+                                    hideIcon={hideIcon}
+                                  />
+                                </div>
+                              </div>
                             )
                           }
 
@@ -472,16 +589,28 @@ const Crud = ({ user, arr, limit, addstr, modelRef, forallusersflag, auth, model
           </div>
           {/* END SAVE - EDIT - CANCEL BUTTON */}
 
-          {/* ADD TITLE */}
-          <div>
+          {/* ADD NEW REGISTER BUTTON */}
+          <div className={`mb-3 ${optional && optional.textAddBtnType && optional.textAddBtnType != 'simple' ? 'text-left justify-content-start' : 'text-right justify-content-end float-right'}`}>
             {
+              !optional || optional.addBtnType == 'a' || !optional.hasOwnProperty('addBtnType') &&
               ((!forallusersflag && user && user.username === auth.user.username) && (readData.length < limit || !limit)) &&
-              <a href="#" className={`h-100 d-flex align-items-center justify-content-start text-left ${add ? 'd-none' : ''}`} onClick={newItem}>
+              <a href="#" className={`h-100 d-flex align-items-center ${add ? 'd-none' : ''}`} onClick={newItem}>
                 <i className="fas fa-lg fa-plus-circle"></i>&nbsp;
                 <span ref={addRef}>
-                  {addTitle}
+                  {optional && optional.textAddBtnType && optional.textAddBtnType != 'simple' ? addTitle : 'Nuevo'}
                 </span>
               </a>
+            }
+
+            {
+              optional && optional.addBtnType == 'button' &&
+              ((!forallusersflag && user && user.username === auth.user.username) && (readData.length < limit || !limit)) &&
+              <button className={`btn btn-primary h-100 d-flex align-items-center ${add ? 'd-none' : ''}`} onClick={newItem}>
+                <i className="fas fa-lg fa-plus-circle"></i>&nbsp;
+                <span ref={addRef}>
+                  {optional && optional.textAddBtnType && optional.textAddBtnType != 'simple' ? addTitle : 'Nuevo'}
+                </span>
+              </button>
             }
           </div>
 
@@ -499,10 +628,24 @@ const Crud = ({ user, arr, limit, addstr, modelRef, forallusersflag, auth, model
                             isArrFields || Array.isArray(fields)
                               ? fields.map((fieldMap, fieldIndex) => (
                                 <div key={randomKey()}>
-                                  {console.log(item, fieldMap)}
-                                  <p className={`fs-6 fw-semi-bold border-bottom ${fieldIndex > 0 ? 'mt-2' : ''} pb-0 mb-0 ${fieldIndex == 0 ? 'pt-2' :
-                                    ''}`} style={{ wordWrap: 'break-word' }} key={randomKey()}>{item[isArrFields || Array.isArray(fields) ? fieldMap.inputAndModelName : fieldMap]}</p>
-                                  <span className="fw-bold text-muted p-0 m-0 fs-8 fst-italic text-capitalize">
+
+                                  {
+                                    fieldMap.inputType == 'password' &&
+                                    <input type="password" className="form-control border-0 d-block ps-0 pb-0 mb-0" disabled value={item[fieldMap.inputAndModelName]} />
+                                  }
+
+                                  {
+                                    fieldMap.inputType != 'password' &&
+                                    <p
+                                      className={`fs-6 fw-semi-bold border-bottom ${fieldIndex > 0 ? 'mt-2' : ''} pb-0 mb-0 ${fieldIndex == 0 ? 'pt-2' : ''}`}
+                                      style={{ wordWrap: 'break-word' }}>
+                                      {
+                                        item[fieldMap.inputAndModelName]
+                                      }
+                                    </p>
+                                  }
+
+                                  <span className="fw-bold text-muted p-0 fs-8 fst-italic text-capitalize">
                                     {fieldMap && fieldMap.title && fieldMap.title.replace('un', '')}
                                   </span>
                                 </div>
@@ -512,7 +655,7 @@ const Crud = ({ user, arr, limit, addstr, modelRef, forallusersflag, auth, model
                                   <p className={`fs-6 fw-semi-bold border-bottom ${fieldIndex > 0 ? 'mt-2' : ''} pb-0 mb-0 ${fieldIndex == 0 ? 'pt-2' :
                                     ''}`} style={{ wordWrap: 'break-word' }} key={randomKey()}>{item[isArrFields || Array.isArray(fields) ? fieldMap : fieldMap]}</p>
                                   {
-                                    <span className="fw-bold text-muted p-0 m-0 fs-8 fst-italic text-capitalize">
+                                    <span className="fw-bold text-muted p-0 fs-8 fst-italic text-capitalize">
                                       {
                                         readData && readData.length > 0
                                           ? Object.entries(addstr).map(placeholder => {
@@ -539,23 +682,22 @@ const Crud = ({ user, arr, limit, addstr, modelRef, forallusersflag, auth, model
 
                         {
                           !forallusersflag && user && user.username === auth.user.username && <>
-                            <div className="justify-content-center text-
-                              center d-flex align-items-center col-3" key={randomKey()}>
+                            <div className="justify-content-center text-center d-flex align-items-center col-3" key={randomKey()}>
                               <div className="row align-items-center text-center justify-content-center d-flex">
 
-                                <div className="w-100 col-md-12 align-items-center text-center justify-content-center d-flex">
-                                  <Tooltip content={`Editar fila`} placement="left" className="float-end" style={{ float: 'right' }}>
-                                    <i className="text-center border border-warning justify-content-center h-100 align-items-center d-flex edit-crud-btn  w-100 btn fas float-end fa-edit text-warning pointer"
+                                <div className="col-md-5 align-items-center text-center justify-content-center d-flex m-1">
+                                  <Tooltip content={`Editar fila`} placement="left" className="">
+                                    <i className="text-center border border-warning justify-content-center h-100 align-items-center d-flex edit-crud-btn  btn fas fa-edit text-warning pointer"
                                       onClick={() => handleEditItem(item)}></i>
                                   </Tooltip>
                                 </div>
 
-                                <div className="w-100 col-md-12 mt-2 align-items-center text-center justify-content-center d-flex">
-                                  <Tooltip content={`Eliminar fila`} placement="left" className="float-end" style={{ float: 'right' }}>
+                                <div className="col-md-5 align-items-center text-center justify-content-center d-flex m-1">
+                                  <Tooltip content={`Eliminar fila`} placement="left" className="">
                                     <i style={{
-                                      paddingRight: '0.86rem',
-                                      paddingLeft: '0.86rem'
-                                    }} className="delete-crud-button border border-danger text-center justify-content-center w-100 btn fas h-100 align-items-center d-flex float-end ms-2 fa-trash text-danger pointer"
+                                      paddingRight: '1.07rem',
+                                      paddingLeft: '1.07rem'
+                                    }} className="delete-crud-button border border-danger text-center justify-content-center btn fas h-100 align-items-center d-flex fa-trash text-danger pointer"
                                       onClick={() => { prepareDeleteItem(item); }}
                                     ></i>
                                   </Tooltip>
@@ -582,8 +724,11 @@ const Crud = ({ user, arr, limit, addstr, modelRef, forallusersflag, auth, model
 
               {
                 optional.tableType == 'table' &&
-                <>
-                </>
+                <MTable
+                  title={<h3 className='text-uppercase'>{optional.generalTitle}</h3>}
+                  data={readData}
+                  columns={mTableCols}
+                />
               }
 
             </div>
