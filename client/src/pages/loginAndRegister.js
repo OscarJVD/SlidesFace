@@ -13,6 +13,20 @@ const LoginAndRegister = () => {
   let inputRef = useRef();
   let newpassRef = useRef();
 
+  useEffect(() => {
+    const listener = event => {
+      if (event.code === "Enter" || event.code === "NumpadEnter") {
+        console.log("Enter key was pressed. Run your function.");
+        event.preventDefault();
+        // callMyFunction();
+      }
+    };
+    document.addEventListener("keydown", listener);
+    return () => {
+      document.removeEventListener("keydown", listener);
+    };
+  }, []);
+
   const showIcon = () => (
     <i className="fas fa-eye pointer" aria-hidden="true"></i>
   );
@@ -149,7 +163,7 @@ const LoginAndRegister = () => {
                 </div> */}
               </div>
             </div>
-            <form onSubmit={loginSubmit}>
+            <form onSubmit={loginSubmit} onKeyUp={(e) => { if(e.key === 'Enter') loginSubmit(e); }}>
               <div className="row">
                 <div className="col-md-12">
                   <div className="form-group">
@@ -161,6 +175,7 @@ const LoginAndRegister = () => {
                       placeholder="Usuario, correo o teléfono"
                       id="username_email_or_mobile_login"
                       name="username_email_or_mobile_login"
+                      // onKeyUp={(e) => { if(e.key === 'Enter') loginSubmit(e); }}
                       value={username_email_or_mobile_login}
                     />
                     {/* {errors.username_email_or_mobile_login && (
@@ -179,6 +194,7 @@ const LoginAndRegister = () => {
                         placeholder="Contraseña"
                         id="password"
                         name="password"
+                        // onKeyUp={(e) => { if(e.key === 'Enter') loginSubmit(); }}
                         value={password}
                         
                       />

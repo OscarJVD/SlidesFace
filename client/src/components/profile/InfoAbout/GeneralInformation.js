@@ -36,14 +36,17 @@ const GeneralInformation = ({ user, auth }) => {
                 //     trim: true
                 // },
                 {
-                  inputAndModelName: 'workplaces', // it would be differente to the parent model. It needs de validation
+                  inputAndModelName: 'testet', // it would be differente to the parent model. It needs de validation
                   type: 'text',
-                  inputType: 'text',
+                  inputType: 'datalist',
                   title: "Actualmente trabajo aquí",
                   required: true,
                   regex: '^[a-zA-Z0-9ñÑáéíóúÁÉÍÓÚ ]+$',
                   unique: false,
-                  trim: true
+                  trim: true,
+                  optional: {
+                    dataListMultiple: true
+                  }
               }
                 // ,
                 //   {

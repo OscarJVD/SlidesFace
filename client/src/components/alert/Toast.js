@@ -1,4 +1,13 @@
+import { useEffect } from "react";
+
 const Toast = ({ msg, handleShow, bgColor, onlyTitle }) => {
+
+  useEffect(() => {
+    setTimeout(() => {
+      handleShow()
+    }, 2000)
+  }, [])
+
   return (
     <div
       className={`toast show position-fixed text-light ${bgColor}`}
