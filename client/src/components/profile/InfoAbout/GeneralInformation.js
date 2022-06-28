@@ -38,15 +38,10 @@ const GeneralInformation = ({ user, auth }) => {
                 {
                   inputAndModelName: 'testet', // it would be differente to the parent model. It needs de validation
                   type: 'text',
-                  inputType: 'datalist',
+                  inputType: 'autocomplete',
                   title: "Actualmente trabajo aquí",
                   required: true,
-                  regex: '^[a-zA-Z0-9ñÑáéíóúÁÉÍÓÚ ]+$',
                   unique: false,
-                  trim: true,
-                  optional: {
-                    dataListMultiple: true
-                  }
               }
                 // ,
                 //   {

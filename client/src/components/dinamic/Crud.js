@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import Tooltip from "react-simple-tooltip";
 import { postDataAPI, postFormDataAPI, putDataAPI } from "../../utils/fetchData";
-import { capFirstLetter, getRandomNum, imageUpload, sort } from "../../utils/functions";
+import { capFirstLetter, getRandomNum, imageUpload, noEsPrimero, sort } from "../../utils/functions";
 import Approve from "../alert/Approve";
 import MTable from './MTable';
 import { Oval } from 'react-loader-spinner'
@@ -16,7 +16,9 @@ import { Box, Modal } from "@mui/material";
 import TextField from 'react-autocomplete-input';
 import 'react-autocomplete-input/dist/bundle.css';
 import NumericInput from 'react-numeric-input';
-import Multiselect from 'multiselect-react-dropdown';
+// import Multiselect from 'multiselect-react-dropdown';
+// import Select from "react-select";
+import { ReactSearchAutocomplete } from 'react-search-autocomplete'
 
 const Crud = ({ user, arr, limit, addstr, modelRef, forallusersflag, auth, model, fields, optional }) => {
 
@@ -24,6 +26,7 @@ const Crud = ({ user, arr, limit, addstr, modelRef, forallusersflag, auth, model
   console.log(auth)
   let inputPasswordIconRef = useRef();
   let addRef = useRef()
+  // let autocompleteRef = useRef();
   let inputsNewItemRef = useRef()
   let [addTitle, setAddTitle] = useState("")
   let [addTitleAlone, setAddTitleAlone] = useState("")
@@ -32,6 +35,7 @@ const Crud = ({ user, arr, limit, addstr, modelRef, forallusersflag, auth, model
   let [showValidInputs, setShowValidInputs] = useState({ flag: false, str: '' })
   let [showLoader, setShowLoader] = useState(false)
   let [values, setValues] = useState(fields)
+  let [subRows, setSubRows] = useState({})
   let [mTableCols, setMTableCols] = useState([])
   let [readData, setReadData] = useState([])
   const [isArrFields, setIsArrFields] = useState(false)
@@ -40,6 +44,10 @@ const Crud = ({ user, arr, limit, addstr, modelRef, forallusersflag, auth, model
   const [itemToDelete, setItemToDelete] = useState(null)
   const dispatch = useDispatch();
   const [open, setOpenModal] = useState(false);
+
+  const [defaultDataListFlag, setDefaultDataListFlag] = useState(false);
+  const [defaultDataList, setDefaultDataList] = useState([{ name: "Agregar", id: 1 }]);
+  const [defaultDataListString, setDefaultDataListString] = useState('');
 
   const modalStyle = {
     position: 'absolute',
@@ -132,110 +140,114 @@ const Crud = ({ user, arr, limit, addstr, modelRef, forallusersflag, auth, model
 
   let randomKey = () => getRandomNum(1, 99999).toString() + getRandomNum(1, 99999).toString() + getRandomNum(1, 99999).toString()
 
-  const getItems = async () => {
+  const getItems = async (subModel) => {
 
-    let getObj = { model, fieldsAndValues: values, fields }
+    let subModelFlag = subModel ? true : false
+
+    let getObj = { model: subModelFlag ? subModel : model }
 
     if (auth.user._id !== user._id)
       getObj.otherUser = user._id
 
     let res = await postDataAPI('getDataField', getObj, auth.token)
-    // console.log(res);
-    if (res.data.data && res.data.data.length > 0) {
-      // console.log(res.data.data)
-      res = sort(res.data.data)
-      // console.log(res)
-      setReadData([...res])
-      // console.log(res)
 
-      let arrSimpleFieldsJoin = []
+    if (!res.data.data || res.data.data.length <= 0) {
+      return console.info('No se encontraron datos para el modelo: ' + subModelFlag ? subModel : model);
+    }
 
-      if (fields && Array.isArray(fields)) {
-        fields.map(field => {
-          if (field.hasOwnProperty("tableShow") && field.tableShow == false) {
-            return;
-          } else {
-            let newTitle = field.title.toLowerCase().trim().replace('un ', '').replace('tu ', '').trim()
+    res = sort(res.data.data)
 
-            // SOLO VALIDACIÓN PARA TIPO DE CAMPOS LARGO
-            let arrSimpleFieldsJoinProps = {
-              field: field.inputAndModelName,
+    if (subModelFlag) return res;
+
+    setReadData([...res])
+
+    let arrSimpleFieldsJoin = []
+
+    if (fields && Array.isArray(fields)) {
+      fields.map(field => {
+        if (field.hasOwnProperty("tableShow") && field.tableShow == false) {
+          return;
+        } else {
+          let newTitle = field.title.toLowerCase().trim().replace('un ', '').replace('tu ', '').trim()
+
+          // SOLO VALIDACIÓN PARA TIPO DE CAMPOS LARGO
+          let arrSimpleFieldsJoinProps = {
+            field: field.inputAndModelName,
+            title: capFirstLetter(newTitle)
+          }
+
+          if (field.inputType == 'image') {
+
+            arrSimpleFieldsJoinProps.render = (rowData, index) => (
+              <img key={index} src={rowData[field.inputAndModelName] ? rowData[field.inputAndModelName] : "https://res.cloudinary.com/solumobil/image/upload/v1639261011/user/icons8-usuario-masculino-en-c%C3%ADrculo-96_ipicdt.png"} alt="Avatar" style={{ width: '50px' }} />
+            )
+          }
+
+          arrSimpleFieldsJoin.push(arrSimpleFieldsJoinProps)
+        }
+      })
+    } else {
+      Object.keys(fields).map(field => {
+        Object.entries(addstr).map(titles => {
+          if (field == titles[0]) {
+            let newTitle = titles[1].replace('un, ').replace('tu', '').trim()
+            arrSimpleFieldsJoin.push({
+              field,
               title: capFirstLetter(newTitle)
-            }
-
-            if (field.inputType == 'image') {
-
-              arrSimpleFieldsJoinProps.render = (rowData, index) => (
-                <img key={index} src={rowData[field.inputAndModelName] ? rowData[field.inputAndModelName] : "https://res.cloudinary.com/solumobil/image/upload/v1639261011/user/icons8-usuario-masculino-en-c%C3%ADrculo-96_ipicdt.png"} alt="Avatar" style={{ width: '50px' }} />
-              )
-            }
-
-            arrSimpleFieldsJoin.push(arrSimpleFieldsJoinProps)
+            })
           }
         })
-      } else {
-        Object.keys(fields).map(field => {
-          Object.entries(addstr).map(titles => {
-            if (field == titles[0]) {
-              let newTitle = titles[1].replace('un, ').replace('tu', '').trim()
-              arrSimpleFieldsJoin.push({
-                field,
-                title: capFirstLetter(newTitle)
-              })
-            }
-          })
-        })
+      })
+    }
+
+    let arrColumnsMTable = []
+
+    arrSimpleFieldsJoin.map(field => {
+
+      let arrColsTableProps = {
+        title: field.title,
+        field: field.field,
+        render: field.render,
       }
 
-      let arrColumnsMTable = []
+      console.log(field)
 
-      arrSimpleFieldsJoin.map(field => {
+      arrColumnsMTable.push(arrColsTableProps)
+    })
 
-        let arrColsTableProps = {
-          title: field.title,
-          field: field.field,
-          render: field.render,
-        }
+    // Acciones
+    arrColumnsMTable.push({
+      title: '',
+      field: 'anyany',
+      render: (rowData, index) => (
+        <div className="justify-content-center text-center d-flex align-items-center col-3" key={index}>
+          <div className="row align-items-center text-center justify-content-center d-flex">
 
-        console.log(field)
+            <div className="col-md-5 align-items-center text-center justify-content-center d-flex m-1">
+              <Tooltip content={`Editar fila`} placement="left" className="">
+                <i className="text-center border border-warning justify-content-center h-100 align-items-center d-flex edit-crud-btn  btn fas fa-edit text-warning pointer"
+                  onClick={() => handleEditItem(rowData)}></i>
+              </Tooltip>
+            </div>
 
-        arrColumnsMTable.push(arrColsTableProps)
-      })
-
-      // Acciones
-      arrColumnsMTable.push({
-        title: '',
-        field: 'anyany',
-        render: (rowData, index) => (
-          <div className="justify-content-center text-center d-flex align-items-center col-3" key={index}>
-            <div className="row align-items-center text-center justify-content-center d-flex">
-
-              <div className="col-md-5 align-items-center text-center justify-content-center d-flex m-1">
-                <Tooltip content={`Editar fila`} placement="left" className="">
-                  <i className="text-center border border-warning justify-content-center h-100 align-items-center d-flex edit-crud-btn  btn fas fa-edit text-warning pointer"
-                    onClick={() => handleEditItem(rowData)}></i>
-                </Tooltip>
-              </div>
-
-              <div className="col-md-5 align-items-center text-center justify-content-center d-flex m-1">
-                <Tooltip content={`Eliminar fila`} placement="left" className="">
-                  <i style={{
-                    paddingRight: '1.07rem',
-                    paddingLeft: '1.07rem'
-                  }} className="delete-crud-button border border-danger text-center justify-content-center btn fas h-100 align-items-center d-flex fa-trash text-danger pointer"
-                    onClick={() => { prepareDeleteItem(rowData); }}
-                  ></i>
-                </Tooltip>
-              </div>
+            <div className="col-md-5 align-items-center text-center justify-content-center d-flex m-1">
+              <Tooltip content={`Eliminar fila`} placement="left" className="">
+                <i style={{
+                  paddingRight: '1.07rem',
+                  paddingLeft: '1.07rem'
+                }} className="delete-crud-button border border-danger text-center justify-content-center btn fas h-100 align-items-center d-flex fa-trash text-danger pointer"
+                  onClick={() => { prepareDeleteItem(rowData); }}
+                ></i>
+              </Tooltip>
             </div>
           </div>
-        ),
-      })
+        </div>
+      ),
+    })
 
-      console.log('arrColumnsMTable', arrColumnsMTable)
+    console.log('arrColumnsMTable', arrColumnsMTable)
 
-      setMTableCols(arrColumnsMTable)
-    }
+    setMTableCols(arrColumnsMTable)
 
     console.log('readData', readData, readData.data, model);
   }
@@ -259,8 +271,12 @@ const Crud = ({ user, arr, limit, addstr, modelRef, forallusersflag, auth, model
       console.log('isArrFields true')
 
       let errorFlag = { bool: false, msg: '' }
+
+      const subModelDupli = []
+
       fields.forEach(field => {
         if (field.hasOwnProperty('inputAndModelName')) {
+          subModelDupli.push(field['inputAndModelName'])
           if (field['inputAndModelName'] == model) {
             errorFlag.bool = true;
             errorFlag.msg = `El modelo ${model} no puede ser igual al del campo ${field.hasOwnProperty('title') ? field.title : ''}`
@@ -268,6 +284,11 @@ const Crud = ({ user, arr, limit, addstr, modelRef, forallusersflag, auth, model
           }
         }
       })
+
+      if (subModelDupli.some(noEsPrimero)) {
+        errorFlag.bool = true;
+        errorFlag.msg = `No puede haber duplicados en nombres de submodelos`
+      }
 
       if (errorFlag.bool == true) {
         return console.error(errorFlag.msg)
@@ -319,6 +340,31 @@ const Crud = ({ user, arr, limit, addstr, modelRef, forallusersflag, auth, model
     strAlone = capFirstLetter(str)
     setAddTitleAlone(strAlone)
   }, [])
+
+  // Seteo de subfilas para datalists y selectores
+  useEffect(() => {
+
+    if (fields && Array.isArray(fields)) {
+      let subModelsObj = {}
+
+      const setSubModelData = async () => {
+        await Promise.all(
+          fields.map(async (field) => {
+            let dataSubModel = await getItems(field.inputAndModelName)
+            subModelsObj[field.inputAndModelName] = dataSubModel
+          })
+        )
+      }
+
+      setSubModelData();
+      setSubRows(subModelsObj);
+
+      console.log('subModelsObj', subModelsObj);
+      console.log('subRows', subRows);
+    }
+
+  }, [])
+  // END Seteo de subfilas para datalists y selectores
 
   let manyDinamicFieldsFlag = false;
   if (typeof fields !== undefined && typeof fields == 'object' && fields) {
@@ -645,15 +691,46 @@ const Crud = ({ user, arr, limit, addstr, modelRef, forallusersflag, auth, model
       setId('');
     }
 
-    const onSelect = () => {
+    const handleOnSearch = (string, results) => {
+      // onSearch will have as the first callback parameter
+      // the string searched and for the second the results.
+      console.log(string, results)
+      console.log(defaultDataList)
 
+
+      setDefaultDataListString(string)
+      setDefaultDataList([{ name: string, id: 1 }])
+      setDefaultDataListString(string)
     }
 
-    const onRemove = () => {
-
+    const handleOnHover = (result) => {
+      // the item hovered
+      console.log(result)
+      setDefaultDataListString(defaultDataListString)
     }
 
-    let inputsBox = <div className={`input-group ${add ? '' : 'd-none'}`}>
+    const handleOnSelect = (item) => {
+      // the item selected
+      console.log(item)
+      setDefaultDataListString(defaultDataListString)
+    }
+
+    const handleOnFocus = () => {
+      console.log('Focused')
+      setDefaultDataListString(defaultDataListString)
+    }
+
+    // const formatResult = (item) => {
+    //   return (
+    //     <>
+    //       <span style={{ display: 'block', textAlign: 'left' }}>id: {item.id}</span>
+    //       <span style={{ display: 'block', textAlign: 'left' }}>name: {item.name}</span>
+    //     </>
+    //   )
+    // }
+
+    let inputsBox = 
+    <div className={`input-group ${add ? '' : 'd-none'}`}>
 
       {/* INPUTS */}
       <div ref={inputsNewItemRef} className="justify-content-center" style={{ display: 'contents' }}>
@@ -665,18 +742,94 @@ const Crud = ({ user, arr, limit, addstr, modelRef, forallusersflag, auth, model
               isArrFields || Array.isArray(fields)
                 ?
                 fields.map((field, index) => ( // En construcción lo dinamico muy dinamico
-                  <div className="col-12 my-1" key={index}>
+                  <div className="col-12 my-1" style={{ zIndex: '500' }} key={index}>
 
                     {
-                      field.inputType == 'datalist' &&
-                      <Multiselect
-                        options={[{ name: 'Option', id: 1 }, { name: 'Option', id: 2 }]} // Options to display in the dropdown
-                        selectedValues={values[field.inputAndModelName]} // Preselected value to persist in dropdown
-                        onSelect={onSelect} // Function will trigger on select event
-                        onRemove={onRemove} // Function will trigger on remove event
-                        displayValue="name" // Property name to display in the dropdown options
-                      />
+                      subRows && Object.keys(subRows).length > 0 && (
+                        Object.keys(subRows).map((subRow, index) => (
+                          subRow == field.inputAndModelName && field.inputType == 'autocomplete' &&
+                          // <ReactSearchAutocomplete
+                          //   items={[
+                          //     {
+                          //       id: 0,
+                          //       name: 'Cobol'
+                          //     },
+                          //     {
+                          //       id: 4,
+                          //       name: 'Java'
+                          //     }
+                          //   ]}
+                          //   autoFocus
+                          //   formatResult={formatResult}
+                          // />
+                          <ReactSearchAutocomplete
+                            // ref={autocompleteRef}
+                            showClear={true}
+                            key={index}
+                            showItemsOnFocus={true}
+                            inputDebounce={0}
+                            onSearch={handleOnSearch}
+                            onHover={handleOnHover}
+                            onSelect={handleOnSelect}
+                            onFocus={handleOnFocus}
+                            inputSearchString={defaultDataListString}
+                            items={
+                              subRows[subRow] && Array.isArray(subRows[subRow]) && subRows[subRow].length > 0 ? subRows[subRow] : defaultDataList
+                            }
+                            autoFocus
+                          // formatResult={formatResult}
+                          />
+                        ))
+                      )
                     }
+
+                    {/* {
+                      subRows &&
+                      (
+                        Object.keys(subRows).map((subRow, index) => (
+                          subRow == field.inputAndModelName && field.inputType == 'datalist' &&
+                          <Multiselect
+                            key={index}
+                            style={{ zIndex: '500' }}
+                            name={field.inputAndModelName}
+                            value={values[field.inputAndModelName]}
+                            options={subRows[subRow] && Array.isArray(subRows[subRow]) && subRows[subRow].length > 0 ? subRows[subRow] : defaultDataList} // Options to display in the dropdown
+                            selectedValues={values[field.inputAndModelName]} // Preselected value to persist in dropdown
+                            onSelect={onSelect} // Function will trigger on select event
+                            onRemove={onRemove} // Function will trigger on remove event
+                            onSearch={(e) => onSearch(e, field.inputAndModelName)}
+                            displayValue="name" // Property name to display in the dropdown options
+                          />
+
+                        ))
+                      )
+                    } */}
+
+                    {/* {
+                      subRows && Object.keys(subRows).length > 0 && (
+                        Object.keys(subRows).map((subRow, index) => (
+                          subRow == field.inputAndModelName && field.inputType == 'selectsearch' &&
+                          <Select
+                            // classes={classes}
+                            // styles={selectStyles}
+                            options={subRows[subRow] && Array.isArray(subRows[subRow]) && subRows[subRow].length > 0 ? subRows[subRow] : defaultDataList} // Options to display in the dropdown
+                            // components={components}
+                            // onChange={this.handleChange("single")}
+                            // onFocus={this.openMenu}
+                            id={field.inputAndModelName}
+                            name={field.inputAndModelName}
+                            // onBlur={this.closeMenu}
+                            onChange={handleChange}
+                            // placeholder="Search a country (start with a)"
+                            menuIsOpen={true}
+                            // isClearable
+                            isSearchable={false}
+                            value={values[field.inputAndModelName]}
+                            // className="form-select"
+                          // ref={node => (this.selectItem = node)}
+                          />
+                        )))
+                    } */}
 
                     {
                       ((field.inputType == 'text' || field.inputType == 'string' || !field.inputType) &&
@@ -760,7 +913,7 @@ const Crud = ({ user, arr, limit, addstr, modelRef, forallusersflag, auth, model
 
                     {
                       ((field.inputType == 'select') &&
-                        <div class="input-group mb-3">
+                        <div class="input-group mb-3 p-2">
 
                           <select
                             aria-label="Example text with button addon" aria-describedby="button-addon1"
@@ -862,7 +1015,7 @@ const Crud = ({ user, arr, limit, addstr, modelRef, forallusersflag, auth, model
           <button
             type="button"
             onClick={submitItem}
-            className={`btn btn-${id ? 'warning' : 'primary'} btn-sm text-initial`}
+            className={`btn mb-1 btn-${id ? 'warning' : 'primary'} btn-sm text-initial`}
           >
             <i className={`fas fa-${id ? 'edit' : 'save'}`}></i> {id ? 'Editar' : 'Guardar'}
           </button>
@@ -872,7 +1025,7 @@ const Crud = ({ user, arr, limit, addstr, modelRef, forallusersflag, auth, model
           <button
             type="button"
             onClick={handleCancelAdd}
-            className="btn btn-danger btn-sm text-initial ms-2"
+            className="btn mb-1 btn-danger btn-sm text-initial ms-2"
           >
             <i className="fas fa-window-close"></i> Cancelar
           </button>
@@ -880,7 +1033,7 @@ const Crud = ({ user, arr, limit, addstr, modelRef, forallusersflag, auth, model
       </div>
     </div>
 
-    console.log('fields', fields);
+    // console.log('fields', fields);
 
     return (
       <>

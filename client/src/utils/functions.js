@@ -120,4 +120,12 @@ const imageUpload = async (images, options) => {
 
 const removeDuplicateWords = s => s.replace(/(\b\S.+\b)(?=.*\1)/g, "").trim()
 
-export { isEmailTelOrUserName, getEsDate, sort, capFirstLetter, getRandomNum, removeDuplicateWords, imageUpload };
+function esPrimero(valor, indice, lista) {
+  return (lista.indexOf(valor) === indice);
+}
+
+function noEsPrimero(valor, indice, lista) {
+  return !(lista.indexOf(valor) === indice);
+}
+
+export { isEmailTelOrUserName, getEsDate, sort, capFirstLetter, getRandomNum, removeDuplicateWords, imageUpload, esPrimero, noEsPrimero };
