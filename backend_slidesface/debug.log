@@ -1,0 +1,610 @@
+Running on port http://localhost:3245
+Mongoose default connection open to mongodb+srv://admin:admin@cluster0.io9y5fz.mongodb.net/?retryWrites=true&w=majority
+Mongoose default connection is open
+Connected to mongodb.
+El archivo EXISTE! ../models/phoneModel
+El archivo EXISTE! ../models/personalemailModel
+El archivo EXISTE! ../models/phoneModel
+[]
+El archivo EXISTE! ../models/addressModel
+El archivo EXISTE! ../models/birthdayModel
+[
+  {
+    _id: new ObjectId("63ad9b486b4647b6cda027b3"),
+    personalemail: 'adventurejavis@gmail.com',
+    user: new ObjectId("63ad959951a84aa6de2503bd"),
+    historic: [],
+    createdAt: 2022-12-29T13:51:04.828Z,
+    updatedAt: 2022-12-29T13:51:04.828Z,
+    __v: 0
+  }
+]
+El archivo EXISTE! ../models/personalemailModel
+[]
+[]
+[]
+[
+  {
+    _id: new ObjectId("63ad9b486b4647b6cda027b3"),
+    personalemail: 'adventurejavis@gmail.com',
+    user: new ObjectId("63ad959951a84aa6de2503bd"),
+    historic: [],
+    createdAt: 2022-12-29T13:51:04.828Z,
+    updatedAt: 2022-12-29T13:51:04.828Z,
+    __v: 0
+  }
+]
+ITEM
+{
+  __v: 0,
+  _id: '63ad9b486b4647b6cda027b3',
+  createdAt: '2022-12-29T13:51:04.828Z',
+  personalemail: 'adventurejavis@gmail.com',
+  updatedAt: '2022-12-29T13:51:04.828Z',
+  user: '63ad959951a84aa6de2503bd',
+  historic: []
+}
+END ITEM
+Collection personalemail doesnt exists
+schemaDinamicObject
+{}
+Collection personalemail exists
+El archivo EXISTE! ../models/personalemailModel
+[]
+Collection personalemail exists
+El archivo EXISTE! ../models/personalemailModel
+[
+  {
+    _id: new ObjectId("63ad9c4dd31fc1d9838eec24"),
+    personalemail: 'adventurejavis@gmail.com',
+    user: new ObjectId("63ad959951a84aa6de2503bd"),
+    historic: [],
+    createdAt: 2022-12-29T13:55:25.336Z,
+    updatedAt: 2022-12-29T13:55:25.336Z,
+    __v: 0
+  }
+]
+El archivo EXISTE! ../models/personalemailModel
+[
+  {
+    _id: new ObjectId("63ad9c4dd31fc1d9838eec24"),
+    personalemail: 'adventurejaavis@gmail.com',
+    user: new ObjectId("63ad959951a84aa6de2503bd"),
+    historic: [],
+    createdAt: 2022-12-29T13:55:25.336Z,
+    updatedAt: 2022-12-29T13:55:29.927Z,
+    __v: 0
+  }
+]
+Collection personalemail exists
+El archivo EXISTE! ../models/personalemailModel
+[
+  {
+    _id: new ObjectId("63ad9c4dd31fc1d9838eec24"),
+    personalemail: 'adventurejaavis@gmail.com',
+    user: new ObjectId("63ad959951a84aa6de2503bd"),
+    historic: [],
+    createdAt: 2022-12-29T13:55:25.336Z,
+    updatedAt: 2022-12-29T13:55:29.927Z,
+    __v: 0
+  },
+  {
+    _id: new ObjectId("63ad9c59d31fc1d9838eec2d"),
+    personalemail: 'javivar2020@gmail.com',
+    user: new ObjectId("63ad959951a84aa6de2503bd"),
+    historic: [],
+    createdAt: 2022-12-29T13:55:37.079Z,
+    updatedAt: 2022-12-29T13:55:37.079Z,
+    __v: 0
+  }
+]
+ITEM
+{
+  __v: 0,
+  _id: '63ad9c59d31fc1d9838eec2d',
+  createdAt: '2022-12-29T13:55:37.079Z',
+  personalemail: 'javivar2020@gmail.com',
+  updatedAt: '2022-12-29T13:55:37.079Z',
+  user: '63ad959951a84aa6de2503bd',
+  historic: []
+}
+END ITEM
+Collection personalemail doesnt exists
+schemaDinamicObject
+{}
+Collection personalemail exists
+El archivo EXISTE! ../models/personalemailModel
+[
+  {
+    _id: new ObjectId("63ad9c4dd31fc1d9838eec24"),
+    personalemail: 'adventurejaavis@gmail.com',
+    user: new ObjectId("63ad959951a84aa6de2503bd"),
+    historic: [],
+    createdAt: 2022-12-29T13:55:25.336Z,
+    updatedAt: 2022-12-29T13:55:29.927Z,
+    __v: 0
+  }
+]
+El archivo EXISTE! ../models/personalemailModel
+[
+  {
+    _id: new ObjectId("63ad9c4dd31fc1d9838eec24"),
+    personalemail: 'adventuarejaavis@gmail.com',
+    user: new ObjectId("63ad959951a84aa6de2503bd"),
+    historic: [],
+    createdAt: 2022-12-29T13:55:25.336Z,
+    updatedAt: 2022-12-29T13:55:43.638Z,
+    __v: 0
+  }
+]
+El archivo EXISTE! ../models/personalemailModel
+El archivo EXISTE! ../models/phoneModel
+El archivo EXISTE! ../models/phoneModel
+El archivo EXISTE! ../models/addressModel
+El archivo EXISTE! ../models/personalemailModel
+[
+  {
+    _id: new ObjectId("63ad9c4dd31fc1d9838eec24"),
+    personalemail: 'adventuarejaavis@gmail.com',
+    user: new ObjectId("63ad959951a84aa6de2503bd"),
+    historic: [],
+    createdAt: 2022-12-29T13:55:25.336Z,
+    updatedAt: 2022-12-29T13:55:43.638Z,
+    __v: 0
+  }
+]
+[]
+[]
+[]
+[
+  {
+    _id: new ObjectId("63ad9c4dd31fc1d9838eec24"),
+    personalemail: 'adventuarejaavis@gmail.com',
+    user: new ObjectId("63ad959951a84aa6de2503bd"),
+    historic: [],
+    createdAt: 2022-12-29T13:55:25.336Z,
+    updatedAt: 2022-12-29T13:55:43.638Z,
+    __v: 0
+  }
+]
+El archivo EXISTE! ../models/birthdayModel
+[]
+ITEM
+{
+  __v: 0,
+  _id: '63ad9c4dd31fc1d9838eec24',
+  createdAt: '2022-12-29T13:55:25.336Z',
+  personalemail: 'adventuarejaavis@gmail.com',
+  updatedAt: '2022-12-29T13:55:43.638Z',
+  user: '63ad959951a84aa6de2503bd',
+  historic: []
+}
+END ITEM
+Collection personalemail doesnt exists
+schemaDinamicObject
+{}
+Collection personalemail exists
+El archivo EXISTE! ../models/personalemailModel
+[]
+Collection personalemail exists
+El archivo EXISTE! ../models/personalemailModel
+[
+  {
+    _id: new ObjectId("63ad9c6ad31fc1d9838eec4f"),
+    personalemail: 'adventurejavis@gmail.com',
+    user: new ObjectId("63ad959951a84aa6de2503bd"),
+    historic: [],
+    createdAt: 2022-12-29T13:55:54.854Z,
+    updatedAt: 2022-12-29T13:55:54.854Z,
+    __v: 0
+  }
+]
+El archivo EXISTE! ../models/personalemailModel
+[
+  {
+    _id: new ObjectId("63ad9c6ad31fc1d9838eec4f"),
+    personalemail: 'adventurejavis@gmail.com',
+    user: new ObjectId("63ad959951a84aa6de2503bd"),
+    historic: [],
+    createdAt: 2022-12-29T13:55:54.854Z,
+    updatedAt: 2022-12-29T13:55:54.854Z,
+    __v: 0
+  }
+]
+El archivo EXISTE! ../models/phoneModel
+El archivo EXISTE! ../models/addressModel
+El archivo EXISTE! ../models/phoneModel
+El archivo EXISTE! ../models/birthdayModel
+El archivo EXISTE! ../models/personalemailModel
+[]
+[]
+[]
+[
+  {
+    _id: new ObjectId("63ad9c6ad31fc1d9838eec4f"),
+    personalemail: 'adventurejavis@gmail.com',
+    user: new ObjectId("63ad959951a84aa6de2503bd"),
+    historic: [],
+    createdAt: 2022-12-29T13:55:54.854Z,
+    updatedAt: 2022-12-29T13:55:54.854Z,
+    __v: 0
+  }
+]
+[]
+El archivo EXISTE! ../models/personalemailModel
+El archivo EXISTE! ../models/phoneModel
+[
+  {
+    _id: new ObjectId("63ad9c6ad31fc1d9838eec4f"),
+    personalemail: 'adventurejavis@gmail.com',
+    user: new ObjectId("63ad959951a84aa6de2503bd"),
+    historic: [],
+    createdAt: 2022-12-29T13:55:54.854Z,
+    updatedAt: 2022-12-29T13:55:54.854Z,
+    __v: 0
+  }
+]
+[]
+El archivo EXISTE! ../models/phoneModel
+El archivo EXISTE! ../models/addressModel
+El archivo EXISTE! ../models/birthdayModel
+El archivo EXISTE! ../models/personalemailModel
+[]
+[]
+[]
+[
+  {
+    _id: new ObjectId("63ad9c6ad31fc1d9838eec4f"),
+    personalemail: 'adventurejavis@gmail.com',
+    user: new ObjectId("63ad959951a84aa6de2503bd"),
+    historic: [],
+    createdAt: 2022-12-29T13:55:54.854Z,
+    updatedAt: 2022-12-29T13:55:54.854Z,
+    __v: 0
+  }
+]
+El archivo EXISTE! ../models/personalemailModel
+El archivo EXISTE! ../models/phoneModel
+[
+  {
+    _id: new ObjectId("63ad9c6ad31fc1d9838eec4f"),
+    personalemail: 'adventurejavis@gmail.com',
+    user: new ObjectId("63ad959951a84aa6de2503bd"),
+    historic: [],
+    createdAt: 2022-12-29T13:55:54.854Z,
+    updatedAt: 2022-12-29T13:55:54.854Z,
+    __v: 0
+  }
+]
+[]
+El archivo EXISTE! ../models/phoneModel
+El archivo EXISTE! ../models/addressModel
+El archivo EXISTE! ../models/personalemailModel
+El archivo EXISTE! ../models/birthdayModel
+[]
+[]
+[
+  {
+    _id: new ObjectId("63ad9c6ad31fc1d9838eec4f"),
+    personalemail: 'adventurejavis@gmail.com',
+    user: new ObjectId("63ad959951a84aa6de2503bd"),
+    historic: [],
+    createdAt: 2022-12-29T13:55:54.854Z,
+    updatedAt: 2022-12-29T13:55:54.854Z,
+    __v: 0
+  }
+]
+[]
+El archivo EXISTE! ../models/personalemailModel
+El archivo EXISTE! ../models/phoneModel
+[
+  {
+    _id: new ObjectId("63ad9c6ad31fc1d9838eec4f"),
+    personalemail: 'adventurejavis@gmail.com',
+    user: new ObjectId("63ad959951a84aa6de2503bd"),
+    historic: [],
+    createdAt: 2022-12-29T13:55:54.854Z,
+    updatedAt: 2022-12-29T13:55:54.854Z,
+    __v: 0
+  }
+]
+[]
+El archivo EXISTE! ../models/phoneModel
+El archivo EXISTE! ../models/birthdayModel
+El archivo EXISTE! ../models/personalemailModel
+El archivo EXISTE! ../models/addressModel
+[]
+[]
+[
+  {
+    _id: new ObjectId("63ad9c6ad31fc1d9838eec4f"),
+    personalemail: 'adventurejavis@gmail.com',
+    user: new ObjectId("63ad959951a84aa6de2503bd"),
+    historic: [],
+    createdAt: 2022-12-29T13:55:54.854Z,
+    updatedAt: 2022-12-29T13:55:54.854Z,
+    __v: 0
+  }
+]
+[]
+El archivo EXISTE! ../models/personalemailModel
+[
+  {
+    _id: new ObjectId("63ad9c6ad31fc1d9838eec4f"),
+    personalemail: 'adventurejavis@gmail.com',
+    user: new ObjectId("63ad959951a84aa6de2503bd"),
+    historic: [],
+    createdAt: 2022-12-29T13:55:54.854Z,
+    updatedAt: 2022-12-29T13:55:54.854Z,
+    __v: 0
+  }
+]
+El archivo EXISTE! ../models/addressModel
+El archivo EXISTE! ../models/phoneModel
+El archivo EXISTE! ../models/phoneModel
+El archivo EXISTE! ../models/personalemailModel
+El archivo EXISTE! ../models/birthdayModel
+[]
+[]
+[]
+[]
+[
+  {
+    _id: new ObjectId("63ad9c6ad31fc1d9838eec4f"),
+    personalemail: 'adventurejavis@gmail.com',
+    user: new ObjectId("63ad959951a84aa6de2503bd"),
+    historic: [],
+    createdAt: 2022-12-29T13:55:54.854Z,
+    updatedAt: 2022-12-29T13:55:54.854Z,
+    __v: 0
+  }
+]
+Collection address exists
+El archivo EXISTE! ../models/addressModel
+[
+  {
+    _id: new ObjectId("63ad9e73d31fc1d9838eec90"),
+    address: 'cra. 116b',
+    user: new ObjectId("63ad959951a84aa6de2503bd"),
+    historic: [],
+    createdAt: 2022-12-29T14:04:35.041Z,
+    updatedAt: 2022-12-29T14:04:35.041Z,
+    __v: 0
+  }
+]
+Collection phone exists
+El archivo EXISTE! ../models/phoneModel
+[
+  {
+    _id: new ObjectId("63ad9e7ad31fc1d9838eec95"),
+    pais: '57',
+    number: '3133043714',
+    user: new ObjectId("63ad959951a84aa6de2503bd"),
+    createdAt: 2022-12-29T14:04:42.258Z,
+    updatedAt: 2022-12-29T14:04:42.258Z,
+    __v: 0
+  }
+]
+Collection birthday exists
+El archivo EXISTE! ../models/birthdayModel
+[
+  {
+    _id: new ObjectId("63ad9e84d31fc1d9838eec9a"),
+    birthday: '17/03/2023',
+    user: new ObjectId("63ad959951a84aa6de2503bd"),
+    historic: [],
+    createdAt: 2022-12-29T14:04:52.567Z,
+    updatedAt: 2022-12-29T14:04:52.567Z,
+    __v: 0
+  }
+]
+{
+  firstname: 'Jamal',
+  lastname: 'Emerson',
+  fullname: 'Jamal Emerson',
+  password: '$2b$12$Q00mT/Ny3aCFXN5G7uMFR.2oBSvBU7A13eqOC7iwFnzn1LQyQ7NJC',
+  gender: 'male',
+  username: 'a'
+}
+[
+  {
+    _id: new ObjectId("63ad959951a84aa6de2503bd"),
+    fullname: 'Oscar Vargas',
+    username: 'o',
+    gender: 'male'
+  }
+]
+[
+  {
+    _id: new ObjectId("63ad959951a84aa6de2503bd"),
+    fullname: 'Oscar Vargas',
+    username: 'o',
+    gender: 'male'
+  }
+]
+{
+  _id: new ObjectId("63ad959951a84aa6de2503bd"),
+  fullname: 'Oscar Vargas',
+  firstname: 'Oscar',
+  lastname: 'Vargas',
+  username: 'o',
+  role: 'user',
+  gender: 'male',
+  workplace: '',
+  homecity: '',
+  currentCity: '',
+  civilStatus: '',
+  story: '',
+  jobs: [],
+  universities: [],
+  secondarySchools: [],
+  socialLinks: [],
+  websites: [],
+  emails: [],
+  lenguages: [],
+  interests: [],
+  media: [],
+  recentSearches: [],
+  followers: [],
+  following: [],
+  historic: [],
+  createdAt: 2022-12-29T13:26:49.290Z,
+  updatedAt: 2022-12-29T13:26:49.290Z,
+  __v: 0
+}
+{
+  _id: new ObjectId("63ad959951a84aa6de2503bd"),
+  fullname: 'Oscar Vargas',
+  firstname: 'Oscar',
+  lastname: 'Vargas',
+  username: 'o',
+  role: 'user',
+  gender: 'male',
+  workplace: '',
+  homecity: '',
+  currentCity: '',
+  civilStatus: '',
+  story: '',
+  jobs: [],
+  universities: [],
+  secondarySchools: [],
+  socialLinks: [],
+  websites: [],
+  emails: [],
+  lenguages: [],
+  interests: [],
+  media: [],
+  recentSearches: [],
+  followers: [],
+  following: [],
+  historic: [],
+  createdAt: 2022-12-29T13:26:49.290Z,
+  updatedAt: 2022-12-29T13:26:49.290Z,
+  __v: 0
+}
+{
+  _id: new ObjectId("63ad959951a84aa6de2503bd"),
+  fullname: 'Oscar Vargas',
+  firstname: 'Oscar',
+  lastname: 'Vargas',
+  username: 'o',
+  role: 'user',
+  gender: 'male',
+  workplace: '',
+  homecity: '',
+  currentCity: '',
+  civilStatus: '',
+  story: '',
+  jobs: [],
+  universities: [],
+  secondarySchools: [],
+  socialLinks: [],
+  websites: [],
+  emails: [],
+  lenguages: [],
+  interests: [],
+  media: [],
+  recentSearches: [],
+  followers: [],
+  following: [],
+  historic: [],
+  createdAt: 2022-12-29T13:26:49.290Z,
+  updatedAt: 2022-12-29T13:26:49.290Z,
+  __v: 0
+}
+El archivo EXISTE! ../models/personalemailModel
+El archivo EXISTE! ../models/phoneModel
+El archivo EXISTE! ../models/addressModel
+El archivo EXISTE! ../models/phoneModel
+El archivo EXISTE! ../models/birthdayModel
+El archivo EXISTE! ../models/personalemailModel
+[
+  {
+    _id: new ObjectId("63ad9c6ad31fc1d9838eec4f"),
+    personalemail: 'adventurejavis@gmail.com',
+    user: new ObjectId("63ad959951a84aa6de2503bd"),
+    historic: [],
+    createdAt: 2022-12-29T13:55:54.854Z,
+    updatedAt: 2022-12-29T13:55:54.854Z,
+    __v: 0
+  }
+]
+[
+  {
+    _id: new ObjectId("63ad9e7ad31fc1d9838eec95"),
+    pais: '57',
+    number: '3133043714',
+    user: new ObjectId("63ad959951a84aa6de2503bd"),
+    createdAt: 2022-12-29T14:04:42.258Z,
+    updatedAt: 2022-12-29T14:04:42.258Z,
+    __v: 0
+  }
+]
+[
+  {
+    _id: new ObjectId("63ad9e73d31fc1d9838eec90"),
+    address: 'cra. 116b',
+    user: new ObjectId("63ad959951a84aa6de2503bd"),
+    historic: [],
+    createdAt: 2022-12-29T14:04:35.041Z,
+    updatedAt: 2022-12-29T14:04:35.041Z,
+    __v: 0
+  }
+]
+[
+  {
+    _id: new ObjectId("63ad9e7ad31fc1d9838eec95"),
+    pais: '57',
+    number: '3133043714',
+    user: new ObjectId("63ad959951a84aa6de2503bd"),
+    createdAt: 2022-12-29T14:04:42.258Z,
+    updatedAt: 2022-12-29T14:04:42.258Z,
+    __v: 0
+  }
+]
+[
+  {
+    _id: new ObjectId("63ad9e84d31fc1d9838eec9a"),
+    birthday: '17/03/2023',
+    user: new ObjectId("63ad959951a84aa6de2503bd"),
+    historic: [],
+    createdAt: 2022-12-29T14:04:52.567Z,
+    updatedAt: 2022-12-29T14:04:52.567Z,
+    __v: 0
+  }
+]
+[
+  {
+    _id: new ObjectId("63ad9c6ad31fc1d9838eec4f"),
+    personalemail: 'adventurejavis@gmail.com',
+    user: new ObjectId("63ad959951a84aa6de2503bd"),
+    historic: [],
+    createdAt: 2022-12-29T13:55:54.854Z,
+    updatedAt: 2022-12-29T13:55:54.854Z,
+    __v: 0
+  }
+]
+El archivo EXISTE! ../models/personalemailModel
+El archivo EXISTE! ../models/phoneModel
+[
+  {
+    _id: new ObjectId("63ad9c6ad31fc1d9838eec4f"),
+    personalemail: 'adventurejavis@gmail.com',
+    user: new ObjectId("63ad959951a84aa6de2503bd"),
+    historic: [],
+    createdAt: 2022-12-29T13:55:54.854Z,
+    updatedAt: 2022-12-29T13:55:54.854Z,
+    __v: 0
+  }
+]
+[
+  {
+    _id: new ObjectId("63ad9e7ad31fc1d9838eec95"),
+    pais: '57',
+    number: '3133043714',
+    user: new ObjectId("63ad959951a84aa6de2503bd"),
+    createdAt: 2022-12-29T14:04:42.258Z,
+    updatedAt: 2022-12-29T14:04:42.258Z,
+    __v: 0
+  }
+]

@@ -1,0 +1,57 @@
+{
+  "name": "slidesface.com",
+  "version": "1.0.0",
+  "description": "app to be social",
+  "main": "index.js",
+  "scripts": {
+    "server": "nodemon --inspect server.js",
+    "staticserver": "node server.js",
+    "client": "cd ../front_slidesface && npm run start",
+    "install-all": "concurrently \"npm run server-install\" \"npm run client-install\" ",
+    "dever": "concurrently \"npm run server\" \"npm run client\" ",
+    "dev": "concurrently \"npm run staticserver\" \"npm run client\" "
+  },
+  "nodemonConfig": {
+    "ignore": [
+      "./database/*.js"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/OscarJVD/Be-Social.git"
+  },
+  "keywords": [
+    "social",
+    "network",
+    "facebook-instagram",
+    "clone"
+  ],
+  "author": "OscarJVD",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/OscarJVD/Be-Social/issues"
+  },
+  "homepage": "https://github.com/OscarJVD/Be-Social#readme",
+  "dependencies": {
+    "bcrypt": "5.0.1",
+    "concurrently": "7.0.0",
+    "cookie-parser": "1.4.5",
+    "cors": "2.8.5",
+    "dotenv": "10.0.0",
+    "express": "4.17.1",
+    "inflection": "1.13.2",
+    "is-phone": "2.0.0",
+    "is-valid-email": "0.0.5",
+    "is-valid-username": "0.0.1",
+    "jsonwebtoken": "8.5.1",
+    "mongodb": "4.4.1",
+    "mongoose": "6.2.9",
+    "mongoose-dynamic-schemas": "1.2.6",
+    "nickname-generator": "1.1.1",
+    "password-validator": "5.1.1"
+  },
+  "devDependencies": {
+    "nodemon": "2.0.7",
+    "jest": "^28.1.1"
+  }
+}
